@@ -7,7 +7,7 @@ How work is committed in this repository, by hand or by an agent working through
 Each logical batch of work is committed on its own once it is finished, its tests pass and its
 documentation says what it does. Commits are made on `main` and kept local until the reviewing
 session pushes them once the previous build run has ended, so a working session never pushes and
-no run is cancelled midway by a push (NORM.md, N 7.1). A change an engine uses is committed here
+no run is canceled midway by a push (NORM.md, N 7.1). A change an engine uses is committed here
 first, and pushed before the engine's commit that moves the engine's pointer to it.
 
 A branch exists only while a second session writes to the repository, and it is named for its

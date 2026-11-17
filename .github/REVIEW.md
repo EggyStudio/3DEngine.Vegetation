@@ -1,17 +1,19 @@
 # Review
 
-Reviewed up to `d604e4d`, item 7, the grass's scatter, pushed at 02:42 on 2026-11-09, its run green
-at 02:43 on the three systems in under a minute each; it keeps the form and references no engine.
-Nothing is pushed after it. Before it `f18a993`, item 6, the texture sets with their recipe, carried
-in the module's assembly and opened by their paths, pushed at 01:01 on 2026-11-09, its run green at
-01:01 on the three systems in under a minute each; it keeps the form and references no engine.
-Before it `c2149be`, item 5, the species and the skeleton by the BevyCSharp session, with the
-module's DEVLOG.md, pushed at 22:36 on 2026-11-08, its run green at 22:37 on the three systems in
-under a minute each; it keeps the form and references no engine. Before it `63fc628`, item 2, pushed
-at 12:31 on 2026-10-31 with `41b4925`, item 1, after the owner's first commit, its run green at
-12:35 on the three systems in about three minutes, the first of this repository. Both commits keep
-the form, the three-mark subject, one sentence, the owner's identity as author and committer, no
-trailer (N 7.2 and N 7.6 kept at the first commit); the library references no engine (N 2.1). The
+Reviewed up to `2fba808`, item 8, the planting's placement, pushed at 04:16 on 2026-11-09, its run
+green at 04:17 on the three systems in under a minute each; it keeps the form and references no
+engine. Nothing is pushed after it. Before it `d604e4d`, item 7, the grass's scatter, pushed at
+02:42 on 2026-11-09, its run green at 02:43 on the three systems in under a minute each; it keeps
+the form and references no engine. Before it `f18a993`, item 6, the texture sets with their recipe,
+carried in the module's assembly and opened by their paths, pushed at 01:01 on 2026-11-09, its run
+green at 01:01 on the three systems in under a minute each; it keeps the form and references no
+engine. Before it `c2149be`, item 5, the species and the skeleton by the BevyCSharp session, with
+the module's DEVLOG.md, pushed at 22:36 on 2026-11-08, its run green at 22:37 on the three systems
+in under a minute each; it keeps the form and references no engine. Before it `63fc628`, item 2,
+pushed at 12:31 on 2026-10-31 with `41b4925`, item 1, after the owner's first commit, its run green
+at 12:35 on the three systems in about three minutes, the first of this repository. Both commits
+keep the form, the three-mark subject, one sentence, the owner's identity as author and committer,
+no trailer (N 7.2 and N 7.6 kept at the first commit); the library references no engine (N 2.1). The
 documents are the engines' with the engine's name replaced and the engine-only lines dropped,
 COMMITS.md the game's with N 7.1's pointer rule in place of the legacy branch line, .gitignore with
 the dump folder, .claude and .ref; AGENTS.md's devlog row carries no link until DEVLOG.md exists and
@@ -102,7 +104,11 @@ pointer. One commit an engine, after item 3's first part.
     and taken, the part holds the variants' count and each variant's seed, a tree's stance from its
     seed, its variant, its turn and its size within a tenth either way, and the forest's spread over
     a disc, so a level's trees stand the same in both engines; the spawn, the colliders, the
-    dressing and the impostors stay in the engines.
+    dressing and the impostors stay in the engines. Done at `2fba808`, pushed at 04:16 on
+    2026-11-09; TreePlanting with its eight variants and their seeds, a tree's stance from its seed
+    and a forest's places and seeds over its disc, drawn from Pcg in the bridge's order and summed
+    as the bridge summed, the same to the bit over 35 forests' 2,093 trees and 48 dressed trees with
+    their 228 colliders, four tests with it and 34 passing.
 
 9. **The meshes.** Item 3's fifth part, blocked. Build, Cards, Leaves, Volume, TreeLooks and
     TreeDetail are built on the edit mesh, which the Modeling module does not hold until its item 3

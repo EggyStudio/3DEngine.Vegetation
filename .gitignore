@@ -38,5 +38,5 @@ desktop.ini
 # never in the repository.
 /.vegetation/
 
-# Every picture a session makes while it works, which the owner reads and prunes by day (N 4.10).
+# Every picture made while working, read and pruned by day (N 4.10).
 /.github/dump/

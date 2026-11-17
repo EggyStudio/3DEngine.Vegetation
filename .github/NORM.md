@@ -118,7 +118,7 @@ runs six hours on a hang. By review.
 
 **N 7.1 Commits are made on `main`, and the reviewing session pushes them once the previous build
 run of the repository has ended.** The owner gave the pushes to the reviewing session on 2026-10-19,
-so a coder never pushes and no run is cancelled midway by a push. A change an engine uses is
+so a coder never pushes and no run is canceled midway by a push. A change an engine uses is
 committed here first and pushed before the engine's commit that moves its pointer, so an engine's
 pushed history never names a commit of this repository that is not on its `main`. By review.
 
