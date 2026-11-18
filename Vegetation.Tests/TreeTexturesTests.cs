@@ -12,8 +12,8 @@ public sealed class TreeTexturesTests
 {
     private static readonly string Collection = Path.Combine(RepositoryRoot(), "Vegetation", "Textures");
 
-    // A set of 64 square made from no source by build/textures.py --sample, kept with the tests so a
-    // machine without the import's Python still adds one.
+    // A set of 64 square made from no source by build/textures.py --sample, kept with the tests so
+    // a machine without the import's Python still adds one.
     private static readonly string Sample = Path.Combine(RepositoryRoot(), "Vegetation.Tests", "references", "textures");
 
     private static readonly TreeSpecies[] Presets = [TreeSpecies.QuakingAspen, TreeSpecies.BlackTupelo, TreeSpecies.WeepingWillow, TreeSpecies.CaliforniaBlackOak, TreeSpecies.Bush, TreeSpecies.Fern];
@@ -161,7 +161,8 @@ public sealed class TreeTexturesTests
             Assert.Equal((139u, albedo.Width / 2, albedo.Height / 2), (depth.Format, depth.Width, depth.Height));
         }
 
-        // The sample's depth, derived from its normal map, is half its 64 square, in BC4 under zstd.
+        // The sample's depth, derived from its normal map, is half its 64 square, in BC4 under
+        // zstd.
         var sample = Header(File.ReadAllBytes(Path.Combine(Sample, "sample", "depth.ktx2")));
         Assert.Equal((139u, 32u, 32u, 2u), (sample.Format, sample.Width, sample.Height, sample.Supercompression));
     }
@@ -197,7 +198,9 @@ public sealed class TreeTexturesTests
         return bytes.ToArray();
     }
 
-    /// <summary>A KTX2 file's format, width, height, levels and supercompression, from its header.</summary>
+    /// <summary>
+    /// A KTX2 file's format, width, height, levels and supercompression, from its header.
+    /// </summary>
     private static (uint Format, uint Width, uint Height, uint Levels, uint Supercompression) Header(byte[] file)
     {
         byte[] identifier = [0xAB, 0x4B, 0x54, 0x58, 0x20, 0x32, 0x30, 0xBB, 0x0D, 0x0A, 0x1A, 0x0A];

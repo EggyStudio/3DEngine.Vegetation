@@ -1,6 +1,9 @@
 namespace Vegetation;
 
-/// <summary>What a stretch of grass is planted with and how thick it stands, as <see cref="GrassScatter"/> scatters it.</summary>
+/// <summary>
+/// What a stretch of grass is planted with and how thick it stands, as <see cref="GrassScatter"/>
+/// scatters it.
+/// </summary>
 /// <remarks>
 /// The same settings and the same stretch give the same grass, every clump where it stood and as
 /// tall, since the seed scatters, turns and sizes them.
@@ -16,10 +19,15 @@ public sealed record GrassSettings
     /// <summary>How many clumps stand on a square meter, each two cards crossed.</summary>
     public float Density { get; init; } = 3f;
 
-    /// <summary>How tall a clump stands on average, in meters, its card as wide as the set's picture is for that height.</summary>
+    /// <summary>
+    /// How tall a clump stands on average, in meters, its card as wide as the set's picture is for
+    /// that height.
+    /// </summary>
     public float Height { get; init; } = 0.6f;
 
-    /// <summary>How far a clump's height strays from the average either way, as a share of it.</summary>
+    /// <summary>
+    /// How far a clump's height strays from the average either way, as a share of it.
+    /// </summary>
     public float Variation { get; init; } = 0.3f;
 
     /// <summary>The seed the clumps are scattered, turned, sized and swayed by.</summary>
@@ -33,7 +41,8 @@ public sealed record GrassSettings
 
     /// <summary>
     /// Whether the blades cast shadows, which many small cut-out cards cost more than they show and
-    /// whose thin blades flicker in the sun's shadow map as they sway. They receive shadows either way.
+    /// whose thin blades flicker in the sun's shadow map as they sway. They receive shadows either
+    /// way.
     /// </summary>
     public bool CastsShadows { get; init; }
 }

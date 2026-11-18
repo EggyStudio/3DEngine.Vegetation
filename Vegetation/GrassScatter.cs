@@ -3,9 +3,9 @@ using System.Numerics;
 namespace Vegetation;
 
 /// <summary>
-/// Where grass stands over a stretch of ground, the stretch cut into square patches and each patch's
-/// clumps scattered over it from a seed, which an engine draws as a mesh a patch, two cards crossed
-/// a clump.
+/// Where grass stands over a stretch of ground, the stretch cut into square patches and each
+/// patch's clumps scattered over it from a seed, which an engine draws as a mesh a patch, two cards
+/// crossed a clump.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -16,17 +16,27 @@ namespace Vegetation;
 /// <para>
 /// A patch's clumps fall on a grid of cells a clump each, each placed anywhere in its cell, so the
 /// grass covers its patch evenly without the rows of a grid. A clump's numbers are drawn from
-/// <see cref="Pcg"/> in a fixed order, its place, its turn, its height and its two phases, so a seed
-/// means the same clumps on every runtime.
+/// <see cref="Pcg"/> in a fixed order, its place, its turn, its height and its two phases, so a
+/// seed means the same clumps on every runtime.
 /// </para>
 /// </remarks>
 public static class GrassScatter
 {
     /// <summary>Cuts a stretch of ground into the patches its grass is drawn in.</summary>
-    /// <param name="size">The stretch's width along X in X and its depth along Z in Y, in meters.</param>
-    /// <param name="settings">The set, the density, the height, the patch size and the seed.</param>
-    /// <returns>The patches a row at a time from the stretch's corner, each row along X and the rows along Z.</returns>
-    /// <exception cref="ArgumentException">The set is not a grass set the collection has, or a size or a setting is not a positive number.</exception>
+    /// <param name="size">
+    /// The stretch's width along X in X and its depth along Z in Y, in meters.
+    /// </param>
+    /// <param name="settings">
+    /// The set, the density, the height, the patch size and the seed.
+    /// </param>
+    /// <returns>
+    /// The patches a row at a time from the stretch's corner, each row along X and the rows along
+    /// Z.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// The set is not a grass set the collection has, or a size or a setting is not a positive
+    /// number.
+    /// </exception>
     public static IReadOnlyList<GrassPatch> Patches(Vector2 size, GrassSettings settings)
     {
         ArgumentNullException.ThrowIfNull(settings);
@@ -51,12 +61,22 @@ public static class GrassScatter
         return patches;
     }
 
-    /// <summary>Scatters a patch's clumps over it, a cell each of a grid as fine as the density asks.</summary>
+    /// <summary>
+    /// Scatters a patch's clumps over it, a cell each of a grid as fine as the density asks.
+    /// </summary>
     /// <param name="settings">The density, the height and how far a clump's height strays.</param>
-    /// <param name="size">The patch's width along X in X and its depth along Z in Y, in meters, as <see cref="GrassPatch.Size"/> gives it.</param>
+    /// <param name="size">
+    /// The patch's width along X in X and its depth along Z in Y, in meters, as
+    /// <see cref="GrassPatch.Size"/> gives it.
+    /// </param>
     /// <param name="seed">The patch's seed, as <see cref="GrassPatch.Seed"/> gives it.</param>
-    /// <returns>The clumps a row of cells at a time, each row along X and the rows along Z, their roots about the patch's middle.</returns>
-    /// <exception cref="ArgumentException">A size or a setting is not a positive number.</exception>
+    /// <returns>
+    /// The clumps a row of cells at a time, each row along X and the rows along Z, their roots
+    /// about the patch's middle.
+    /// </returns>
+    /// <exception cref="ArgumentException">
+    /// A size or a setting is not a positive number.
+    /// </exception>
     public static IReadOnlyList<GrassClump> Clumps(GrassSettings settings, Vector2 size, uint seed)
     {
         ArgumentNullException.ThrowIfNull(settings);

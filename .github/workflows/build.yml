@@ -28,8 +28,8 @@ jobs:
         os: [ubuntu-24.04, windows-latest, macos-15]
     runs-on: ${{ matrix.os }}
     # The build took 8 seconds and the test 19 on a desktop from an empty package folder
-    # (dotnet build Vegetation.slnx -warnaserror, dotnet test Vegetation.Tests), so 30 minutes is reached
-    # only where a restore or a test hangs (N 6.8).
+    # (dotnet build Vegetation.slnx -warnaserror, dotnet test Vegetation.Tests), so 30 minutes is
+    # reached only where a restore or a test hangs (N 6.8).
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v7
@@ -43,7 +43,8 @@ jobs:
       - run: dotnet test Vegetation.Tests --no-build --logger trx --results-directory Vegetation.Tests/TestResults
 
       - uses: actions/upload-artifact@v7
-        # Kept for a job canceled as well as one that failed, since a cut-short run is the one to read.
+        # Kept for a job canceled as well as one that failed, since a cut-short run is the one to
+        # read.
         if: failure() || cancelled()
         with:
           name: test-results-${{ matrix.os }}

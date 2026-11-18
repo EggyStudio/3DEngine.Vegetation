@@ -8,8 +8,8 @@ namespace Vegetation;
 /// <see cref="Random"/> is no promise across versions of .NET, which have changed its numbers for a
 /// seed before, and a tree kept in a level by its seed has to grow the same branches wherever the
 /// level is opened. This generator is a few lines of integer arithmetic whose every step is fixed
-/// by its paper, so its numbers are the same everywhere, and what can still differ between
-/// machines is the floating point the growth does with them, which is why a level may keep the grown
+/// by its paper, so its numbers are the same everywhere, and what can still differ between machines
+/// is the floating point the growth does with them, which is why a level may keep the grown
 /// skeleton beside the seed. An engine draws from it what it makes of a tree and where trees stand,
 /// so a seed in a level means the same leaves and the same planting on every runtime as well.
 /// </remarks>
@@ -39,7 +39,10 @@ public struct Pcg
         return (shifted >> rotation) | (shifted << (-rotation & 31));
     }
 
-    /// <summary>A number from zero up to one, one never reached, from the top 24 bits so every value is a float's exactly.</summary>
+    /// <summary>
+    /// A number from zero up to one, one never reached, from the top 24 bits so every value is a
+    /// float's exactly.
+    /// </summary>
     public float Unit() => (Next() >> 8) * (1f / 16_777_216f);
 
     /// <summary>A number from minus one up to one.</summary>

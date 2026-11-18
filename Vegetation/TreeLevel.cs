@@ -12,20 +12,20 @@ namespace Vegetation;
 /// taper, how many there are on each stem of the level before and how long they are against it.
 /// </para>
 /// <para>
-/// The paper draws each stem from these numbers alone, and <see cref="TreeSkeleton.Grow(TreeSpecies, uint)"/> grows them
-/// instead, so each control is a tendency the growth follows. The down and rotate angles are the
-/// way a bud points as it is set, the curve and the attraction up turn a stem as it lengthens, the
-/// splits are the chance its tip forks as it grows, the branches are how many buds a stem sets for
-/// the next level, and the length is the most a stem of the level grows. Whether a bud grows and
-/// how far depends on the room it finds, so two stems of one level differ as two branches of one
-/// tree do.
+/// The paper draws each stem from these numbers alone, and
+/// <see cref="TreeSkeleton.Grow(TreeSpecies, uint)"/> grows them instead, so each control is a
+/// tendency the growth follows. The down and rotate angles are the way a bud points as it is set,
+/// the curve and the attraction up turn a stem as it lengthens, the splits are the chance its tip
+/// forks as it grows, the branches are how many buds a stem sets for the next level, and the length
+/// is the most a stem of the level grows. Whether a bud grows and how far depends on the room it
+/// finds, so two stems of one level differ as two branches of one tree do.
 /// </para>
 /// </remarks>
 public sealed record TreeLevel
 {
     /// <summary>
-    /// The angle in degrees between a stem of this level and the stem it leaves, as it leaves it, 45
-    /// unless set. The trunk's is not read.
+    /// The angle in degrees between a stem of this level and the stem it leaves, as it leaves it,
+    /// 45 unless set. The trunk's is not read.
     /// </summary>
     public float DownAngle { get; init; } = 45f;
 
@@ -49,13 +49,15 @@ public sealed record TreeLevel
     /// </remarks>
     public float Rotate { get; init; } = 140f;
 
-    /// <summary>How far in degrees <see cref="Rotate"/> varies either way at random, 0 unless set.</summary>
+    /// <summary>
+    /// How far in degrees <see cref="Rotate"/> varies either way at random, 0 unless set.
+    /// </summary>
     public float RotateVariation { get; init; }
 
     /// <summary>
     /// How many degrees a stem of this level bends over its whole length, or over its first half
-    /// where <see cref="CurveBack"/> is set, downward where above zero and upward below it, 0 unless
-    /// set. The trunk bends to a side chosen at random.
+    /// where <see cref="CurveBack"/> is set, downward where above zero and upward below it, 0
+    /// unless set. The trunk bends to a side chosen at random.
     /// </summary>
     public float Curve { get; init; }
 
@@ -65,11 +67,19 @@ public sealed record TreeLevel
     /// </summary>
     public float CurveBack { get; init; }
 
-    /// <summary>How many degrees a stem of this level bends at random over its length, either way, 0 unless set.</summary>
-    /// <remarks>Below zero, the paper winds the stem as a helix, and here it bends at random by the size of the number.</remarks>
+    /// <summary>
+    /// How many degrees a stem of this level bends at random over its length, either way, 0 unless
+    /// set.
+    /// </summary>
+    /// <remarks>
+    /// Below zero, the paper winds the stem as a helix, and here it bends at random by the size of
+    /// the number.
+    /// </remarks>
     public float CurveVariation { get; init; }
 
-    /// <summary>How many times a stem of this level forks along its length on average, 0 unless set.</summary>
+    /// <summary>
+    /// How many times a stem of this level forks along its length on average, 0 unless set.
+    /// </summary>
     /// <remarks>
     /// The paper counts forks a segment, a stem being a few segments, and this counts them a stem,
     /// so the paper's number is multiplied by its curve resolution to give this one. A fork grows
@@ -85,7 +95,9 @@ public sealed record TreeLevel
     /// </summary>
     public float SplitAngle { get; init; }
 
-    /// <summary>How far in degrees <see cref="SplitAngle"/> varies either way at random, 0 unless set.</summary>
+    /// <summary>
+    /// How far in degrees <see cref="SplitAngle"/> varies either way at random, 0 unless set.
+    /// </summary>
     public float SplitAngleVariation { get; init; }
 
     /// <summary>
@@ -99,12 +111,14 @@ public sealed record TreeLevel
     /// </remarks>
     public int Branches { get; init; }
 
-    /// <summary>How long a stem of this level grows at most, against the stem it leaves, 1 unless set.</summary>
+    /// <summary>
+    /// How long a stem of this level grows at most, against the stem it leaves, 1 unless set.
+    /// </summary>
     /// <remarks>
-    /// The trunk's is against <see cref="TreeSpecies.Scale"/>. The first level of branches is as long
-    /// as this share of the trunk where the crown's <see cref="TreeSpecies.Shape"/> is widest, and
-    /// shorter where it is narrower, and a level past it is shorter toward the tip of the stem it
-    /// leaves, as the paper's are.
+    /// The trunk's is against <see cref="TreeSpecies.Scale"/>. The first level of branches is as
+    /// long as this share of the trunk where the crown's <see cref="TreeSpecies.Shape"/> is widest,
+    /// and shorter where it is narrower, and a level past it is shorter toward the tip of the stem
+    /// it leaves, as the paper's are.
     /// </remarks>
     public float Length { get; init; } = 1f;
 
@@ -112,9 +126,9 @@ public sealed record TreeLevel
     public float LengthVariation { get; init; }
 
     /// <summary>
-    /// How much a stem of this level narrows along its length, from 0, as thick at its tip as at its
-    /// foot, to 1, thinning as its branches leave it, 1 unless set. The paper's values from 1 to 3,
-    /// which round and ring its stems' ends, are taken as 1.
+    /// How much a stem of this level narrows along its length, from 0, as thick at its tip as at
+    /// its foot, to 1, thinning as its branches leave it, 1 unless set. The paper's values from 1
+    /// to 3, which round and ring its stems' ends, are taken as 1.
     /// </summary>
     /// <remarks>
     /// At 1 a stem is as thick at each point as the pipe model makes it, its cross section the sum

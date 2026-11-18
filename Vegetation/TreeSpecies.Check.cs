@@ -2,15 +2,20 @@ namespace Vegetation;
 
 public sealed partial record TreeSpecies
 {
-    // The name a refused control is given under, the species being the argument of whatever took it.
+    // The name a refused control is given under, the species being the argument of whatever took
+    // it.
     private const string Argument = "species";
 
-    /// <summary>Throws where a control of the species is outside what it may be, which the message names.</summary>
-    /// <exception cref="ArgumentOutOfRangeException">A control is outside what it may be.</exception>
+    /// <summary>
+    /// Throws where a control of the species is outside what it may be, which the message names.
+    /// </summary>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A control is outside what it may be.
+    /// </exception>
     /// <remarks>
-    /// <see cref="TreeSkeleton.Grow(TreeSpecies, uint)"/> checks the species it grows, and an engine
-    /// that keeps species by name checks one as it is kept, so a wrong control is heard of where it
-    /// was set rather than when a tree first grows from it.
+    /// <see cref="TreeSkeleton.Grow(TreeSpecies, uint)"/> checks the species it grows, and an
+    /// engine that keeps species by name checks one as it is kept, so a wrong control is heard of
+    /// where it was set rather than when a tree first grows from it.
     /// </remarks>
     public void Check()
     {

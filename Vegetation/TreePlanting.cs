@@ -12,7 +12,8 @@ namespace Vegetation;
 /// A species grows <see cref="Variants"/> skeletons, each from a seed of the variant's own
 /// (<see cref="VariantSeed"/>) apart from any seed a game gives, and a tree is one of them turned
 /// about the up axis and sized a tenth either way by its own seed. A forest of a species is then a
-/// few skeletons grown once and many trees, and the same species grows the same eight in every game.
+/// few skeletons grown once and many trees, and the same species grows the same eight in every
+/// game.
 /// </para>
 /// <para>
 /// The numbers are drawn from <see cref="Pcg"/> in a fixed order, so a seed means the same places
@@ -21,19 +22,30 @@ namespace Vegetation;
 /// </remarks>
 public static class TreePlanting
 {
-    /// <summary>How many variants a species grows, which the trees planted from it share, each turned and sized by its own seed.</summary>
+    /// <summary>
+    /// How many variants a species grows, which the trees planted from it share, each turned and
+    /// sized by its own seed.
+    /// </summary>
     public const int Variants = 8;
 
-    /// <summary>The seed a species' variant grows from, as <see cref="TreeSkeleton.Grow(TreeSpecies, uint)"/> takes it.</summary>
+    /// <summary>
+    /// The seed a species' variant grows from, as
+    /// <see cref="TreeSkeleton.Grow(TreeSpecies, uint)"/> takes it.
+    /// </summary>
     /// <param name="variant">The variant, from zero up to <see cref="Variants"/>.</param>
-    /// <exception cref="ArgumentOutOfRangeException">The variant is not one of a species' variants.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The variant is not one of a species' variants.
+    /// </exception>
     public static uint VariantSeed(int variant)
     {
         if (variant is < 0 or >= Variants) throw new ArgumentOutOfRangeException(nameof(variant), variant, $"A species' variants are from zero up to {Variants}.");
         return (uint)(0x7E57_0000 + variant);
     }
 
-    /// <summary>How a tree planted with a seed stands, which variant of its species it is, its turn and its size.</summary>
+    /// <summary>
+    /// How a tree planted with a seed stands, which variant of its species it is, its turn and its
+    /// size.
+    /// </summary>
     /// <param name="seed">The tree's own seed.</param>
     public static TreeStance Stance(uint seed)
     {
@@ -45,13 +57,20 @@ public static class TreePlanting
         return new TreeStance((int)(seed % Variants), turn, size);
     }
 
-    /// <summary>Spreads a forest's trees over a disc on level ground, none nearer another than an even spread allows.</summary>
+    /// <summary>
+    /// Spreads a forest's trees over a disc on level ground, none nearer another than an even
+    /// spread allows.
+    /// </summary>
     /// <param name="seed">The seed the trees' places and their own seeds are drawn from.</param>
     /// <param name="middle">The disc's middle, at the height the trees stand at.</param>
     /// <param name="radius">The disc's radius in meters.</param>
     /// <param name="count">How many trees, fewer where they do not fit apart.</param>
-    /// <returns>Where each tree's trunk's foot stands and the tree's own seed, in the order they were drawn.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">The radius is not a finite number above zero, or the count is below zero.</exception>
+    /// <returns>
+    /// Where each tree's trunk's foot stands and the tree's own seed, in the order they were drawn.
+    /// </returns>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// The radius is not a finite number above zero, or the count is below zero.
+    /// </exception>
     /// <remarks>
     /// Each tree is drawn at random in the disc and kept where it stands seven tenths of an even
     /// spread's spacing from every tree before it, Poisson disk sampling by trial, so the forest is

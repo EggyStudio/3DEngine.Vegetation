@@ -74,14 +74,18 @@ public sealed record TreeSkeleton
     /// <param name="species">The species.</param>
     /// <param name="seed">The seed, any number, each growing another tree of the species.</param>
     /// <returns>The tree's skeleton, standing up the Y axis from the origin.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">A control of the species is outside what it may be, which the message names.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A control of the species is outside what it may be, which the message names.
+    /// </exception>
     /// <remarks>
     /// It grows on the thread that calls it and touches nothing outside itself, so it runs on a
     /// worker while a level loads. Its cost grows with the crown's points.
     /// </remarks>
     public static TreeSkeleton Grow(TreeSpecies species, uint seed) => Grow(species, seed, []);
 
-    /// <summary>Grows a tree of a species from a seed, round boxes it does not grow into and that shade it.</summary>
+    /// <summary>
+    /// Grows a tree of a species from a seed, round boxes it does not grow into and that shade it.
+    /// </summary>
     /// <param name="species">The species.</param>
     /// <param name="seed">The seed, any number, each growing another tree of the species.</param>
     /// <param name="blockers">
@@ -89,7 +93,9 @@ public sealed record TreeSkeleton
     /// highest, a wall, a building or a neighbor's crown.
     /// </param>
     /// <returns>The tree's skeleton, standing up the Y axis from the origin.</returns>
-    /// <exception cref="ArgumentOutOfRangeException">A control of the species is outside what it may be, which the message names.</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// A control of the species is outside what it may be, which the message names.
+    /// </exception>
     /// <remarks>
     /// No stem grows into a box, and a box shades the space under it, so a tree beside a wall or
     /// under a neighbor's crown grows its branches away from it toward the light, as a tree at a
@@ -108,7 +114,9 @@ public sealed record TreeSkeleton
         return new TreeGrowth(species, seed, blockers).Grow();
     }
 
-    /// <summary>Whether another skeleton has the same points in the same order, compared one by one.</summary>
+    /// <summary>
+    /// Whether another skeleton has the same points in the same order, compared one by one.
+    /// </summary>
     /// <param name="other">The other skeleton.</param>
     public bool Equals(TreeSkeleton? other) => other is not null && Nodes.SequenceEqual(other.Nodes);
 

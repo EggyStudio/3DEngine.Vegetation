@@ -1,12 +1,14 @@
 namespace Vegetation;
 
 /// <summary>
-/// The outline of a leaf the generator makes where a species names no leaf set, the paper's leaf
-/// shapes, its length along its midrib from the stalk to the tip.
+/// The outline of a leaf <see cref="TreeLooks.Leaves"/> draws where a species names no leaf set,
+/// the paper's leaf shapes, its length along its midrib from the stalk to the tip.
 /// </summary>
 public enum TreeLeafShape
 {
-    /// <summary>Widest a little below its middle, rounding to a point, as an aspen's or a birch's.</summary>
+    /// <summary>
+    /// Widest a little below its middle, rounding to a point, as an aspen's or a birch's.
+    /// </summary>
     Oval,
 
     /// <summary>Widest at its foot and narrowing straight to its tip.</summary>

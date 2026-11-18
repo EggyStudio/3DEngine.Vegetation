@@ -67,8 +67,8 @@ internal sealed partial class TreeGrowth
     private readonly IReadOnlyList<(Vector3 Low, Vector3 High)> _blockers;
     private Pcg _random;
 
-    // The paper's scale of the tree, its trunk's length, the bare part of the trunk below the crown,
-    // and the tree's size, from which the internode is cut.
+    // The paper's scale of the tree, its trunk's length, the bare part of the trunk below the
+    // crown, and the tree's size, from which the internode is cut.
     private readonly float _scale;
     private readonly float _height;
     private readonly float _bare;
@@ -79,7 +79,9 @@ internal sealed partial class TreeGrowth
     private readonly List<Stem> _stemOf = [];
     private readonly List<Bud> _buds = [];
 
-    /// <summary>A stem, the trunk, a branch or a twig, as it grows from its first point to its tip.</summary>
+    /// <summary>
+    /// A stem, the trunk, a branch or a twig, as it grows from its first point to its tip.
+    /// </summary>
     private sealed class Stem(int level, float length, float most)
     {
         public readonly int Level = level;
@@ -87,19 +89,24 @@ internal sealed partial class TreeGrowth
         /// <summary>The most it grows, in meters.</summary>
         public readonly float Length = length;
 
-        /// <summary>The most a stem of its level grows from where it leaves its parent, before the shape and the place along its parent shorten it.</summary>
+        /// <summary>
+        /// The most a stem of its level grows from where it leaves its parent, before the shape and
+        /// the place along its parent shorten it.
+        /// </summary>
         public readonly float Most = most;
 
         /// <summary>How far it has grown.</summary>
         public float Grown;
 
         /// <summary>
-        /// A way square to it, carried along it as it bends, from which the turn of its buds round it
-        /// is counted and toward which the trunk bends.
+        /// A way square to it, carried along it as it bends, from which the turn of its buds round
+        /// it is counted and toward which the trunk bends.
         /// </summary>
         public Vector3 Side;
 
-        /// <summary>The angle round it, in radians from <see cref="Side"/>, at which its next bud is set.</summary>
+        /// <summary>
+        /// The angle round it, in radians from <see cref="Side"/>, at which its next bud is set.
+        /// </summary>
         public float Turn;
 
         /// <summary>The share of a bud due and not yet set.</summary>
@@ -108,16 +115,19 @@ internal sealed partial class TreeGrowth
         /// <summary>Which side the next bud of an alternating stem goes to.</summary>
         public bool Alternate;
 
-        /// <summary>The share of its level's splits it forks with, halved each time it or its other half forks, as the paper's clones are.</summary>
+        /// <summary>
+        /// The share of its level's splits it forks with, halved each time it or its other half
+        /// forks, as the paper's clones are.
+        /// </summary>
         public float Splits = 1f;
 
         /// <summary>Whether the trunk's base splits are behind it.</summary>
         public bool Based;
 
         /// <summary>
-        /// The axis and the angle an internode a stem turns back about after a fork, toward the way it
-        /// grew before, until the turn the fork gave it is undone at its tip, as the paper's clones
-        /// turn back so a tree that forks often does not spread too far.
+        /// The axis and the angle an internode a stem turns back about after a fork, toward the way
+        /// it grew before, until the turn the fork gave it is undone at its tip, as the paper's
+        /// clones turn back so a tree that forks often does not spread too far.
         /// </summary>
         public Vector3 BackAxis;
         public float BackAngle;
@@ -125,7 +135,9 @@ internal sealed partial class TreeGrowth
         /// <summary>Its first point, whose thickness its taper starts from.</summary>
         public int First = -1;
 
-        /// <summary>A stem of the same level and length, as far grown, for the other half of a fork.</summary>
+        /// <summary>
+        /// A stem of the same level and length, as far grown, for the other half of a fork.
+        /// </summary>
         public Stem Fork()
         {
             Splits *= 0.5f;
@@ -133,24 +145,32 @@ internal sealed partial class TreeGrowth
         }
     }
 
-    /// <summary>A bud, a stem's tip or a place on a stem where a stem of the next level may start.</summary>
+    /// <summary>
+    /// A bud, a stem's tip or a place on a stem where a stem of the next level may start.
+    /// </summary>
     private sealed class Bud
     {
         /// <summary>The point it is on.</summary>
         public int Node;
 
-        /// <summary>The stem it lengthens, nothing until a side bud first grows and starts its own.</summary>
+        /// <summary>
+        /// The stem it lengthens, nothing until a side bud first grows and starts its own.
+        /// </summary>
         public Stem? Stem;
 
         /// <summary>The way it points, and so grows when nothing pulls it.</summary>
         public Vector3 Way;
 
-        /// <summary>The level, the most length and the level's own most of the stem a side bud starts.</summary>
+        /// <summary>
+        /// The level, the most length and the level's own most of the stem a side bud starts.
+        /// </summary>
         public int Level;
         public float Length;
         public float Most;
 
-        /// <summary>The ways to the attractors it perceived this cycle, summed, and how many.</summary>
+        /// <summary>
+        /// The ways to the attractors it perceived this cycle, summed, and how many.
+        /// </summary>
         public Vector3 Toward;
         public int Perceived;
 
@@ -219,7 +239,10 @@ internal sealed partial class TreeGrowth
         return new TreeSkeleton(Radii());
     }
 
-    /// <summary>Grows a bud by an internode, forking where its stem's splits call for it, and says whether it grew.</summary>
+    /// <summary>
+    /// Grows a bud by an internode, forking where its stem's splits call for it, and says whether
+    /// it grew.
+    /// </summary>
     private bool Lengthen(Bud bud)
     {
         var stem = bud.Stem ??= Start(bud);
@@ -282,7 +305,10 @@ internal sealed partial class TreeGrowth
         return true;
     }
 
-    /// <summary>Sets a stem to turn back, over the internodes it has left, by the turn a fork gave it about an axis.</summary>
+    /// <summary>
+    /// Sets a stem to turn back, over the internodes it has left, by the turn a fork gave it about
+    /// an axis.
+    /// </summary>
     private void TurnBack(Stem stem, Vector3 axis, float angle, float steps)
     {
         var left = MathF.Max(steps - stem.Grown / _step, 1f);
@@ -309,7 +335,8 @@ internal sealed partial class TreeGrowth
         way = Rotate(way, flat, -Radians(curve));
 
         // The paper's attraction up, a turn toward the vertical by the stem's declination over its
-        // length, so at one its last internode stands upright, and never past upright or straight down.
+        // length, so at one its last internode stands upright, and never past upright or straight
+        // down.
         if (level >= 2 && _species.AttractionUp != 0f)
         {
             var declination = MathF.Acos(Math.Clamp(way.Y, -1f, 1f));
@@ -320,7 +347,9 @@ internal sealed partial class TreeGrowth
         return way;
     }
 
-    /// <summary>Adds the internode a bud grows along a way, its point and the side buds the stem sets there.</summary>
+    /// <summary>
+    /// Adds the internode a bud grows along a way, its point and the side buds the stem sets there.
+    /// </summary>
     private void Grow(Bud bud, Vector3 way)
     {
         var stem = bud.Stem!;
@@ -346,7 +375,10 @@ internal sealed partial class TreeGrowth
         Due = _random.Unit(),
     };
 
-    /// <summary>Sets the side buds a stem's new point carries, as many as its next level's branches call for along its length.</summary>
+    /// <summary>
+    /// Sets the side buds a stem's new point carries, as many as its next level's branches call for
+    /// along its length.
+    /// </summary>
     private void SetBuds(Stem stem, int node, Vector3 way)
     {
         if (stem.Level + 1 >= _levels.Count) return;
@@ -367,7 +399,10 @@ internal sealed partial class TreeGrowth
         }
     }
 
-    /// <summary>Sets one side bud, turned round the stem from the last and leaning out by the next level's down angle.</summary>
+    /// <summary>
+    /// Sets one side bud, turned round the stem from the last and leaning out by the next level's
+    /// down angle.
+    /// </summary>
     private void SetBud(Stem stem, int node, Vector3 way, TreeLevel next, float bare)
     {
         var side = stem.Side - way * Vector3.Dot(stem.Side, way);
@@ -384,7 +419,8 @@ internal sealed partial class TreeGrowth
             stem.Alternate = !stem.Alternate;
         }
 
-        // How far down the stem's length the bud is, one at its foot or the crown's and none at its tip.
+        // How far down the stem's length the bud is, one at its foot or the crown's and none at its
+        // tip.
         var ratio = Math.Clamp((stem.Length - stem.Grown) / (stem.Length - bare), 0f, 1f);
         var lean = Radians(DownAngle(next, ratio, _random.Signed()));
 
@@ -452,8 +488,8 @@ internal sealed partial class TreeGrowth
     }
 
     /// <summary>
-    /// The paper's shape ratio, the share of the longest first branch a branch leaving the trunk at a
-    /// ratio has, from one at the crown's foot to none at its top.
+    /// The paper's shape ratio, the share of the longest first branch a branch leaving the trunk at
+    /// a ratio has, from one at the crown's foot to none at its top.
     /// </summary>
     internal static float ShapeRatio(TreeShape shape, float ratio) => shape switch
     {
@@ -467,7 +503,10 @@ internal sealed partial class TreeGrowth
         _ => ratio <= 0.7f ? 0.5f + 0.5f * ratio / 0.7f : 0.5f + 0.5f * (1f - ratio) / 0.3f,
     };
 
-    /// <summary>The species' shape ratio at a ratio, its pruning envelope's where its shape is <see cref="TreeShape.Envelope"/>.</summary>
+    /// <summary>
+    /// The species' shape ratio at a ratio, its pruning envelope's where its shape is
+    /// <see cref="TreeShape.Envelope"/>.
+    /// </summary>
     private float ShapeAt(float ratio) => _species.Shape == TreeShape.Envelope ? PruneEnvelope(ratio) : ShapeRatio(_species.Shape, ratio);
 
     /// <summary>
@@ -483,7 +522,10 @@ internal sealed partial class TreeGrowth
             : MathF.Pow((1f - ratio) / peak, _species.PrunePowerLow);
     }
 
-    /// <summary>Whether a branch's new point falls outside the pruning envelope, by the species' prune ratio as a chance.</summary>
+    /// <summary>
+    /// Whether a branch's new point falls outside the pruning envelope, by the species' prune ratio
+    /// as a chance.
+    /// </summary>
     private bool Pruned(Vector3 place)
     {
         if (_species.PruneRatio <= 0f) return false;
@@ -510,7 +552,9 @@ internal sealed partial class TreeGrowth
         return Rotate(square, way, _random.Unit() * MathF.Tau);
     }
 
-    /// <summary>A vector turned about a unit axis by an angle in radians, by Rodrigues' formula.</summary>
+    /// <summary>
+    /// A vector turned about a unit axis by an angle in radians, by Rodrigues' formula.
+    /// </summary>
     private static Vector3 Rotate(Vector3 vector, Vector3 axis, float angle)
     {
         var (sin, cos) = MathF.SinCos(angle);

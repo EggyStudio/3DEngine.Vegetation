@@ -4,8 +4,9 @@ using Xunit;
 namespace Vegetation.Tests;
 
 /// <summary>
-/// Where trees stand by <see cref="TreePlanting"/>, a forest spread over its disc, a tree's variant,
-/// turn and size from its seed, the variants' own seeds, and the forests and variants refused.
+/// Where trees stand by <see cref="TreePlanting"/>, a forest spread over its disc, a tree's
+/// variant, turn and size from its seed, the variants' own seeds, and the forests and variants
+/// refused.
 /// </summary>
 public sealed class TreePlantingTests
 {
@@ -32,8 +33,8 @@ public sealed class TreePlantingTests
     }
 
     /// <summary>
-    /// A tree's seed picks its variant by what is left over its variants, and turns it anywhere in a
-    /// whole turn and sizes it a tenth either way, the same seed the same stance.
+    /// A tree's seed picks its variant by what is left over its variants, and turns it anywhere in
+    /// a whole turn and sizes it a tenth either way, the same seed the same stance.
     /// </summary>
     [Fact]
     public void ATreesSeedGivesItsVariantTurnAndSize()
@@ -47,8 +48,8 @@ public sealed class TreePlantingTests
             Assert.Equal(stances[seed], TreePlanting.Stance((uint)seed));
         }
 
-        // The turns and the sizes spread over their ranges rather than gathering, the same variant's
-        // trees standing apart in both.
+        // The turns and the sizes spread over their ranges rather than gathering, the same
+        // variant's trees standing apart in both.
         Assert.True(stances.Count(stance => stance.Turn < MathF.PI) is > 400 and < 600, "the turns gather on one half");
         Assert.True(stances.Count(stance => stance.Size < 1f) is > 400 and < 600, "the sizes gather on one side");
         Assert.NotEqual(stances[3], stances[3 + TreePlanting.Variants]);

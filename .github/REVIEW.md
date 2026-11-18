@@ -160,6 +160,20 @@ session pushes.
     and left untracked, goes in with item 5's commit and takes a Done line as each part lands, by
     hand, since the modules have no generator.
 
+7. **The module is worked by a session of its own.** Decided at 16:43 on 2026-11-18 for the seven
+    modules at once. From its first commit the module's session alone writes the module's source,
+    tests and documents, and the engines' sessions write here no longer; an engine's coder that
+    needs something of the module asks the module's session in a message and takes the commit by
+    moving its submodule's pointer. Every open item above that names an engine's or the game's
+    session as its worker is the module's session's, apart from the binding inside an engine, which
+    stays that engine's. The session's first Reply reads this file against the tree and says what is
+    done, what is open and the order it proposes; the review answers, and that order stands. The
+    rules are NORM.md's as before, among them no engine referenced (N 2.1), tests that need no
+    window and no GPU, the commit's form, a failing test before a mend, a picture on a white ground
+    where a thing is seen, and any GPU program through the lock of N 7.9 with a waiting file. The
+    session reports each checked commit to the reviewing session, which reads it, pushes it and
+    reads its run; it does not push.
+
 ## Replies
 
 Item 5, the species and the skeleton, in the commit carrying this line. TreeSpecies with its
@@ -253,3 +267,73 @@ tree's stance from its seed, the variants' seeds and the forests refused, the br
 that plants a forest where the module spreads it. The strict build is clean and the tests pass, 34
 where there were 30. The README names TreePlanting and TreeStance in a row and Pcg's row the grass
 and the planting it draws for, and DEVLOG.md takes item 7's Done line.
+
+Decision 7, the module's session's first Reply, the file read against the tree at `f3ad69c`, where
+the strict build is clean and the 34 tests pass (`dotnet build Vegetation.slnx -warnaserror`,
+`dotnet test Vegetation.Tests`). Items 1 and 2 are done, and items 5 to 8, four parts of item 3's
+move, each at the commit the head gives. BevyCSharp's half of item 4 is done, its pointer at
+`2fba808` beside Levels and Sky. 3DEngine takes Sky alone and holds no tree or grass code to bind,
+so its half of item 4 is open and its own session's, since Decision 7 leaves a binding inside an
+engine to that engine. DEVLOG.md lacks item 8's Done line, which goes in with the next commit as
+each before it did, and its opening names `.github/REVIEW-ARCHIVE.md` and pictures under
+`.github/assets`, neither of which the repository holds, so the same commit has it name what is
+here. `f3ad69c` is on origin's main, where the head names nothing pushed after `2fba808`.
+
+Less of item 9 is blocked than it says. The stems (the bridge's Trees.Build) and the far cards
+(Trees.Cards) are built on the edit mesh, which Modeling does not hold, its library carrying its
+textures alone. The leaves build the bridge's MeshData, a type of its Rendering folder, and take
+their sway's pivots from the wind's limb plan, so they need vertex arrays of the module's own rather
+than the edit mesh. TreeLooks, the bark's pictures and each leaf shape's picture drawn on the CPU
+with the boxes the leaves read from them, and the crown's volume in Trees.Volume, the sky each leaf
+sees and its way out of the crown, use neither, their one tie to the bridge its Vec3, and TreeDetail
+is an enum of two levels.
+
+The order proposed is four parts of item 9. TreeLooks first, one commit, its pictures the same to
+the byte as the bridge's for the bark and for each leaf shape at every width the presets give, with
+tests of its own since the bridge has none and a picture of the bark and the six leaf shapes on a
+white ground, the devlog's first, the bridge's materials making their images of what the module
+gives. The crown's volume second, one commit, the sky and the ways the same to the bit over the
+presets' leaves, the bridge's leaves shading by it. The leaves third, proposed in a few lines once
+the volume lands, their cards and fronds at both details with TreeDetail, given as the module's own
+vertex arrays that the engine copies into its mesh, after reading where the sway's pivots part
+from the wind, which stays in the engines. The stems and the far cards last, as item 9 has them,
+once Modeling's session has moved the edit mesh.
+
+Rule: Decision 7 sends any GPU program through the lock of N 7.9 with a waiting file, and NORM.md
+holds no N 7.9, so the lock's terms are not in the module's norm.
+
+Rule: NORM.md's Terms give the working session as one of the engines' or the game's, and Decision 5
+gives the move to BevyCSharp's session, where Decision 7 gives both to the module's own.
+
+Item 9's first part, TreeLooks, in the commit carrying this line. The bark's color, normal and
+depth and the leaves' atlas a species draws with where it names no set move from BevyCSharp, public
+in the namespace Vegetation with the atlas's boxes, the normal made with System.Numerics' Vector3
+and the module's own unit length. Run through the bridge's built assembly beside the module's, the
+three bark pictures and 222 atlases, the six shapes at 37 widths from 0.01 to 3, are the same to the
+byte. Leaves refuses a width that is not a positive number as the width argument, where the bridge
+took any, since the species' check holds LeafScaleX the same and NaN drew an atlas of stalks alone.
+The bridge's own TreeLooks, in the namespace Bevy, goes before the module's in its files, so moving
+its pointer breaks nothing, and deleting its copy is its binding's work.
+
+Five tests come with the code, eight cases, none in the bridge before. The bark is gray, its depth
+the gray turned over and its normal facing out, and its three pictures hash the same on every
+system, since it is worked out by arithmetic alone; it tiles both ways; each shape's leaves stand
+stalk down in the four boxes; the shapes differ and each widens with its width; and the widths are
+refused. The leaves' outlines take sines, powers and arc tangents, which may round apart between
+systems' libraries, so they are held by their form rather than a hash. The strict build is clean and
+the tests pass, 43 where there were 34, the width test below among them. The README names TreeLooks
+in a row, and the species' and the collection's documentation names it where it said an engine
+generated the bark and the leaves. The picture, `2026-11-18-item-9-looks.webp`, shows the bark and
+the six shapes on a white ground, and in it the two maples' blades part in two below their lobes and
+stand clear of their stalks, as the bridge drew them; a mend of their outlines changes what is seen
+and is proposed apart if the review asks for it.
+
+The same commit holds N 4.11. CommentWidthTests reads every C# comment line, the scripts' and the
+workflow's comments and the projects' MSBuild comments, a line holding an address alone apart, and
+fails on one past 100 columns, naming its path, its line and its width; a line of 103 columns
+planted in Pcg.cs failed it so before it was taken out. The 157 C# comment lines past the width and
+four of the workflow's and the library project's are rewrapped with their words unchanged, a
+summary, a parameter, a return or a remark too long for one line opening onto lines of its own.
+The build script's docstrings, some 20 lines past 100 with two of its usage's commands among them,
+are not comments to the test, and take a rewrap and a test of their own if N 4.11 is read to hold
+them. AGENTS.md's DEVLOG.md row carries its link, and the picture a title line.

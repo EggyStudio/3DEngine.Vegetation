@@ -4,8 +4,8 @@ using Xunit;
 namespace Vegetation.Tests;
 
 /// <summary>
-/// Grass scattered by <see cref="GrassScatter"/>, a stretch cut into its patches, a patch's clumps a
-/// cell each and on the ground, their sameness by seed, and the stretches and settings refused.
+/// Grass scattered by <see cref="GrassScatter"/>, a stretch cut into its patches, a patch's clumps
+/// a cell each and on the ground, their sameness by seed, and the stretches and settings refused.
 /// </summary>
 public sealed class GrassScatterTests
 {
@@ -27,8 +27,8 @@ public sealed class GrassScatterTests
 
     /// <summary>
     /// Four clumps a square meter over 8 by 6 meters fall a clump a cell of a 16 by 12 grid, each
-    /// root on the ground inside its cell, each clump within its height's variation, its turn within
-    /// half a turn and its phases from zero up to one.
+    /// root on the ground inside its cell, each clump within its height's variation, its turn
+    /// within half a turn and its phases from zero up to one.
     /// </summary>
     [Fact]
     public void APatchsClumpsStandACellEachOnTheGround()
@@ -49,7 +49,9 @@ public sealed class GrassScatterTests
         }
     }
 
-    /// <summary>The same seed scatters the same clumps and the same patches, and another seed others.</summary>
+    /// <summary>
+    /// The same seed scatters the same clumps and the same patches, and another seed others.
+    /// </summary>
     [Fact]
     public void TheSameSeedScattersTheSameClumpsAndAnotherAnother()
     {
@@ -64,8 +66,9 @@ public sealed class GrassScatterTests
     }
 
     /// <summary>
-    /// A stretch of no size or of a size that is no number is refused, as are a set that is not grass
-    /// or not in the collection and a setting outside what it may be, each as the argument it came in.
+    /// A stretch of no size or of a size that is no number is refused, as are a set that is not
+    /// grass or not in the collection and a setting outside what it may be, each as the argument it
+    /// came in.
     /// </summary>
     [Fact]
     public void AStretchOrASettingOutsideWhatItMayBeIsRefused()

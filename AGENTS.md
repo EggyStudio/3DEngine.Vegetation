@@ -15,7 +15,7 @@ through an interface it declares, which each engine implements where it binds th
 | [.github/COMMITS.md](.github/COMMITS.md) | How and when work is committed |
 | [.github/REVIEW.md](.github/REVIEW.md) | Direction from the reviewing session, which comes before any other order of work |
 | [.github/NORM.md](.github/NORM.md) | The numbered rules the module keeps, each with what checks it, the same text in the six module repositories |
-| `DEVLOG.md` | What landed by day, with the pictures `.github/assets/readings` keeps, generated from them and the history |
+| [DEVLOG.md](DEVLOG.md) | What landed by day, with the pictures `.github/assets/readings` keeps, generated from them and the history |
 
 ## Building and testing
 

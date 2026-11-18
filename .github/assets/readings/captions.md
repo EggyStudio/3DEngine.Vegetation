@@ -1,0 +1,1 @@
+2026-11-18-item-9-looks.webp | The bark's color, normal and depth and an atlas of each of the six leaf shapes at a width of 0.6, as TreeLooks makes them in the module to the byte as the bridge made them, the leaves tinted by a species' default leaf color on a white ground.

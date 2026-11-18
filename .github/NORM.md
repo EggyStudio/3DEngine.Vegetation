@@ -1,10 +1,10 @@
 # Norm
 
 The rules this module keeps, each with a number, a reason and what checks it, written by the session
-that writes [REVIEW.md](REVIEW.md). The text is the same in the seven module repositories, Modeling,
-Vegetation, Levels, Landscape, RadianceCascades, Sky and Tools. The rules are the engines' of the
-same number, from the norm BevyCSharp and 3DEngine share, taken where they fit a library both
-engines use; a rule the engines have and this file does not is not asked of the module.
+that writes [REVIEW.md](REVIEW.md). The text is the same in the eight module repositories, Modeling,
+Vegetation, Levels, Landscape, RadianceCascades, Sky, Tools and Materials. The rules are the
+engines' of the same number, from the norm BevyCSharp and 3DEngine share, taken where they fit a
+library both engines use; a rule the engines have and this file does not is not asked of the module.
 
 ## Scope
 
@@ -20,7 +20,7 @@ build scripts and its workflow, and how work on it is done. What the module does
 | the pointer | The commit of this repository an engine's own commit names for its submodule |
 | the build workflow | What GitHub runs on a push, `.github/workflows/build.yml` |
 | a batch | One finished piece of work, which is one commit |
-| the working session | The session that writes the module, one of the engines' or the game's |
+| the working session | The session that writes the module, a session of the module's own |
 | the reviewing session | The session that writes this file and REVIEW.md |
 
 ## How a rule is kept
@@ -100,6 +100,11 @@ experiment's frames are deleted at once. A session takes its shots there directl
 copying them after. Every picture a session reads or compares is also shown to the owner in the
 session as it is made, with its sentence. By review.
 
+**N 4.11 A comment line holds to 100 columns.** A comment is read in a diff and beside its code, and
+one running past the width is cut there or scrolled. A summary, a parameter or a remark too long for
+one line opens onto lines of its own. A line holding an address alone is free of it. By a test that
+reads the sources and fails on a longer comment line.
+
 ## 6 Build and package
 
 **N 6.1 A build has no warnings, and a warning fails the workflow.** A warning left standing hides
@@ -152,6 +157,55 @@ filtered runs while working. By review.
 **N 7.8 A session runs a program offscreen or headless, and opens a window only to read what a
 window alone shows.** The owner's word of 2026-10-30. By review.
 
+**N 7.9 The machine has one GPU, and a session takes its lock for what it runs there.** A program
+run on the GPU is started through `flock` on `/run/user/1000/gpu.lock`, shared (`flock -s`) for a
+suite, a capture, a recording or a scripted run and exclusive (`flock -x`) for a timing or a traced
+reference, so a timing waits for the others' programs to end and none starts under it. The lock is
+held until the program has ended, so a launcher that returns while its program keeps running, as
+`e3d open` does, is wrapped together with the script that stops the program. A build under the lock
+runs with MSBuild's node reuse off, MSBUILDDISABLENODEREUSE=1, since its nodes outlive the build by
+a quarter of an hour and keep the lock's descriptor, as 14 of them held it for 14 minutes on
+2026-11-10, and with the compiler's server off, -p:UseSharedCompilation=false, since Roslyn's server
+outlives a build the same way and held the lock before a waiting timing on 2026-11-11. A look at
+`nvidia-smi` is no turn, since another session's program can start a second after it, and three
+readings were spoiled so within an hour on 2026-11-09. A program served for a reading is stopped as
+soon as its pictures and numbers are taken, and the files are read with it stopped. A script stopped
+under the lock ends its programs too, since a program left running keeps the lock it inherited, as a
+served example held it for 70 minutes after its trial was stopped on 2026-11-10 with its own
+session's suite waiting behind it; after stopping one, `lslocks` is read, and a run that has not
+started within a few minutes is looked into and not waited on. The lock gives a waiting timing no
+place before a suite that asks after it, so a session reads `lslocks` before it takes the shared
+lock and waits where an exclusive one stands, held or waiting, and a script of several runs takes
+the lock a run at a time, since a timing waited 35 minutes on 2026-11-11 while a second shared
+holder joined the first. A build takes the shared lock as a suite does, though it draws nothing,
+since a timing reads the frame's CPU stages too and a build running beside one doubled every stage
+of a flight on 2026-11-14. A timing that waits for the exclusive lock puts a file
+`/run/user/1000/gpu.waiting/<repository>-<pid>` for as long as it waits or holds and removes it at
+its end, since a wait that polls holds no lock and shows in no list of holders, and a job that takes
+the shared lock starts only while that folder holds no file whose process lives. A job under the
+shared lock that runs longer than ten minutes is split into parts of a few minutes, each asking the
+folder again before it starts, but a compile of one crate or project, which no part divides and
+which asks the folder once, since a run of 35 minutes held a timing back on 2026-11-17 though it
+began before the timing's wait. A series of timings takes its turns too, one session's waiting file
+standing no longer than fifteen minutes in thirty while a shared job of another session waits, since
+a series of two hours kept two sessions' suites from starting on 2026-11-17. A program that holds
+over 1.5 GiB of the card's memory, a large scene's among them, takes the lock exclusive as well,
+with no quiet wait before it and held no longer than ten minutes, since two such programs side by
+side overfill the 8 GB. A session whose wait grows long tells the reviewing session in a line, which
+gives the order, an engine's illumination read first. By review.
+
+**N 7.10 A session's programs keep their caches in a folder of the session's own.** The engine's
+caches of shaders, pipelines and scene packs stand in the account's cache folder, which the
+account's own programs read and write, and a session's plays on 2026-11-11 read and wrote the game's
+pipelines' file there, 94 MB piled up from every package run on the account, so that a reading of a
+warm cache stood on what other runs had left. A program a session starts runs with XDG_CACHE_HOME
+naming a folder under the session's work folder in the home's cache; a warm cache is made there by a
+first run; and a session leaves the account's own cache alone, neither reading its files into a
+trial nor copying, writing or clearing them, unless the owner says so for that file. A session's
+work folder under the shared work directory carries its repository's name before the item's number,
+as 3dengine-i264 or voxel-i264, so two sessions on one item do not share one, and a session neither
+writes into nor clears a folder it did not make. By review.
+
 ## Conformance
 
 | Rule | the module |
@@ -168,6 +222,7 @@ window alone shows.** The owner's word of 2026-10-30. By review.
 | N 4.8 | by review |
 | N 4.9 | by review |
 | N 4.10 | by review |
+| N 4.11 | to check, a test in each module |
 | N 6.1 | to check at the first push |
 | N 6.2 | to check at the first push |
 | N 6.6 | to check at the first commit |
@@ -180,6 +235,8 @@ window alone shows.** The owner's word of 2026-10-30. By review.
 | N 7.6 | kept |
 | N 7.7 | by review |
 | N 7.8 | by review |
+| N 7.9 | by review |
+| N 7.10 | by review |
 
 ## How the norm changes
 

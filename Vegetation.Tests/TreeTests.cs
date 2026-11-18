@@ -34,9 +34,9 @@ public sealed class TreeTests(ITestOutputHelper output)
 
     // The presets, each with the heights the paper's scale and trunk length allow it, and its width
     // over its height as the paper's plates draw it, read off them at about 0.45 for the aspen,
-    // 0.55 for the tupelo, 0.9 for the willow and 1.05 for the oak, held to three tenths either way.
-    // A tree may stand a little over its trunk, as a crown's tips rise past it, and the bush's and the
-    // fern's are the library's own.
+    // 0.55 for the tupelo, 0.9 for the willow and 1.05 for the oak, held to three tenths either
+    // way. A tree may stand a little over its trunk, as a crown's tips rise past it, and the bush's
+    // and the fern's are the library's own.
     [Theory]
     [InlineData("quaking aspen", 10f, 16f, 0.45f)]
     [InlineData("black tupelo", 18f, 28f, 0.55f)]
@@ -79,12 +79,13 @@ public sealed class TreeTests(ITestOutputHelper output)
             var nodes = skeleton.Nodes;
             var (_, high) = skeleton.Bounds;
 
-            // The trunk's foot is as thick for the trunk's height as the ratio and the flare make it.
+            // The trunk's foot is as thick for the trunk's height as the ratio and the flare make
+            // it.
             Assert.InRange(nodes[0].Radius / high.Y, 0.015f * 1.594f * 0.85f, 0.015f * 1.594f * 1.15f);
 
-            // Below the crown's foot, four tenths of the scale up, the trunk stands alone, the bound
-            // lowered for the crown's tips standing over the trunk and for the lowest branches,
-            // which leave at up to 110 degrees and dip.
+            // Below the crown's foot, four tenths of the scale up, the trunk stands alone, the
+            // bound lowered for the crown's tips standing over the trunk and for the lowest
+            // branches, which leave at up to 110 degrees and dip.
             var bare = 0.35f * high.Y - 1f;
             var children = new int[nodes.Count];
             for (var i = 1; i < nodes.Count; i++) children[nodes[i].Parent]++;
@@ -149,7 +150,8 @@ public sealed class TreeTests(ITestOutputHelper output)
     [Fact]
     public void AWillowKeepsInsideItsPruningEnvelope()
     {
-        // The envelope is four tenths of the scale at its widest, and the scale twenty meters at most.
+        // The envelope is four tenths of the scale at its widest, and the scale twenty meters at
+        // most.
         var widest = 0.4f * 20f;
         foreach (var node in TreeSkeleton.Grow(TreeSpecies.WeepingWillow, 2).Nodes)
         {
@@ -166,8 +168,9 @@ public sealed class TreeTests(ITestOutputHelper output)
         var walled = TreeSkeleton.Grow(Aspen, 5, [wall]).Nodes;
 
         Assert.All(walled, node => Assert.False(node.Place.X >= wall.Low.X && node.Place.X <= wall.High.X, $"a point stands in the wall at {node.Place}"));
-        // The wall takes the sky from the crown's side next to it, so the crown stands away from it by
-        // more than it loses to it, half a meter and more where the open tree stands about the trunk.
+        // The wall takes the sky from the crown's side next to it, so the crown stands away from it
+        // by more than it loses to it, half a meter and more where the open tree stands about the
+        // trunk.
         Assert.True(walled.Average(node => node.Place.X) < open.Average(node => node.Place.X) - 0.5f, "the crown does not lean away from the wall");
         Assert.Equal(walled, TreeSkeleton.Grow(Aspen, 5, [wall]).Nodes);
     }
@@ -191,7 +194,8 @@ public sealed class TreeTests(ITestOutputHelper output)
         Assert.Throws<ArgumentOutOfRangeException>(() => TreeSkeleton.Grow(Aspen with { Levels = [new TreeLevel { Curve = float.PositiveInfinity }] }, 1));
         Assert.Throws<ArgumentOutOfRangeException>(() => TreeSkeleton.Grow(Aspen with { Levels = [new TreeLevel { Length = 0f }] }, 1));
 
-        // The check an engine keeps a species by refuses what the growth refuses and takes every preset.
+        // The check an engine keeps a species by refuses what the growth refuses and takes every
+        // preset.
         Assert.Throws<ArgumentOutOfRangeException>(() => (Aspen with { Scale = -1f }).Check());
         foreach (var preset in new[] { TreeSpecies.QuakingAspen, TreeSpecies.BlackTupelo, TreeSpecies.WeepingWillow, TreeSpecies.CaliforniaBlackOak, TreeSpecies.Bush, TreeSpecies.Fern }) preset.Check();
     }

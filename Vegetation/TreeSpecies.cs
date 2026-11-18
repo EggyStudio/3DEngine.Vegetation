@@ -3,8 +3,8 @@ using System.Numerics;
 namespace Vegetation;
 
 /// <summary>
-/// What a kind of tree is, by Weber and Penn's controls of 1995, from which <see cref="TreeSkeleton.Grow(TreeSpecies, uint)"/>
-/// grows a tree of that kind for each seed.
+/// What a kind of tree is, by Weber and Penn's controls of 1995, from which
+/// <see cref="TreeSkeleton.Grow(TreeSpecies, uint)"/> grows a tree of that kind for each seed.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -26,7 +26,10 @@ public sealed partial record TreeSpecies
     /// <summary>The outline of the crown, <see cref="TreeShape.Conical"/> unless set.</summary>
     public TreeShape Shape { get; init; } = TreeShape.Conical;
 
-    /// <summary>How tall the tree is in meters, before the trunk's <see cref="TreeLevel.Length"/>, 10 unless set.</summary>
+    /// <summary>
+    /// How tall the tree is in meters, before the trunk's <see cref="TreeLevel.Length"/>, 10 unless
+    /// set.
+    /// </summary>
     public float Scale { get; init; } = 10f;
 
     /// <summary>
@@ -35,7 +38,10 @@ public sealed partial record TreeSpecies
     /// </summary>
     public float ScaleVariation { get; init; }
 
-    /// <summary>The share of the scale below the crown, a bare trunk that carries no branches, 0.3 unless set.</summary>
+    /// <summary>
+    /// The share of the scale below the crown, a bare trunk that carries no branches, 0.3 unless
+    /// set.
+    /// </summary>
     public float BaseSize { get; init; } = 0.3f;
 
     /// <summary>
@@ -45,7 +51,9 @@ public sealed partial record TreeSpecies
     /// </summary>
     public int BaseSplits { get; init; }
 
-    /// <summary>The radius of the trunk at the ground against its height, 0.015 unless set.</summary>
+    /// <summary>
+    /// The radius of the trunk at the ground against its height, 0.015 unless set.
+    /// </summary>
     /// <remarks>
     /// The pipe model sets how thick each stem is against the trunk, and this sets how thick the
     /// trunk is, so a tree of ten meters at 0.015 is thirty centimeters across at the ground and
@@ -53,13 +61,16 @@ public sealed partial record TreeSpecies
     /// </remarks>
     public float Ratio { get; init; } = 0.015f;
 
-    /// <summary>How much wider the trunk is at the ground, over its lowest eighth, 0 unless set, so at 1 its foot is twice as wide.</summary>
+    /// <summary>
+    /// How much wider the trunk is at the ground, over its lowest eighth, 0 unless set, so at 1 its
+    /// foot is twice as wide.
+    /// </summary>
     public float Flare { get; init; }
 
     /// <summary>
-    /// How strongly the branches turn upward as they grow, below zero turning them downward, 0 unless
-    /// set. The trunk and the first level of branches do not, as the paper's do not, their curves
-    /// standing for it.
+    /// How strongly the branches turn upward as they grow, below zero turning them downward, 0
+    /// unless set. The trunk and the first level of branches do not, as the paper's do not, their
+    /// curves standing for it.
     /// </summary>
     /// <remarks>
     /// At 1 a stem turns by its angle from upright over its length, so its last internode stands
@@ -73,24 +84,33 @@ public sealed partial record TreeSpecies
     /// stopping where it leaves it, 0 unless set.
     /// </summary>
     /// <remarks>
-    /// The envelope is a solid of revolution round the trunk, from the crown's foot to the top of the
-    /// scale, as wide as <see cref="PruneWidth"/> of the scale at its peak, and narrowing below and
-    /// above by its powers. A ratio between the two holds a branch at the envelope by that chance,
-    /// and the trunk is never held.
+    /// The envelope is a solid of revolution round the trunk, from the crown's foot to the top of
+    /// the scale, as wide as <see cref="PruneWidth"/> of the scale at its peak, and narrowing below
+    /// and above by its powers. A ratio between the two holds a branch at the envelope by that
+    /// chance, and the trunk is never held.
     /// </remarks>
     public float PruneRatio { get; init; }
 
     /// <summary>
-    /// The name of the bark set of the texture collection the tree is drawn with, or nothing for the
-    /// bark an engine generates, nothing unless set.
+    /// The name of the bark set of the texture collection the tree is drawn with, or nothing for
+    /// the bark <see cref="TreeLooks.Bark"/> makes, nothing unless set.
     /// </summary>
-    /// <remarks>A name the collection does not carry draws the generated bark too, so a species may name a set a game adds later.</remarks>
+    /// <remarks>
+    /// A name the collection does not carry draws the generated bark too, so a species may name a
+    /// set a game adds later.
+    /// </remarks>
     public string? BarkSet { get; init; }
 
-    /// <summary>The name of the leaf set of the texture collection the tree's leaves are cut from, or nothing for the leaves an engine generates, nothing unless set.</summary>
+    /// <summary>
+    /// The name of the leaf set of the texture collection the tree's leaves are cut from, or
+    /// nothing for the leaves <see cref="TreeLooks.Leaves"/> makes, nothing unless set.
+    /// </summary>
     public string? LeafSet { get; init; }
 
-    /// <summary>The bark's color in linear sRGB where an engine generates the bark, a gray brown unless set.</summary>
+    /// <summary>
+    /// The bark's color in linear sRGB where the bark is the one <see cref="TreeLooks.Bark"/>
+    /// makes, a gray brown unless set.
+    /// </summary>
     public Vector3 BarkColor { get; init; } = Srgb(0.42f, 0.36f, 0.30f);
 
     /// <summary>
@@ -105,44 +125,67 @@ public sealed partial record TreeSpecies
     /// </remarks>
     public int Leaves { get; init; }
 
-    /// <summary>The outline of the leaves the generator makes where no leaf set is named, <see cref="TreeLeafShape.Oval"/> unless set.</summary>
+    /// <summary>
+    /// The outline of the leaves <see cref="TreeLooks.Leaves"/> makes where no leaf set is named,
+    /// <see cref="TreeLeafShape.Oval"/> unless set.
+    /// </summary>
     public TreeLeafShape LeafShape { get; init; } = TreeLeafShape.Oval;
 
     /// <summary>How long a leaf is in meters, or how wide a frond is, 0.17 unless set.</summary>
     public float LeafScale { get; init; } = 0.17f;
 
-    /// <summary>How wide a generated leaf is against its length, 1 unless set. A leaf cut from a set takes its picture's proportions.</summary>
+    /// <summary>
+    /// How wide a generated leaf is against its length, 1 unless set. A leaf cut from a set takes
+    /// its picture's proportions.
+    /// </summary>
     public float LeafScaleX { get; init; } = 1f;
 
     /// <summary>
-    /// The angles the leaves leave their twig at, the down angle from the twig and the turn round it
-    /// from one leaf to the next, as the paper gives its leaves the angles of the level past the last
-    /// stems. Its other controls are not read.
+    /// The angles the leaves leave their twig at, the down angle from the twig and the turn round
+    /// it from one leaf to the next, as the paper gives its leaves the angles of the level past the
+    /// last stems. Its other controls are not read.
     /// </summary>
     public TreeLevel LeafLevel { get; init; } = new() { DownAngle = 45f, DownAngleVariation = 10f, Rotate = 137.5f };
 
-    /// <summary>How far each leaf turns to face up and outward from the tree, from 0 to 1, 0.5 unless set, as the paper's leaves turn toward the light.</summary>
+    /// <summary>
+    /// How far each leaf turns to face up and outward from the tree, from 0 to 1, 0.5 unless set,
+    /// as the paper's leaves turn toward the light.
+    /// </summary>
     public float LeafBend { get; init; } = 0.5f;
 
-    /// <summary>The leaves' color in summer in linear sRGB, which tints the generated leaves, a mid green unless set.</summary>
+    /// <summary>
+    /// The leaves' color in summer in linear sRGB, which tints the generated leaves, a mid green
+    /// unless set.
+    /// </summary>
     public Vector3 LeafColor { get; init; } = Srgb(0.30f, 0.45f, 0.15f);
 
-    /// <summary>The leaves' color in the fall in linear sRGB, toward which an engine's leaf material turns them, a yellow brown unless set.</summary>
+    /// <summary>
+    /// The leaves' color in the fall in linear sRGB, toward which an engine's leaf material turns
+    /// them, a yellow brown unless set.
+    /// </summary>
     public Vector3 FallColor { get; init; } = Srgb(0.80f, 0.55f, 0.15f);
 
-    /// <summary>The pruning envelope's widest radius as a share of the scale, 0.5 unless set.</summary>
+    /// <summary>
+    /// The pruning envelope's widest radius as a share of the scale, 0.5 unless set.
+    /// </summary>
     public float PruneWidth { get; init; } = 0.5f;
 
-    /// <summary>How far up the crown the pruning envelope is widest, from above 0, its foot, to 1, its top, 0.5 unless set.</summary>
+    /// <summary>
+    /// How far up the crown the pruning envelope is widest, from above 0, its foot, to 1, its top,
+    /// 0.5 unless set.
+    /// </summary>
     public float PruneWidthPeak { get; init; } = 0.5f;
 
     /// <summary>
-    /// The curve of the pruning envelope below its peak, 0.5 unless set, under one rounding it out and
-    /// over one in, a value near zero keeping it as wide down to the crown's foot.
+    /// The curve of the pruning envelope below its peak, 0.5 unless set, under one rounding it out
+    /// and over one in, a value near zero keeping it as wide down to the crown's foot.
     /// </summary>
     public float PrunePowerLow { get; init; } = 0.5f;
 
-    /// <summary>The curve of the pruning envelope above its peak, 0.5 unless set, as <see cref="PrunePowerLow"/> is below it.</summary>
+    /// <summary>
+    /// The curve of the pruning envelope above its peak, 0.5 unless set, as
+    /// <see cref="PrunePowerLow"/> is below it.
+    /// </summary>
     public float PrunePowerHigh { get; init; } = 0.5f;
 
     /// <summary>
@@ -156,7 +199,9 @@ public sealed partial record TreeSpecies
         new TreeLevel { DownAngle = 45f, Branches = 16, Length = 0.5f, CurveVariation = 40f },
     ];
 
-    /// <summary>Whether another species has the same controls, its levels compared one by one.</summary>
+    /// <summary>
+    /// Whether another species has the same controls, its levels compared one by one.
+    /// </summary>
     /// <param name="other">The other species.</param>
     public bool Equals(TreeSpecies? other) =>
         other is not null && Shape == other.Shape && Scale.Equals(other.Scale) && ScaleVariation.Equals(other.ScaleVariation)

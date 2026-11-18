@@ -11,14 +11,14 @@ namespace Vegetation;
 /// The module carries each set it was built with inside its assembly, three KTX2 files a set and a
 /// bark's depth a fourth, that <c>build/textures.py</c> imports by a recipe in its manifest, so a
 /// game ships no folder for them. An engine reads every file by its path in the collection, which
-/// <see cref="Files"/> lists and <see cref="Open"/> opens, and loads a set's images from those paths
-/// with its own loader. A tree whose species names a set the collection does not hold is drawn with
-/// the bark and leaves an engine generates.
+/// <see cref="Files"/> lists and <see cref="Open"/> opens, and loads a set's images from those
+/// paths with its own loader. A tree whose species names a set the collection does not hold is
+/// drawn with the bark and leaves <see cref="TreeLooks"/> makes.
 /// </para>
 /// <para>
-/// A game adds a folder of its own sets with <see cref="Add"/>, as the import writes them, each in a
-/// folder of its name beside a <c>textures.json</c> naming them, and a set of the same name as one
-/// the module carries stands in its place.
+/// A game adds a folder of its own sets with <see cref="Add"/>, as the import writes them, each in
+/// a folder of its name beside a <c>textures.json</c> naming them, and a set of the same name as
+/// one the module carries stands in its place.
 /// </para>
 /// </remarks>
 public static class TreeTextures
@@ -44,10 +44,13 @@ public static class TreeTextures
         }
     }
 
-    /// <summary>The path in the collection of every file of every set, the module's and those of the folders added, in order.</summary>
+    /// <summary>
+    /// The path in the collection of every file of every set, the module's and those of the folders
+    /// added, in order.
+    /// </summary>
     /// <remarks>
-    /// The list is made again as a folder is added and is otherwise the same list, so an engine that
-    /// keeps the list it read the files by tells by it whether it reads every one.
+    /// The list is made again as a folder is added and is otherwise the same list, so an engine
+    /// that keeps the list it read the files by tells by it whether it reads every one.
     /// </remarks>
     public static IReadOnlyList<string> Files
     {
@@ -69,9 +72,16 @@ public static class TreeTextures
         lock (Gate) return Sets().GetValueOrDefault(name);
     }
 
-    /// <summary>Opens a file of the collection by its path, as a set gives it, or answers nothing where the collection holds no file of that path.</summary>
-    /// <param name="path">The file's path in the collection, as <c>silver-birch-bark/albedo.ktx2</c>.</param>
-    /// <exception cref="FileNotFoundException">The file of a folder added has gone from where it was when the folder was added.</exception>
+    /// <summary>
+    /// Opens a file of the collection by its path, as a set gives it, or answers nothing where the
+    /// collection holds no file of that path.
+    /// </summary>
+    /// <param name="path">
+    /// The file's path in the collection, as <c>silver-birch-bark/albedo.ktx2</c>.
+    /// </param>
+    /// <exception cref="FileNotFoundException">
+    /// The file of a folder added has gone from where it was when the folder was added.
+    /// </exception>
     public static Stream? Open(string path)
     {
         ArgumentNullException.ThrowIfNull(path);
@@ -85,13 +95,18 @@ public static class TreeTextures
         return place.Carried ? typeof(TreeTextures).Assembly.GetManifestResourceStream(place.From) : File.OpenRead(place.From);
     }
 
-    /// <summary>Adds the sets of a folder on this machine, each in a folder of its name beside a <c>textures.json</c> naming them.</summary>
+    /// <summary>
+    /// Adds the sets of a folder on this machine, each in a folder of its name beside a
+    /// <c>textures.json</c> naming them.
+    /// </summary>
     /// <param name="directory">The folder, as <c>build/textures.py --out</c> writes one.</param>
     /// <returns>The sets it added, in the order the folder names them.</returns>
-    /// <exception cref="InvalidDataException">The folder's <c>textures.json</c> is missing or names a set none of whose files are there.</exception>
+    /// <exception cref="InvalidDataException">
+    /// The folder's <c>textures.json</c> is missing or names a set none of whose files are there.
+    /// </exception>
     /// <remarks>
-    /// The files are read where they are, at paths below <c>added/</c> and the folder's number, and a
-    /// set of the same name as one the collection has stands in its place, so a game's own bark
+    /// The files are read where they are, at paths below <c>added/</c> and the folder's number, and
+    /// a set of the same name as one the collection has stands in its place, so a game's own bark
     /// replaces the module's of that name.
     /// </remarks>
     public static IReadOnlyList<TreeTextureSet> Add(string directory)
@@ -124,7 +139,9 @@ public static class TreeTextures
         }
     }
 
-    /// <summary>The module's own sets, read once from its manifest, and those added since.</summary>
+    /// <summary>
+    /// The module's own sets, read once from its manifest, and those added since.
+    /// </summary>
     private static Dictionary<string, TreeTextureSet> Sets()
     {
         if (_sets is { } known) return known;
@@ -146,7 +163,10 @@ public static class TreeTextures
     private static IEnumerable<string> FilesOf(TreeTextureSet set) =>
         set.Depth is { } depth ? [set.Albedo, set.Normal, set.Surface, depth] : [set.Albedo, set.Normal, set.Surface];
 
-    /// <summary>The sets a manifest names whose three files are there, each file by its set's name and its own.</summary>
+    /// <summary>
+    /// The sets a manifest names whose three files are there, each file by its set's name and its
+    /// own.
+    /// </summary>
     private static List<TreeTextureSet> Listed(string json, bool carried, Func<string, bool> exists, string what)
     {
         var sets = new List<TreeTextureSet>();

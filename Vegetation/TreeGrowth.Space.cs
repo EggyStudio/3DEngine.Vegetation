@@ -85,9 +85,9 @@ internal sealed partial class TreeGrowth
         _shadowDepth = (int)MathF.Ceiling((high.Z - low.Z) / _step);
         _shadow = new float[_shadowWidth * _shadowHeight * _shadowDepth];
 
-        // A box the tree grows round is dark inside, shades what is under it fully and what is beside
-        // it below its top as much as half the sky, less by half each internode further off, as a
-        // wall or a neighbor's crown takes the sky from that side.
+        // A box the tree grows round is dark inside, shades what is under it fully and what is
+        // beside it below its top as much as half the sky, less by half each internode further off,
+        // as a wall or a neighbor's crown takes the sky from that side.
         foreach (var (boxLow, boxHigh) in _blockers)
         {
             for (var z = 0; z < _shadowDepth; z++)
@@ -132,7 +132,10 @@ internal sealed partial class TreeGrowth
         }
     }
 
-    /// <summary>Scatters the attractors through the outline, evenly through its volume, none in a box the tree grows round.</summary>
+    /// <summary>
+    /// Scatters the attractors through the outline, evenly through its volume, none in a box the
+    /// tree grows round.
+    /// </summary>
     private void Scatter()
     {
         var volume = 0.0;
@@ -198,7 +201,9 @@ internal sealed partial class TreeGrowth
         }
     }
 
-    /// <summary>Gives an attractor to the nearest bud within reach whose cone it is in, if any.</summary>
+    /// <summary>
+    /// Gives an attractor to the nearest bud within reach whose cone it is in, if any.
+    /// </summary>
     private void Give(Vector3 attractor)
     {
         var reach = Perception * _step;
@@ -226,7 +231,9 @@ internal sealed partial class TreeGrowth
         _buds[nearest].Perceived++;
     }
 
-    /// <summary>Marks every attractor near a new point taken, so no bud grows toward it again.</summary>
+    /// <summary>
+    /// Marks every attractor near a new point taken, so no bud grows toward it again.
+    /// </summary>
     private void Take(Vector3 place)
     {
         var near = Occupancy * _step;
@@ -330,7 +337,10 @@ internal sealed partial class TreeGrowth
         /// <summary>The indices in a cell, or nothing.</summary>
         public List<int>? At(int cell) => _cells[cell];
 
-        /// <summary>Puts every cell next to a cell holding an index, those among them, in a list, each once, in a fixed order.</summary>
+        /// <summary>
+        /// Puts every cell next to a cell holding an index, those among them, in a list, each once,
+        /// in a fixed order.
+        /// </summary>
         public void Near(List<int> into)
         {
             into.Clear();

@@ -6,7 +6,10 @@ namespace Vegetation;
 // level, as TreeLevel.Splits says.
 public sealed partial record TreeSpecies
 {
-    /// <summary>The quaking aspen of Weber and Penn's appendix, a tall slender tree of 13 meters, three either way, with a narrow crown over a bare trunk.</summary>
+    /// <summary>
+    /// The quaking aspen of Weber and Penn's appendix, a tall slender tree of 13 meters, three
+    /// either way, with a narrow crown over a bare trunk.
+    /// </summary>
     public static TreeSpecies QuakingAspen { get; } = new()
     {
         Shape = TreeShape.TendFlame,
@@ -32,7 +35,10 @@ public sealed partial record TreeSpecies
         ],
     };
 
-    /// <summary>The black tupelo of Weber and Penn's appendix, 23 meters, five either way, a straight trunk to the top with level branches all the way up.</summary>
+    /// <summary>
+    /// The black tupelo of Weber and Penn's appendix, 23 meters, five either way, a straight trunk
+    /// to the top with level branches all the way up.
+    /// </summary>
     public static TreeSpecies BlackTupelo { get; } = new()
     {
         Shape = TreeShape.TaperedCylindrical,
@@ -61,9 +67,9 @@ public sealed partial record TreeSpecies
     };
 
     /// <summary>
-    /// The weeping willow of Weber and Penn's appendix, 12 meters, four either way, its trunk parting
-    /// low into three and its branches arching out and hanging in curtains to near the ground, held to
-    /// the paper's pruning envelope.
+    /// The weeping willow of Weber and Penn's appendix, 12 meters, four either way, its trunk
+    /// parting low into three and its branches arching out and hanging in curtains to near the
+    /// ground, held to the paper's pruning envelope.
     /// </summary>
     public static TreeSpecies WeepingWillow { get; } = new()
     {
@@ -129,7 +135,10 @@ public sealed partial record TreeSpecies
         ],
     };
 
-    /// <summary>A round shrub of a meter and a half, its stems parting at the ground and branching into a dense ball.</summary>
+    /// <summary>
+    /// A round shrub of a meter and a half, its stems parting at the ground and branching into a
+    /// dense ball.
+    /// </summary>
     public static TreeSpecies Bush { get; } = new()
     {
         Shape = TreeShape.Spherical,
@@ -156,7 +165,10 @@ public sealed partial record TreeSpecies
         ],
     };
 
-    /// <summary>A fern, a short stock with fronds of a meter arching out from it all round, each drawn as a frond along its stem.</summary>
+    /// <summary>
+    /// A fern, a short stock with fronds of a meter arching out from it all round, each drawn as a
+    /// frond along its stem.
+    /// </summary>
     public static TreeSpecies Fern { get; } = new()
     {
         Shape = TreeShape.Cylindrical,
