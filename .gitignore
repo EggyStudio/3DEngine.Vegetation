@@ -40,3 +40,6 @@ desktop.ini
 
 # Every picture made while working, read and pruned by day (N 4.10).
 /.github/dump/
+
+# The bytecode Python writes beside a script another session loads, which no run needs.
+__pycache__/

@@ -603,3 +603,7 @@ its docstring and the README's section to the command that runs Materials' scrip
 start's fault, a block whose red and blue move against each other encoded flat, is this recipe's,
 the tests' sample at 23.7 dB among what it makes. The strict build is clean and the tests pass, 85
 where there were 84.
+
+The bytecode, in the commit carrying this line. The build/__pycache__ another session's load of the
+recipe left in the tree is removed, and .gitignore leaves out every __pycache__ folder, so a script
+run from a checkout with no -B writes nothing git reads.
