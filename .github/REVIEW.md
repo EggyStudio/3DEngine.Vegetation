@@ -441,3 +441,11 @@ rewrapped to 100 columns. It reads the library's assembly references and the pac
 dependency file records for it and refuses an engine, a window or a graphics API by a part of its
 name. SkiaSharp 2.88.9 planted as a package of the library's project failed it before it was taken
 out. The strict build is clean and the tests pass, 66 where there were 54.
+
+The names, in the commit carrying this line, the fourth. NamesTests reads the library's exported
+types and their members and every member of the documentation the build writes, and fails on
+3DEngine, BevyCSharp, Bevy or the bridge as a word, each found named by its member; a summary
+planted with the bridge's name failed it before it was taken out. Nothing in the library named an
+engine, the assembly's name apart, which is the owner's and is no reference, and the README names
+the engines as two bindings in its section on binding and as the two that take the module in its
+opening. The strict build is clean and the tests pass, 67 where there were 66.
