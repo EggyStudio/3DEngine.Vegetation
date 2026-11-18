@@ -8,7 +8,8 @@ namespace Vegetation;
 /// from <see cref="TreePlanting.VariantSeed"/> of it.
 /// </param>
 /// <param name="Turn">
-/// How far it turns about the up axis, in radians from zero up to a whole turn.
+/// How far it turns about the up axis, in radians from zero up to a whole turn, counterclockwise
+/// seen from above, as <c>Quaternion.CreateFromAxisAngle(Vector3.UnitY, Turn)</c> turns it.
 /// </param>
 /// <param name="Size">
 /// How large it stands against its variant, from nine tenths up to eleven tenths.

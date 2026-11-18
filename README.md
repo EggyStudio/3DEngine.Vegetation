@@ -41,6 +41,91 @@ A clone of the engine fetches the module with `git clone --recurse-submodules`, 
 before the engine's commit that moves its pointer, so the engine's history never names a commit
 this repository does not have.
 
+## Binding it in your engine
+
+The module declares no interface for an engine to implement. It reads nothing but its own assembly
+and the folders a game hands `TreeTextures.Add`, and each of its types gives data an engine makes
+its own things of, points and radii it builds stems from, places and seeds it plants at, texture
+files and pictures it uploads, and shades it writes into a leaf's vertices. Binding it is calling
+it and drawing what it returns, with no window, scheduler or graphics API of the module's. The two
+engines that take it, 3DEngine and BevyCSharp, are two such bindings.
+
+| Quantity | Convention |
+|---|---|
+| Length | Meters |
+| Axes | Right-handed with Y up, a tree standing up Y from the origin and a field's ground at Y 0 |
+| A tree's turn | Radians about Y, counterclockwise seen from above, as `Quaternion.CreateFromAxisAngle(Vector3.UnitY, turn)` turns it |
+| A clump's turn | Radians, its first card lying along X cos turn and Z sin turn, the second a quarter turn on |
+| A species' angles | Degrees, as Weber and Penn give their controls |
+| Color | Linear sRGB in a `Vector3`, a species' colors and a set's mean color |
+| Pictures | RGBA, a row at a time from the top, the colors sRGB-encoded and the normals and depths linear |
+| Normal maps | Tangent space, X toward the picture's right and Y toward its top row, as OpenGL and glTF read them |
+| Depth maps | 255 the deepest, a depth below the surface for parallax occlusion rather than a height |
+| Texture files | KTX2 with zstd over each mipmap level, BC7 for color and surface, BC5 for normals, BC4 for depth |
+| Light | None of the module's. `TreeCrown.Shade` gives a share of the sky from 0 to 1, which an engine scales by its own light |
+| Random numbers | `Pcg` from a seed, the same on every runtime, so a seed plants and grows the same in every engine |
+
+The smallest binding plants a forest of a species and a field of grass. `host` is the engine's
+side, which draws a stem as a tapered cylinder, loads a texture file with its KTX2 loader, uploads
+a picture as an image and draws a clump as two cards crossed about its root. The code takes
+`using System.Numerics;` and `using Vegetation;`.
+
+```csharp
+// Each of the species' variants grown once, which every tree of the forest is one of.
+var variants = new TreeSkeleton[TreePlanting.Variants];
+for (var variant = 0; variant < variants.Length; variant++)
+    variants[variant] = TreeSkeleton.Grow(species, TreePlanting.VariantSeed(variant));
+
+// Two hundred trees over a disc of 50 meters about the origin, each standing by its seed.
+foreach (var (place, seed) in TreePlanting.Forest(1, Vector3.Zero, 50f, 200))
+{
+    var stance = TreePlanting.Stance(seed);
+    var turn = Quaternion.CreateFromAxisAngle(Vector3.UnitY, stance.Turn);
+    var nodes = variants[stance.Variant].Nodes;
+    Vector3 At(Vector3 point) => place + Vector3.Transform(point * stance.Size, turn);
+    foreach (var node in nodes)
+    {
+        if (node.Parent >= 0)
+            host.Stem(At(nodes[node.Parent].Place), At(node.Place), node.Radius * stance.Size);
+    }
+}
+
+// The bark and the leaves from the collection where the species names a set it carries,
+// and otherwise the pictures the module makes, which the species' colors tint.
+if (species.BarkSet is { } barkName && TreeTextures.Find(barkName) is { } bark)
+{
+    foreach (var path in (string[])[bark.Albedo, bark.Normal, bark.Surface])
+        host.Texture(path, TreeTextures.Open(path)!);
+}
+else
+{
+    host.Picture("bark", TreeLooks.Bark().Color, TreeLooks.BarkWidth, TreeLooks.BarkHeight);
+}
+
+if (species.LeafSet is { } leafName && TreeTextures.Find(leafName) is { } leaves)
+{
+    foreach (var path in (string[])[leaves.Albedo, leaves.Normal, leaves.Surface])
+        host.Texture(path, TreeTextures.Open(path)!);
+}
+else
+{
+    var atlas = TreeLooks.Leaves(species.LeafShape, species.LeafScaleX);
+    host.Picture("leaves", atlas, TreeLooks.LeafSize, TreeLooks.LeafSize);
+}
+
+// Grass over a field of 40 by 40 meters about the origin, a clump at a time.
+var grass = new GrassSettings();
+foreach (var patch in GrassScatter.Patches(new Vector2(40f, 40f), grass))
+{
+    var middle = new Vector3(patch.Middle.X, 0f, patch.Middle.Y);
+    foreach (var clump in GrassScatter.Clumps(grass, patch.Size, patch.Seed))
+        host.Clump(middle + clump.Root, clump.Turn, clump.Height);
+}
+```
+
+A leaf's cards are the engine's to build until the module carries them, and `TreeCrown.Shade`
+shades them from their middles and areas.
+
 ## Building and testing
 
 With the .NET 10 SDK:

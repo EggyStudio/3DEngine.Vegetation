@@ -405,3 +405,20 @@ assembly 3DEngine.Vegetation with the package id 3DEngine.Vegetation, still not 
 tests' the assembly 3DEngine.Vegetation.Tests; the folders, the project files and the namespace
 Vegetation stay. The test that the library loads loads it by its new name, the README says the name
 the project builds, and the tests pass, 48 as before.
+
+The binding's guide, in the commit carrying this line, the first of the owner's four. The README's
+section Binding it in your engine says the module declares no interface, since it reads its own
+assembly and the folders a game hands TreeTextures.Add and nothing else, and each type gives data an
+engine makes its own things of; it gives the conventions in a table, meters, Y up and right-handed,
+a tree's turn counterclockwise from above as System.Numerics' quaternion turns it and a clump's card
+along X cos turn and Z sin turn, a species' angles in degrees, colors in linear sRGB, the pictures'
+rows and encodings, normal maps with Y toward the top row as OpenGL and glTF read them, depth with
+255 the deepest, the texture files' formats, no unit of light, and Pcg's seeds; and the smallest
+binding, a forest of a species with its bark and leaves and a field of grass, against a host that
+draws a stem, a texture file, a picture and a clump. TreeStance's and GrassClump's turns say their
+direction where they said only their axis. Three public shapes fit what the two engines read rather
+than what any engine does, and each stands as a convention the table says rather than a change. They
+are the depth map, deepest at 255 where an engine of heights turns it over; the normal maps' Y up
+the picture, which an engine of DirectX's convention flips; and the texture files, KTX2 with zstd
+over BC7, BC5 and BC4, which an engine without a KTX2 reader of zstd cannot load, 3DEngine's among
+them as Materials found, left for Materials' Reply.
