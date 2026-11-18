@@ -434,3 +434,10 @@ out. The README says so under its block. The lone leaf's rounding has its test i
 the leaf at the origin looking straight up and at 3, 5, -2 and at 120 meters from the origin leaning
 toward its grid's low corner, at unit length with a sky from 0 to 1. The strict build is clean and
 the tests pass, 54 where there were 48.
+
+The reference check, in the commit carrying this line, the third. ReferenceTests is Tools' file at
+its head copied whole, its namespace and its library's name set to the module's and one remark
+rewrapped to 100 columns. It reads the library's assembly references and the packages the tests'
+dependency file records for it and refuses an engine, a window or a graphics API by a part of its
+name. SkiaSharp 2.88.9 planted as a package of the library's project failed it before it was taken
+out. The strict build is clean and the tests pass, 66 where there were 54.
