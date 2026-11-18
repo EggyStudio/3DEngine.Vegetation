@@ -118,7 +118,16 @@ pointer. One commit an engine, after item 3's first part.
 
 ## Verdicts
 
-None yet.
+One verdict stands, the first, on the red run of the leaves' fixture.
+
+1. **Run 44355818953 of 376cd98 was red on all three systems (2026-11-18).** One test failed on
+    each, the leaves against the fixture of hashes, where it passed on the machine the fixture was
+    made on. On the Linux runner the first case differs in its count of vertices and in every array,
+    the indices among them, and on Windows the floating arrays differ. So a seed does not grow the
+    same leaves on every machine, and the cause lies before the leaves on at least one runner, in
+    how many cards a tree gets. The mend is to find where the first number parts, a count read from
+    a floating result or a library function rounding differently by processor, and to state what the
+    module promises for a seed, with a test that holds on three systems.
 
 ## Decisions
 
@@ -504,3 +513,28 @@ Ten tests come with the code, the bridge's eight leaf tests that need no GPU, th
 sky itself, its floor being the engine's, the fixture, and one of the limbs and the leaves' pivots,
 the bridge keeping its tests that draw. The strict build is clean and the tests pass, 77 where there
 were 67.
+
+Verdict 1, the leaves' fixture red on the three systems, read in the commit carrying this line. The
+runner's log parts it in two. For the aspen's seeds 2 and 3 on Linux the cards' count, texture
+coordinates, limb pivots, indices and twigs match, the limb pivots being the skeleton's own points,
+and the places, normals, sky, ways out and own pivots differ, so those skeletons are the same and
+the leaves part where they are placed, by MathF.Pow, Sin and Cos, which glibc picks by processor
+among variants with fused multiply-add and without. For seed 1 the count differs, so its skeleton
+parts already, where the growth takes the same functions, Acos besides, and System.Numerics' Dot,
+Cross and LengthSquared, whose instructions the JIT picks by processor. ProbeTests hashes each of
+those over a fixed sweep of arguments, each preset's skeleton at two seeds and its leaves' count and
+texture coordinates, against references/probes.json, written on this machine, an Intel i9-14900HX
+with AVX2 and FMA, by running the test with VEGETATION_WRITE_PROBES=1, so the next run names on each
+system the first function and the first stage whose bits part.
+
+Of the two promises, the same counts with the floats within a tolerance cannot be kept apart from
+the first, since the growth decides how many nodes it buds by comparing distances and light from its
+own floats a step at a time, so a last bit apart buds a twig more, as seed 1 shows; the same counts
+everywhere need the growth's arithmetic the same everywhere. The same tree to the bit everywhere
+costs the module its own sine, cosine, power, exponential, arc cosine and arc tangent, written in
+single precision's sums and products alone, which IEEE 754 rounds alike on every processor and the
+JIT does not fuse, and every dot, cross and length of the growth written out a term at a time as the
+leaves' are, some 150 lines with tests that hold each function within two units in the last place of
+the runtime's own. It gives up the bridge's trees to the bit, the fixture being written again from
+the module, and both engines then draw the module's trees alike. Proposed, the first, once the
+probes' run has named what parts.
