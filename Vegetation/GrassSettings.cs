@@ -11,6 +11,13 @@ namespace Vegetation;
 public sealed record GrassSettings
 {
     /// <summary>
+    /// Settings with every value at its value unless given, a field of wheat grass.
+    /// </summary>
+    public GrassSettings()
+    {
+    }
+
+    /// <summary>
     /// The set of the texture collection the cards are cut from, one of the kind
     /// <see cref="TreeTextureKind.Grass"/>, <c>wheat-grass</c> unless given.
     /// </summary>

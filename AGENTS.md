@@ -1,10 +1,11 @@
 # Vegetation
 
-Vegetation is a library both engines, 3DEngine and BevyCSharp, take as a git submodule, for plant
-species, each one's skeleton grown from a seed, the tree and grass meshes built through Modeling,
-their texture sets and their placement. It references no engine, no engine's package and no engine's
-bridge (NORM.md, N 2.1). What it needs of a renderer, a world, a scheduler or a file system it takes
-through an interface it declares, which each engine implements where it binds the module.
+Vegetation is a library an engine takes as a git submodule, for plant species, each one's skeleton
+grown from a seed, the tree and grass meshes built through Modeling, their texture sets and their
+placement. It references no engine and no engine's package, and names none (NORM.md, N 2.1). What it
+needs of a renderer, a world, a scheduler or a file system it takes through an interface it
+declares, which an engine implements where it binds the module; it declares none, since it reads
+only its own assembly and the folders a game names.
 
 ## Documents
 
@@ -15,7 +16,8 @@ through an interface it declares, which each engine implements where it binds th
 | [.github/COMMITS.md](.github/COMMITS.md) | How and when work is committed |
 | [.github/REVIEW.md](.github/REVIEW.md) | Direction from the reviewing session, which comes before any other order of work |
 | [.github/NORM.md](.github/NORM.md) | The numbered rules the module keeps, each with what checks it, the same text in the six module repositories |
-| [DEVLOG.md](DEVLOG.md) | What landed by day, with the pictures `.github/assets/readings` keeps, generated from them and the history by `python3 -I ../Tools/scripts/devlog.py . Vegetation` from a checkout of Tools beside the module, in every commit that closes an item or adds a picture |
+| [DEVLOG.md](DEVLOG.md) | What landed by day, with the pictures `.github/assets/readings` keeps, generated from them and the history by `python3 -I modules/Tools/scripts/devlog.py . Vegetation` in every commit that closes an item or adds a picture |
+| [CHEATSHEET.md](CHEATSHEET.md) | Every public type and member of the library with the first sentence of its summary, written by the Tools module's `Cheatsheet.Write` when the tests run with `CHEATSHEET_WRITE=1` and held to the built library by `ModuleTests` |
 
 ## Building and testing
 
@@ -34,6 +36,7 @@ runs the tests on Linux, Windows and macOS on every push (NORM.md, N 6.1 and N 6
 | `.github` | The documents above but the README, and the build workflow |
 | `Vegetation` | The library, `Vegetation.csproj` |
 | `Vegetation.Tests` | The xunit tests of the library |
+| `modules` | The Tools submodule, which the tests take the checks every module keeps from and whose scripts write DEVLOG.md and check a commit |
 | `build` | The version, `version.txt`'s major and minor set by hand and `version.sh`, which prints it with the patch counted from the history |
 
 ## Conventions

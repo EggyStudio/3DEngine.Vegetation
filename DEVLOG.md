@@ -10,19 +10,17 @@ of .github/REVIEW.md or .github/REVIEW-ARCHIVE.md and the commit that closed it.
 
 ![](.github/assets/readings/2026-11-18-item-9-looks.webp)
 The bark's color, normal and depth and an atlas of each of the six leaf shapes at a width of 0.6, as
-TreeLooks makes them in the module to the byte as the bridge made them, the leaves tinted by a
-species' default leaf color on a white ground.
+TreeLooks makes them, the leaves tinted by a species' default leaf color on a white ground.
 
 ![](.github/assets/readings/2026-11-18-item-9-leaf-outlines.webp)
-The two maples at widths 1 and 0.6 and the three leaflets and the oval at 0.1, each as the bridge
-drew it on the left and mended on the right, the maples' lobes pointed and veined over a small base
-that meets the stalk and every leaf one piece from its stalk to its tips.
+The two maples at widths 1 and 0.6 and the three leaflets and the oval at 0.1, each before the mend
+on the left and after it on the right, the maples' lobes pointed and veined over a small base that
+meets the stalk and every leaf one piece from its stalk to its tips.
 
 ![](.github/assets/readings/2026-11-18-item-9-aspen-exact.webp)
-The quaking aspen at seed 1 grown with the runtime's functions, as the bridge grew it, beside the
-same seed grown with the module's own arithmetic, which every system grows alike, and in red the one
-of its 22,499 cards that moved more than a millimeter, by 9.8 cm; its stems moved by a micrometer at
-most.
+The quaking aspen at seed 1 grown with the runtime's functions beside the same seed grown with the
+module's own arithmetic, which every system grows alike, and in red the one of its 22,499 cards that
+moved more than a millimeter, by 9.8 cm; its stems moved by a micrometer at most.
 
 ![](.github/assets/readings/2026-11-18-item-9-presets-sets.webp)
 The six presets at seed 1 drawn with their own bark and leaf sets from the carried KTX2 files, the

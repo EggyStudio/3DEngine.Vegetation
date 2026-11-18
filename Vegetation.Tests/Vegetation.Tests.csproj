@@ -11,6 +11,16 @@
         <ProjectReference Include="..\Vegetation\Vegetation.csproj" />
     </ItemGroup>
 
+    <!-- The checks every module keeps, from the Tools submodule, taken by the tests alone so the
+         library takes nothing of it; a clone without the submodule stops here with the command
+         that fetches it. -->
+    <ItemGroup>
+        <ProjectReference Include="..\modules\Tools\Tools\Tools.csproj" />
+    </ItemGroup>
+    <Target Name="NeedsTools" BeforeTargets="Restore;CollectPackageReferences;ResolveProjectReferences" Condition="!Exists('$(MSBuildThisFileDirectory)..\modules\Tools\Tools\Tools.csproj')">
+        <Error Text="The Tools submodule is not fetched. Run git submodule update --init modules/Tools." />
+    </Target>
+
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
         <PackageReference Include="xunit" Version="2.9.3" />

@@ -5,8 +5,8 @@ namespace Vegetation.Tests;
 
 /// <summary>
 /// The README's binding run against a host that stands in for an engine with none, a forest's
-/// stems, its bark's and leaves' textures or pictures and a field's grass, and the README's code
-/// the same as the code run here.
+/// stems, its bark's and leaves' textures or pictures and a field's grass, the README's block
+/// standing word for word between this file's markers, which ModuleTests reads.
 /// </summary>
 public sealed class BindingTests
 {
@@ -59,33 +59,10 @@ public sealed class BindingTests
         Assert.Equal(4 * TreeLooks.LeafSize * TreeLooks.LeafSize, host.Pictures[1].Length);
     }
 
-    /// <summary>
-    /// The code block of the README's section on binding is the body of <see cref="Bind"/> as it
-    /// stands in this file, so the guide is the code the tests compile and run.
-    /// </summary>
-    [Fact]
-    public void TheReadmesBindingIsTheCodeRunHere()
-    {
-        var root = RepositoryRoot();
-        var readme = File.ReadAllLines(Path.Combine(root, "README.md"));
-        var section = Array.IndexOf(readme, "## Binding it in your engine");
-        Assert.True(section >= 0, "The README has no section named Binding it in your engine.");
-        var open = Array.FindIndex(readme, section, line => line == "```csharp");
-        var close = Array.FindIndex(readme, open + 1, line => line == "```");
-        var guide = readme[(open + 1)..close];
-
-        var source = File.ReadAllLines(Path.Combine(root, "Vegetation.Tests", "BindingTests.cs"));
-        var start = Array.IndexOf(source, "    private static void Bind(Host host, TreeSpecies species)") + 2;
-        Assert.True(start >= 2, "BindingTests.cs declares no Bind.");
-        var end = Array.FindIndex(source, start, line => line == "    }");
-        var body = source[start..end].Select(line => line.Length >= 8 ? line[8..] : line.Trim()).ToArray();
-
-        Assert.Equal(body, guide);
-    }
-
     // The README's binding, its code block, of a species planted as a forest with a field of grass.
     private static void Bind(Host host, TreeSpecies species)
     {
+        // The README's block from here to the end marker, word for word.
         // Each of the species' variants grown once, which every tree of the forest is one of.
         var variants = new TreeSkeleton[TreePlanting.Variants];
         for (var variant = 0; variant < variants.Length; variant++)
@@ -136,6 +113,7 @@ public sealed class BindingTests
             foreach (var clump in GrassScatter.Clumps(grass, patch.Size, patch.Seed))
                 host.Clump(middle + clump.Root, clump.Turn, clump.Height);
         }
+        // The end marker.
     }
 
     // What an engine does with what the module gives, recorded rather than drawn.

@@ -1,11 +1,11 @@
+[Devlog](https://github.com/EggyStudio/Vegetation/blob/main/DEVLOG.md) [Cheatsheet](https://github.com/EggyStudio/Vegetation/blob/main/CHEATSHEET.md)
+
 # Vegetation
 
-[Devlog](DEVLOG.md)
-
-Vegetation is a library both engines, 3DEngine and BevyCSharp, take as a git submodule, for plant
-species, each one's skeleton grown from a seed, the tree and grass meshes built through Modeling,
-their texture sets and their placement. It references no engine, and each engine implements the
-interfaces it declares where it binds the module.
+Vegetation is a library an engine takes as a git submodule, for plant species, each one's skeleton
+grown from a seed, the tree and grass meshes built through Modeling, their texture sets and their
+placement. It references no engine and declares no interface for one to implement, so an engine
+binds it by calling it and drawing what it returns.
 
 ## What it holds
 
@@ -51,8 +51,7 @@ The module declares no interface for an engine to implement. It reads nothing bu
 and the folders a game hands `TreeTextures.Add`, and each of its types gives data an engine makes
 its own things of, points and radii it builds stems from, places and seeds it plants at, texture
 files and pictures it uploads, and shades it writes into a leaf's vertices. Binding it is calling
-it and drawing what it returns, with no window, scheduler or graphics API of the module's. The two
-engines that take it, 3DEngine and BevyCSharp, are two such bindings.
+it and drawing what it returns, with no window, scheduler or graphics API of the module's.
 
 | Quantity | Convention |
 |---|---|

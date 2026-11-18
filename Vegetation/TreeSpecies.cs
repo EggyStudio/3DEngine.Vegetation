@@ -23,6 +23,14 @@ namespace Vegetation;
 /// </remarks>
 public sealed partial record TreeSpecies
 {
+    /// <summary>
+    /// A species with every control at its value unless set, a conical tree of 10 meters, a trunk
+    /// with two levels of branches and no leaves, which a preset or a game's own species sets from.
+    /// </summary>
+    public TreeSpecies()
+    {
+    }
+
     /// <summary>The outline of the crown, <see cref="TreeShape.Conical"/> unless set.</summary>
     public TreeShape Shape { get; init; } = TreeShape.Conical;
 
@@ -213,7 +221,9 @@ public sealed partial record TreeSpecies
         && Equals(LeafLevel, other.LeafLevel) && LeafBend.Equals(other.LeafBend) && LeafColor.Equals(other.LeafColor) && FallColor.Equals(other.FallColor)
         && (ReferenceEquals(Levels, other.Levels) || (Levels is not null && other.Levels is not null && Levels.SequenceEqual(other.Levels)));
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// A hash of the species' outline, size and count of levels, the same for equal species.
+    /// </summary>
     public override int GetHashCode() => HashCode.Combine(Shape, Scale, ScaleVariation, BaseSize, Ratio, AttractionUp, Levels?.Count ?? 0);
 
     // A color in linear sRGB from its sRGB components, as a color picker gives them and the texture

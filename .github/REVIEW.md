@@ -74,7 +74,7 @@ pointer. One commit an engine, after item 3's first part.
     them, converted at each use in the engines; ten of the bridge's thirteen tree tests come with
     the code, the three that build meshes staying. One module commit, told to the reviewer first and
     pushed before the bridge's commit that takes the module as a submodule, as Sky is taken, with
-    the types out of its public listing and its tree guide and cheat sheet following; a Shared line
+    the types out of its public listing and its tree guide and cheatsheet following; a Shared line
     in the bridge's REVIEW.md. Done at `c2149be`, pushed at 22:36 on 2026-11-08; the growth is the
     bridge's to the bit, 26 skeletons giving the same 72,137 lines of points, parents and radii, ten
     tests moved and 16 running, Pcg and the species check public while the bridge's leaves, grass
@@ -635,3 +635,34 @@ does not hold yet, so the sheet maps it round each stem by a stand-in, a turn of
 stem's girth, and the stems' own coordinates come with them. The fern names no bark set and is drawn
 in its bark color, where an engine draws TreeLooks' bark. The weeping willow's crown stands round
 rather than weeping, which is its growth's and no set's. No engine is used.
+
+The shared checks, the cheatsheet and the names, in the commit carrying this line. Tools is a
+submodule under modules/, pinned at 75d77f2, and the tests' project references its library with the
+NeedsTools target that stops a clone without it on the command that fetches it; the library takes
+nothing of it, and the workflow checks it out with submodules true. ModuleTests holds the seven
+facts, each as Assert.True(fault is null, fault), that the library takes no engine, window or
+graphics API, that no public name or its documentation names an engine, that no tracked text does,
+that the README names every public type, that the README's binding block stands word for word
+between the host's markers in BindingTests, that CHEATSHEET.md is what the built library writes, and
+that the README opens with its link row to the devlog and the cheatsheet above its title. They
+replace ReferenceTests, NamesTests and the binding test that held the README's block to Bind's body,
+and the width test leaves modules/ to Tools. All seven passed on their first run.
+
+CHEATSHEET.md, written with CHEATSHEET_WRITE=1, lists 22 types and 159 members, each with the first
+sentence of its summary, under a short opening written by hand, five members, the implicit
+constructors of TreeSpecies, TreeLevel and GrassSettings and the hash codes of a species and a
+skeleton, whose inheritdoc named object's, take summaries of their own in the source, and a
+positional record's constructor stands with its type's. The README's first line links the devlog and
+the cheatsheet above its title, and AGENTS.md names the cheatsheet in its documents, the modules
+folder in its areas and the devlog's command by modules/Tools.
+
+The names. Of the lines the search for an engine's name finds outside modules/, the review and the
+norm, 16 stood before this commit and none after. The three captions say what the earlier form was,
+the runtime's functions or the outline before the mend, and the aspen's sheet names its panels so,
+redrawn; the README's and AGENTS.md's openings say an engine takes the module where they named two,
+and say it declares no interface where they said each engine implements those it declares, which it
+never held; the README's binding section names no engine; ReferenceTests and NamesTests, which named
+the engines to refuse them, go with the shared checks; and DEVLOG.md, written again, takes the
+captions as they stand, four days, four pictures and six items done. What the engines do with the
+module goes in the reports to the review alone. The strict build is clean and the tests pass, 79
+where there were 86, the fourteen of the local copies giving way to the seven facts.

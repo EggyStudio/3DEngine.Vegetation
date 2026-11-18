@@ -24,6 +24,13 @@ namespace Vegetation;
 public sealed record TreeLevel
 {
     /// <summary>
+    /// A level with every control at its value unless set, as a species sets its own.
+    /// </summary>
+    public TreeLevel()
+    {
+    }
+
+    /// <summary>
     /// The angle in degrees between a stem of this level and the stem it leaves, as it leaves it,
     /// 45 unless set. The trunk's is not read.
     /// </summary>

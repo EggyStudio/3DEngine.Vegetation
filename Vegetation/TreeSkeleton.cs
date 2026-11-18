@@ -120,7 +120,9 @@ public sealed record TreeSkeleton
     /// <param name="other">The other skeleton.</param>
     public bool Equals(TreeSkeleton? other) => other is not null && Nodes.SequenceEqual(other.Nodes);
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// A hash of the count of points and the first and last of them, the same for equal skeletons.
+    /// </summary>
     public override int GetHashCode() => HashCode.Combine(Nodes.Count, Nodes[0], Nodes[^1]);
 
     /// <summary>The smallest box holding every point, not counting the stems' thickness.</summary>

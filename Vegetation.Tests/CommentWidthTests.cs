@@ -34,7 +34,7 @@ public sealed class CommentWidthTests
         return patterns
             .SelectMany(pattern => Directory.EnumerateFiles(root, pattern, SearchOption.AllDirectories))
             .Where(path => !Path.GetRelativePath(root, path).Split(Path.DirectorySeparatorChar)
-                .Any(folder => folder is "bin" or "obj" or ".git" or "dump" or ".vegetation" or "waiting"))
+                .Any(folder => folder is "bin" or "obj" or ".git" or "dump" or ".vegetation" or "waiting" or "modules"))
             .Order();
     }
 
