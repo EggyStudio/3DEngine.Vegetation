@@ -209,6 +209,69 @@ public sealed class TreeTexturesTests
     }
 
     /// <summary>The sets the module carries, those a test added apart.</summary>
+    /// <summary>
+    /// Each carried set's mean color is the linear mean of its albedo's opaque texels, decoded from
+    /// the file's top level, within 0.001 a channel for a bark or a leaf set and 0.004 for a grass
+    /// card, so a far card drawn with it is as bright as the leaves it pictures. The bounds are the
+    /// gaps read with the mean taken in linear light, 0.0006 at most for the barks and leaves and
+    /// 0.0032 for the grass, whose thin blades put many texels at the alpha's threshold, where the
+    /// BC7 file and its source part on which are opaque.
+    /// </summary>
+    [Fact]
+    public void ASetsMeanColorIsTheLinearMeanOfItsAlbedo()
+    {
+        var apart = new List<string>();
+        foreach (var set in Carried())
+        {
+            using var stream = TreeTextures.Open(set.Albedo)!;
+            using var bytes = new MemoryStream();
+            stream.CopyTo(bytes);
+            var (sum, opaque) = (new double[3], 0);
+            foreach (var texel in TopLevel(bytes.ToArray()))
+            {
+                if (texel.A <= 127) continue;
+                opaque++;
+                sum[0] += Linear(texel.R / 255.0);
+                sum[1] += Linear(texel.G / 255.0);
+                sum[2] += Linear(texel.B / 255.0);
+            }
+
+            var mean = (sum[0] / opaque, sum[1] / opaque, sum[2] / opaque);
+            var gap = Math.Max(Math.Abs(mean.Item1 - set.MeanColor.X), Math.Max(Math.Abs(mean.Item2 - set.MeanColor.Y), Math.Abs(mean.Item3 - set.MeanColor.Z)));
+            if (gap > (set.Kind == TreeTextureKind.Grass ? 0.004 : 0.001)) apart.Add($"{set.Name}'s mean color is {set.MeanColor} where its albedo's linear mean is {mean}, {gap:F4} apart");
+        }
+
+        Assert.True(apart.Count == 0, string.Join(Environment.NewLine, apart));
+    }
+
+    // The texels of a KTX2 file's top level of BC7 blocks in mode 6, the one mode the recipe
+    // writes, a row of blocks at a time, each block's sixteen in turn.
+    private static IEnumerable<(byte R, byte G, byte B, byte A)> TopLevel(byte[] file)
+    {
+        int[] weights = [0, 4, 9, 13, 17, 21, 26, 30, 34, 38, 43, 47, 51, 55, 60, 64];
+        var (offset, length) = ((int)BitConverter.ToUInt64(file, 80), (int)BitConverter.ToUInt64(file, 88));
+        for (var at = offset; at < offset + length; at += 16)
+        {
+            var block = new System.Numerics.BigInteger(file.AsSpan(at, 16), isUnsigned: true);
+            int Bits(int from, int count) => (int)((block >> from) & ((1 << count) - 1));
+            Assert.True(Bits(0, 7) == 64, $"A block at byte {at} is not in BC7's mode 6.");
+            var (low, high) = (new int[4], new int[4]);
+            for (var channel = 0; channel < 4; channel++)
+                (low[channel], high[channel]) = ((Bits(7 + 14 * channel, 7) << 1) | Bits(63, 1), (Bits(14 + 14 * channel, 7) << 1) | Bits(64, 1));
+            var place = 65;
+            for (var texel = 0; texel < 16; texel++)
+            {
+                var size = texel == 0 ? 3 : 4;
+                var w = weights[Bits(place, size)];
+                place += size;
+                byte Mix(int channel) => (byte)(((64 - w) * low[channel] + w * high[channel] + 32) >> 6);
+                yield return (Mix(0), Mix(1), Mix(2), Mix(3));
+            }
+        }
+    }
+
+    private static double Linear(double value) => value <= 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
+
     private static IEnumerable<TreeTextureSet> Carried() =>
         TreeTextures.All.Where(set => !set.Albedo.StartsWith("added/", StringComparison.Ordinal));
 

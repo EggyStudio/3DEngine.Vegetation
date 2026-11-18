@@ -607,3 +607,18 @@ where there were 84.
 The bytecode, in the commit carrying this line. The build/__pycache__ another session's load of the
 recipe left in the tree is removed, and .gitignore leaves out every __pycache__ folder, so a script
 run from a checkout with no -B writes nothing git reads.
+
+The mean color, in the commit carrying this line. A set's MeanColor is said to be the linear mean of
+its albedo's opaque texels and was the sRGB curve's decoding of their mean in sRGB, which the
+curve's bow sets below the linear mean, 0.045 in linear light for grass-tuft-a and 0.0015 for the
+willow's bark at the least. ASetsMeanColorIsTheLinearMeanOfItsAlbedo decodes each carried albedo's
+top level from its BC7 blocks, the mode 6 the recipe writes, takes the linear mean of the texels
+past half opacity and holds MeanColor to it within 0.001 a channel for a bark or a leaf set and
+0.004 for a grass card, the gaps read after the mend being 0.0006 at most for the first and 0.0032
+for the second, whose thin blades put many texels at the threshold where the file and its source
+part. It failed on all thirteen sets before the mend. The recipe's mean_color takes the mean in
+linear light and writes it in sRGB as the library decodes it, and the sets made again from their
+sources change the manifest's colors alone, every file and the sample the same bytes. The library is
+right and stays as it is. Materials' scripts/textures.py takes the mean as this recipe did, so its
+mean_color takes the same mend before the collection is made with it. The strict build is clean and
+the tests pass, 86 where there were 85.
