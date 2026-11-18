@@ -56,7 +56,7 @@ internal sealed partial class TreeGrowth
                 var offset = _bare + (_height - _bare) * (probe + 0.5f) / Probes;
                 var ratio = (_height - offset) / (_height - _bare);
                 var lean = Radians(DownAngle(first, ratio, 0f));
-                Probe(1, new Vector3(0f, offset, 0f), new Vector3(MathF.Sin(lean), MathF.Cos(lean), 0f), first.Length * _height * ShapeAt(ratio));
+                Probe(1, new Vector3(0f, offset, 0f), new Vector3(Exact.Sin(lean), Exact.Cos(lean), 0f), first.Length * _height * ShapeAt(ratio));
             }
 
             // Widened by a band either way and by an internode, so the outline holds the stems that
@@ -100,7 +100,7 @@ internal sealed partial class TreeGrowth
                 var outX = MathF.Max(MathF.Max(boxLow.X - middle.X, middle.X - boxHigh.X), 0f);
                 var outZ = MathF.Max(MathF.Max(boxLow.Z - middle.Z, middle.Z - boxHigh.Z), 0f);
                 var off = MathF.Sqrt(outX * outX + outZ * outZ) / _step;
-                var shade = off > 0f ? 0.5f * MathF.Pow(0.5f, off) : middle.Y >= boxLow.Y ? 100f : 1f;
+                var shade = off > 0f ? 0.5f * Exact.Pow(0.5f, off) : middle.Y >= boxLow.Y ? 100f : 1f;
                 if (off <= ShadowDepth) _shadow[x + _shadowWidth * (y + _shadowHeight * z)] += shade;
             }
         }
@@ -156,7 +156,7 @@ internal sealed partial class TreeGrowth
             band = Math.Min(band < 0 ? ~band : band, _outline.Length - 1);
             var radius = _outline[band] * MathF.Sqrt(_random.Unit());
             var angle = _random.Unit() * MathF.Tau;
-            var place = new Vector3(radius * MathF.Cos(angle), (band + _random.Unit()) * _step, radius * MathF.Sin(angle));
+            var place = new Vector3(radius * Exact.Cos(angle), (band + _random.Unit()) * _step, radius * Exact.Sin(angle));
             if (Blocked(place) || Pruned(place)) continue;
 
             _attractorCells.Add(place, made.Count);
@@ -217,9 +217,9 @@ internal sealed partial class TreeGrowth
             foreach (var i in held)
             {
                 var to = attractor - _budPlaces[i];
-                var squared = to.LengthSquared();
+                var squared = to.SquaredLength;
                 if (squared >= least || squared == 0f) continue;
-                if (Vector3.Dot(to, _budWays[i]) <= Cone * MathF.Sqrt(squared)) continue;
+                if (Vectors.Dot(to, _budWays[i]) <= Cone * MathF.Sqrt(squared)) continue;
                 nearest = i;
                 least = squared;
                 way = to;
@@ -242,7 +242,7 @@ internal sealed partial class TreeGrowth
         {
             foreach (var a in held)
             {
-                if (!_taken[a] && (_attractors[a] - place).LengthSquared() < near * near) _taken[a] = true;
+                if (!_taken[a] && (_attractors[a] - place).SquaredLength < near * near) _taken[a] = true;
             }
         }
     }
@@ -277,7 +277,7 @@ internal sealed partial class TreeGrowth
     {
         var (x, y, z) = Voxel(place);
         var slope = new Vector3(ShadowAt((x - 1, y, z)) - ShadowAt((x + 1, y, z)), 0f, ShadowAt((x, y, z - 1)) - ShadowAt((x, y, z + 1)));
-        return slope.LengthSquared() > 0.01f * Darkening * Darkening ? slope.Normalized : Vector3.Zero;
+        return slope.SquaredLength > 0.01f * Darkening * Darkening ? slope.Normalized : Vector3.Zero;
     }
 
     private (int X, int Y, int Z) Voxel(Vector3 place)

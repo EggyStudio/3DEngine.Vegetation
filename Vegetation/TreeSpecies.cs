@@ -221,5 +221,5 @@ public sealed partial record TreeSpecies
     // artist picks them and kept as light mixes.
     internal static Vector3 Srgb(float r, float g, float b) => new(Linear(r), Linear(g), Linear(b));
 
-    private static float Linear(float value) => value <= 0.04045f ? value / 12.92f : MathF.Pow((value + 0.055f) / 1.055f, 2.4f);
+    private static float Linear(float value) => value <= 0.04045f ? value / 12.92f : Exact.Pow((value + 0.055f) / 1.055f, 2.4f);
 }

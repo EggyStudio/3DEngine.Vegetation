@@ -18,6 +18,11 @@
         <WarningsAsErrors>$(WarningsAsErrors);CS1591;CS1574</WarningsAsErrors>
     </PropertyGroup>
 
+    <!-- The tests reach Exact, the module's own arithmetic, to hold it against the runtime's. -->
+    <ItemGroup>
+        <InternalsVisibleTo Include="3DEngine.Vegetation.Tests" />
+    </ItemGroup>
+
     <!-- The texture collection and its manifest, which TreeTextures reads from the assembly, so an
          engine and a game carry no folder for them. The sets waiting for their source are left out,
          as they are left out of the repository, so a build on a machine that imported them carries

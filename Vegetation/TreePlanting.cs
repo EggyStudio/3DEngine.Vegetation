@@ -88,7 +88,7 @@ public static class TreePlanting
         {
             var reach = radius * MathF.Sqrt(random.Unit());
             var angle = random.Unit() * MathF.Tau;
-            var place = middle + new Vector3(reach * MathF.Cos(angle), 0f, reach * MathF.Sin(angle));
+            var place = middle + new Vector3(reach * Exact.Cos(angle), 0f, reach * Exact.Sin(angle));
             if (places.All(other => Apart(other, place) >= apart * apart)) places.Add(place);
         }
 

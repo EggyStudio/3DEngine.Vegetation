@@ -538,3 +538,39 @@ leaves' are, some 150 lines with tests that hold each function within two units 
 the runtime's own. It gives up the bridge's trees to the bit, the fixture being written again from
 the module, and both engines then draw the module's trees alike. Proposed, the first, once the
 probes' run has named what parts.
+
+Verdict 1's mend, in the commit carrying this line. The probes' run named the runtime's functions
+alone. On the Ubuntu runner its arc cosine and arc tangent part from this machine's, on macOS and
+Windows its sine, cosine, power and exponential as well, and System.Numerics' dot, cross, length,
+normalization and turn by a quaternion part nowhere, so the growth's count of nodes and the leaves'
+places followed from the functions, the aspen at seed 1 budding 90,000 leaves' vertices where here
+89,996. The module promises that a seed grows the same tree to the bit on every system.
+
+Exact holds the module's own sine, cosine, power, exponential, arc cosine and arc tangent, worked in
+doubles by sums, products and quotients alone and each result rounded once to a float. Sine and
+cosine reduce an angle by π/2 in three parts of 33 bits below 1.6e6 and by Payne and Hanek's product
+with 2/π to 448 bits above, the bits worked out from Machin's formula for π in integers and the same
+as fdlibm's table, and the power, the exponential and the arc tangent keep IEEE 754's special cases.
+The growth, the leaves, the crown, the planting, the pictures and the species' colors take them, and
+every dot, cross and squared length of the growth is written out a term at a time in Vectors, as the
+leaves' and the crown's are. ExactTests holds each function within two units in the last place of
+the runtime's over a sweep of 20,000 arguments and at its edges, zero and minus zero, the largest
+floats and angles to 3.4e38 for sine and cosine, the power's sixteen special cases and the arc
+tangent's zeros and infinities, hashes each over the sweep so every system must give the same bits,
+and holds that the build rounds a product and a sum apart, (1 + 2⁻¹²)² less 1 + 2⁻¹¹ being zero in
+floats and (1 + 2⁻²⁷)² less 1 + 2⁻²⁶ in doubles where fused each is the last bit, in a vector's
+lanes too. Sine of minus zero gave plus zero before the test held it, and keeps its sign.
+
+The trees part from the bridge's by little. Every preset at seeds 1 to 4 keeps its count of nodes
+and its height, and one of the 24 trees its leaves' count apart, the aspen at seed 4 at 89,996
+vertices where 90,000. Of the aspen at seed 1, 177 of 1,128 nodes move, by a micrometer at most, and
+18,330 of its 89,996 leaves' corners move, by 4.4 micrometers on the mean and one card by 9.8 cm,
+the only one of 22,499 past a millimeter; of the oak at seed 1, 1,261 of 6,127 nodes move by 0.8
+micrometers at most and its leaves' corners by 13.7 cm at most. The picture,
+`2026-11-18-item-9-aspen-exact.webp`, sets the aspen before and after side by side on white with the
+card that moved in red. The fixture is the module's, its skeleton's hash with each case's nodes,
+written by VEGETATION_WRITE_LEAVES=1 on the test, and the bridge's leaf reader goes with the probes,
+since the trees are the module's own. The probes' test goes as well, its functions' hashes being the
+runtime's, which part by system as the run read. The strict build is clean and the tests pass, 84
+where there were 78 with the probe. DEVLOG.md is written by Tools' scripts/devlog.py, four days,
+three pictures and six items done, the README links it at its top and AGENTS.md names its command.

@@ -130,7 +130,7 @@ public static class TreeCrown
                     depthAlong += density[Index(x, y, z)] * size * 0.5f;
                 }
 
-                seen += weight * MathF.Exp(-FacingShare * depthAlong);
+                seen += weight * Exact.Exp(-FacingShare * depthAlong);
             }
 
             // Held at one, which the weights' sum passes by a float's last digit where every ray
@@ -151,11 +151,11 @@ public static class TreeCrown
     private static (Vector3 Way, float Weight)[] MakeSkyWays()
     {
         var ways = new List<(Vector3, float)> { (Vector3.UnitY, 1f) };
-        var height = MathF.Sin(MathF.PI / 6f);
-        var across = MathF.Cos(MathF.PI / 6f);
+        var height = Exact.Sin(MathF.PI / 6f);
+        var across = Exact.Cos(MathF.PI / 6f);
         for (var k = 0; k < 8; k++)
         {
-            var (sin, cos) = MathF.SinCos(k * MathF.Tau / 8f);
+            var (sin, cos) = Exact.SinCos(k * MathF.Tau / 8f);
             ways.Add((new Vector3(across * cos, height, across * sin), height));
         }
 

@@ -138,13 +138,13 @@ public static class TreeLeaves
             for (var k = 0; k < count; k++)
             {
                 // Toward the tip, as the paper's leaves gather where the light is.
-                var along = MathF.Pow((k + 0.5f + 0.4f * random.Signed()) / count, 0.75f) * length;
+                var along = Exact.Pow((k + 0.5f + 0.4f * random.Signed()) / count, 0.75f) * length;
                 var (place, way) = At(twig, along);
 
                 turn += Radians(level.Rotate + level.RotateVariation * random.Signed());
                 var round = Rotate(Square(way), way, turn);
                 var down = Radians(level.DownAngle + level.DownAngleVariation * random.Signed());
-                var leaf = (way * MathF.Cos(down) + round * MathF.Sin(down)).Normalized;
+                var leaf = (way * Exact.Cos(down) + round * Exact.Sin(down)).Normalized;
 
                 // Off the twig by up to one and a half of its own lengths, as a leaf on one of the
                 // twig's own twiglets, finer than the growth grows, stands off it.
@@ -252,7 +252,7 @@ public static class TreeLeaves
 
     private static Vector3 Rotate(Vector3 vector, Vector3 axis, float angle)
     {
-        var (sin, cos) = MathF.SinCos(angle);
+        var (sin, cos) = Exact.SinCos(angle);
         return vector * cos + Cross(axis, vector) * sin + axis * (Dot(axis, vector) * (1f - cos));
     }
 

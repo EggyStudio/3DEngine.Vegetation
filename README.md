@@ -1,5 +1,7 @@
 # Vegetation
 
+[Devlog](DEVLOG.md)
+
 Vegetation is a library both engines, 3DEngine and BevyCSharp, take as a git submodule, for plant
 species, each one's skeleton grown from a seed, the tree and grass meshes built through Modeling,
 their texture sets and their placement. It references no engine, and each engine implements the

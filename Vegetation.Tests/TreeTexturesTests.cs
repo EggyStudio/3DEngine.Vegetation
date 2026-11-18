@@ -128,7 +128,7 @@ public sealed class TreeTexturesTests
         foreach (var set in Carried())
         {
             var color = Entries()[set.Name].GetProperty("color");
-            float[] linear = [.. Enumerable.Range(0, 3).Select(i => color[i].GetSingle()).Select(value => value <= 0.04045f ? value / 12.92f : MathF.Pow((value + 0.055f) / 1.055f, 2.4f))];
+            float[] linear = [.. Enumerable.Range(0, 3).Select(i => color[i].GetSingle()).Select(value => value <= 0.04045f ? value / 12.92f : Exact.Pow((value + 0.055f) / 1.055f, 2.4f))];
             Assert.Equal((linear[0], linear[1], linear[2]), (set.MeanColor.X, set.MeanColor.Y, set.MeanColor.Z));
         }
     }

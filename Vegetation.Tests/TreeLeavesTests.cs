@@ -25,34 +25,52 @@ public sealed class TreeLeavesTests
     };
 
     /// <summary>
-    /// Every array of the leaves of the six presets at four seeds and both levels hashes as the
-    /// fixture <c>build/leaves-fixture</c> wrote from the engine's build of them before they moved,
-    /// each difference named by its case and its array.
+    /// Every array of the skeleton and the leaves of the six presets at four seeds and both levels
+    /// hashes as the fixture holds it, on every system, each difference named by its case and its
+    /// array, which holds the module's promise that a seed grows the same tree to the bit on every
+    /// machine. Run with VEGETATION_WRITE_LEAVES=1, the test writes the fixture from the module.
     /// </summary>
     [Fact]
-    public void TheLeavesAreTheFixturesToTheBit()
+    public void TheTreesAreTheFixturesToTheBitOnEverySystem()
     {
-        using var fixture = JsonDocument.Parse(File.ReadAllText(Path.Combine(RepositoryRoot(), "Vegetation.Tests", "references", "leaves.json")));
-        var cases = fixture.RootElement.GetProperty("cases").EnumerateArray().ToList();
-        Assert.Equal(6 * 4 * 2, cases.Count);
-
-        var differ = new List<string>();
-        foreach (var item in cases)
+        var path = Path.Combine(RepositoryRoot(), "Vegetation.Tests", "references", "leaves.json");
+        var made = new List<Dictionary<string, object>>();
+        foreach (var (preset, species) in Presets)
+        foreach (var seed in (uint[])[1, 2, 3, 4])
+        foreach (var detail in (TreeDetail[])[TreeDetail.Full, TreeDetail.Reduced])
         {
-            var (preset, seed, detail) = (item.GetProperty("preset").GetString()!, item.GetProperty("seed").GetUInt32(), Enum.Parse<TreeDetail>(item.GetProperty("detail").GetString()!));
-            var species = Presets[preset];
-            var mesh = TreeLeaves.Build(TreeSkeleton.Grow(species, seed), species, seed, detail);
-            var made = new Dictionary<string, string>
+            var skeleton = TreeSkeleton.Grow(species, seed);
+            var mesh = TreeLeaves.Build(skeleton, species, seed, detail);
+            made.Add(new()
             {
+                ["preset"] = preset, ["seed"] = seed, ["detail"] = detail.ToString(),
+                ["nodes"] = skeleton.Nodes.Count, ["vertices"] = mesh.Positions.Count,
+                ["skeleton"] = Hash(skeleton.Nodes),
                 ["positions"] = Hash(mesh.Positions), ["normals"] = Hash(mesh.Normals), ["uvs"] = Hash(mesh.Uvs),
                 ["sky"] = Hash(mesh.Sky ?? []), ["out"] = Hash(mesh.Out ?? []),
                 ["limb"] = Hash(mesh.Limb), ["own"] = Hash(mesh.Own), ["indices"] = Hash(mesh.Indices), ["twigs"] = Hash(mesh.Twigs),
-            };
-            if (item.GetProperty("vertices").GetInt32() != mesh.Positions.Count) differ.Add($"{preset} {seed} {detail} has {mesh.Positions.Count} vertices");
-            differ.AddRange(made.Where(array => item.GetProperty(array.Key).GetString() != array.Value).Select(array => $"{preset} {seed} {detail} {array.Key}"));
+            });
         }
 
-        Assert.True(differ.Count == 0, string.Join(Environment.NewLine, differ));
+        if (Environment.GetEnvironmentVariable("VEGETATION_WRITE_LEAVES") == "1")
+            File.WriteAllText(path, JsonSerializer.Serialize(new Dictionary<string, object> { ["made"] = "VEGETATION_WRITE_LEAVES=1 dotnet test Vegetation.Tests --filter TheTreesAreTheFixturesToTheBitOnEverySystem", ["cases"] = made }, new JsonSerializerOptions { WriteIndented = true }) + "\n");
+
+        using var fixture = JsonDocument.Parse(File.ReadAllText(path));
+        var cases = fixture.RootElement.GetProperty("cases").EnumerateArray().ToList();
+        Assert.Equal(made.Count, cases.Count);
+        var differ = new List<string>();
+        for (var i = 0; i < cases.Count; i++)
+        {
+            var name = $"{made[i]["preset"]} {made[i]["seed"]} {made[i]["detail"]}";
+            foreach (var (key, value) in made[i])
+            {
+                var kept = cases[i].GetProperty(key);
+                var same = kept.ValueKind == JsonValueKind.Number ? kept.GetInt64() == Convert.ToInt64(value, System.Globalization.CultureInfo.InvariantCulture) : kept.GetString() == value.ToString();
+                if (!same) differ.Add($"{name} {key} is {value} where {kept}");
+            }
+        }
+
+        Assert.True(differ.Count == 0, $"{System.Runtime.InteropServices.RuntimeInformation.OSDescription}, {System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture}{Environment.NewLine}{string.Join(Environment.NewLine, differ)}");
     }
 
     /// <summary>The same seed places the same leaves, and another seed others.</summary>

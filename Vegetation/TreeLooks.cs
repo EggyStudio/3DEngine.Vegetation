@@ -154,7 +154,7 @@ public static class TreeLooks
         var half = shape switch
         {
             TreeLeafShape.Triangle => 0.5f * width * (1f - y),
-            TreeLeafShape.ThreeLobeOak => Oval(y, width) * (0.72f + 0.28f * MathF.Abs(MathF.Cos(y * 3f * MathF.PI))),
+            TreeLeafShape.ThreeLobeOak => Oval(y, width) * (0.72f + 0.28f * MathF.Abs(Exact.Cos(y * 3f * MathF.PI))),
             TreeLeafShape.ThreeLobeMaple or TreeLeafShape.FiveLobeMaple => 0f,
             TreeLeafShape.ThreeLeaflets => 0f,
             _ => Oval(y, width),
@@ -174,7 +174,7 @@ public static class TreeLooks
             var side = three ? 1 : 2;
             var dx = across / (0.5f * width);
             var dy = (y - 0.33f) / 0.67f;
-            var angle = MathF.Atan2(dx, dy);
+            var angle = Exact.Atan2(dx, dy);
             var turns = angle / spread;
             var fromLobe = 2f * MathF.Abs(turns - MathF.Round(turns));
             var shorter = 1f - 0.3f * MathF.Abs(angle) / MathF.PI;
@@ -182,7 +182,7 @@ public static class TreeLooks
             var stalk = dy < 0f && MathF.Abs(across) < 0.012f;
             for (var lobe = -side; lobe <= side; lobe++)
             {
-                var (sin, cos) = MathF.SinCos(lobe * spread);
+                var (sin, cos) = Exact.SinCos(lobe * spread);
                 var tip = 1f - 0.3f * MathF.Abs(lobe * spread) / MathF.PI;
                 if (Segment(across, y, 0.5f * width * tip * sin, 0.33f + 0.67f * tip * cos) < 0.009f) return (true, true);
             }
@@ -196,7 +196,7 @@ public static class TreeLooks
             // thinner than its midrib, so a narrow one still meets the stalk where the three join.
             foreach (var (lean, length) in (ReadOnlySpan<(float, float)>)[(0f, 1f), (0.7f, 0.6f), (-0.7f, 0.6f)])
             {
-                var (sin, cos) = MathF.SinCos(lean);
+                var (sin, cos) = Exact.SinCos(lean);
                 var u = (y * cos + across * sin) / length;
                 var v = -y * sin + across * cos;
                 if (u is > 0f and < 1f && MathF.Abs(v) < MathF.Max(Oval(u, width) * length, 0.008f)) return (true, MathF.Abs(v) < 0.008f);
@@ -219,7 +219,7 @@ public static class TreeLooks
     }
 
     // An oval leaf's half width at a share of its length, widest a little below its middle.
-    private static float Oval(float y, float width) => 0.5f * width * MathF.Pow(MathF.Sin(MathF.PI * MathF.Pow(y, 0.8f)), 0.9f);
+    private static float Oval(float y, float width) => 0.5f * width * Exact.Pow(Exact.Sin(MathF.PI * Exact.Pow(y, 0.8f)), 0.9f);
 
     // Value noise from zero to one on a lattice wrapping at a width and a height of cells, smoothed
     // between its corners.

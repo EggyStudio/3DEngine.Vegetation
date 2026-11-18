@@ -204,7 +204,7 @@ internal sealed partial class TreeGrowth
     {
         var trunk = new Stem(0, _height, _height);
         var heading = _random.Unit() * MathF.Tau;
-        trunk.Side = new Vector3(MathF.Cos(heading), 0f, MathF.Sin(heading));
+        trunk.Side = new Vector3(Exact.Cos(heading), 0f, Exact.Sin(heading));
         trunk.Due = _random.Unit();
         AddPoint(-1, Vector3.Zero, trunk);
         _buds.Add(new Bud { Node = 0, Stem = trunk, Way = Vector3.UnitY });
@@ -264,7 +264,7 @@ internal sealed partial class TreeGrowth
 
         var away = AwayFromShadow(from);
         if (away != Vector3.Zero) way = (way + away * Phototropism).Normalized;
-        if (bud.Toward.LengthSquared() > 1e-8f) way = (way + bud.Toward.Normalized * Pull).Normalized;
+        if (bud.Toward.SquaredLength > 1e-8f) way = (way + bud.Toward.Normalized * Pull).Normalized;
 
         if (stem.Level == 0 && !stem.Based && _species.BaseSplits > 0 && stem.Grown >= _bare)
         {
@@ -328,8 +328,8 @@ internal sealed partial class TreeGrowth
 
         // A branch bends about the level line square to it, downward where its curve is above
         // zero, and the trunk, or a branch standing upright, toward its side.
-        var levelLine = Vector3.Cross(way, Vector3.UnitY);
-        if (level == 0 || levelLine.LengthSquared() < 1e-6f) return Rotate(way, Vector3.Cross(way, side).Normalized, Radians(curve));
+        var levelLine = Vectors.Cross(way, Vector3.UnitY);
+        if (level == 0 || levelLine.SquaredLength < 1e-6f) return Rotate(way, Vectors.Cross(way, side).Normalized, Radians(curve));
 
         var flat = levelLine.Normalized;
         way = Rotate(way, flat, -Radians(curve));
@@ -339,7 +339,7 @@ internal sealed partial class TreeGrowth
         // down.
         if (level >= 2 && _species.AttractionUp != 0f)
         {
-            var declination = MathF.Acos(Math.Clamp(way.Y, -1f, 1f));
+            var declination = Exact.Acos(Math.Clamp(way.Y, -1f, 1f));
             var up = _species.AttractionUp * declination / steps;
             way = Rotate(way, flat, up > 0f ? MathF.Min(up, declination) : MathF.Max(up, declination - MathF.PI));
         }
@@ -405,8 +405,8 @@ internal sealed partial class TreeGrowth
     /// </summary>
     private void SetBud(Stem stem, int node, Vector3 way, TreeLevel next, float bare)
     {
-        var side = stem.Side - way * Vector3.Dot(stem.Side, way);
-        stem.Side = side.LengthSquared() > 1e-8f ? side.Normalized : Across(way);
+        var side = stem.Side - way * Vectors.Dot(stem.Side, way);
+        stem.Side = side.SquaredLength > 1e-8f ? side.Normalized : Across(way);
         var round = Rotate(stem.Side, way, stem.Turn);
 
         if (next.Rotate >= 0f)
@@ -431,7 +431,7 @@ internal sealed partial class TreeGrowth
         _buds.Add(new Bud
         {
             Node = node,
-            Way = (way * MathF.Cos(lean) + round * MathF.Sin(lean)).Normalized,
+            Way = (way * Exact.Cos(lean) + round * Exact.Sin(lean)).Normalized,
             Level = stem.Level + 1,
             Length = length,
             Most = MathF.Max(most * stem.Length, length),
@@ -480,7 +480,7 @@ internal sealed partial class TreeGrowth
             var radius = foot + (pipe - foot) * MathF.Min(_levels[stem.Level].Taper, 1f);
 
             var low = 1f - 8f * _places[i].Y / _height;
-            if (stem.Level == 0 && low > 0f) radius *= _species.Flare * (MathF.Pow(100f, low) - 1f) / 100f + 1f;
+            if (stem.Level == 0 && low > 0f) radius *= _species.Flare * (Exact.Pow(100f, low) - 1f) / 100f + 1f;
             nodes[i] = new TreeNode(_parents[i], _places[i], radius);
         }
 
@@ -494,8 +494,8 @@ internal sealed partial class TreeGrowth
     internal static float ShapeRatio(TreeShape shape, float ratio) => shape switch
     {
         TreeShape.Conical => 0.2f + 0.8f * ratio,
-        TreeShape.Spherical => 0.2f + 0.8f * MathF.Sin(MathF.PI * ratio),
-        TreeShape.Hemispherical => 0.2f + 0.8f * MathF.Sin(0.5f * MathF.PI * ratio),
+        TreeShape.Spherical => 0.2f + 0.8f * Exact.Sin(MathF.PI * ratio),
+        TreeShape.Hemispherical => 0.2f + 0.8f * Exact.Sin(0.5f * MathF.PI * ratio),
         TreeShape.Cylindrical => 1f,
         TreeShape.TaperedCylindrical => 0.5f + 0.5f * ratio,
         TreeShape.Flame => ratio <= 0.7f ? ratio / 0.7f : (1f - ratio) / 0.3f,
@@ -518,8 +518,8 @@ internal sealed partial class TreeGrowth
         if (ratio is < 0f or > 1f) return 0f;
         var peak = _species.PruneWidthPeak;
         return ratio < 1f - peak
-            ? MathF.Pow(ratio / (1f - peak), _species.PrunePowerHigh)
-            : MathF.Pow((1f - ratio) / peak, _species.PrunePowerLow);
+            ? Exact.Pow(ratio / (1f - peak), _species.PrunePowerHigh)
+            : Exact.Pow((1f - ratio) / peak, _species.PrunePowerLow);
     }
 
     /// <summary>
@@ -548,7 +548,7 @@ internal sealed partial class TreeGrowth
     /// <summary>A way square to another, turned round it at random.</summary>
     private Vector3 Across(Vector3 way)
     {
-        var square = Vector3.Cross(way, MathF.Abs(way.Y) < 0.9f ? Vector3.UnitY : Vector3.UnitX).Normalized;
+        var square = Vectors.Cross(way, MathF.Abs(way.Y) < 0.9f ? Vector3.UnitY : Vector3.UnitX).Normalized;
         return Rotate(square, way, _random.Unit() * MathF.Tau);
     }
 
@@ -557,8 +557,8 @@ internal sealed partial class TreeGrowth
     /// </summary>
     private static Vector3 Rotate(Vector3 vector, Vector3 axis, float angle)
     {
-        var (sin, cos) = MathF.SinCos(angle);
-        return vector * cos + Vector3.Cross(axis, vector) * sin + axis * (Vector3.Dot(axis, vector) * (1f - cos));
+        var (sin, cos) = Exact.SinCos(angle);
+        return vector * cos + Vectors.Cross(axis, vector) * sin + axis * (Vectors.Dot(axis, vector) * (1f - cos));
     }
 
     private static float Radians(float degrees) => degrees * (MathF.PI / 180f);
