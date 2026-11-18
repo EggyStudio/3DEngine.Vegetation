@@ -8,8 +8,8 @@ beside it, textures.json, names, by the recipe it gives each entry.
     build/textures.py --sources DIR ...   # read the sources under DIR rather than .vegetation/
     build/textures.py --sample DIR        # write an entry of no source under DIR, for the tests
 
-An entry is three KTX2 files with their mipmaps, each level's blocks compressed with zstd, as a KTX2
-reader with zstd takes them:
+An entry is three KTX2 files with their mipmaps, each level's blocks as they are with no
+supercompression, which a KTX2 reader uploads in place:
 
     albedo.ktx2   BC7, sRGB     the color in RGB and the opacity in A
     normal.ktx2   BC5           the tangent-space normal's X and Y, read as a two-channel normal map
@@ -32,8 +32,8 @@ encoding is the one function encode() below, so another format, Basis Universal'
 second branch of it.
 
 The encoders are written here, BC7's mode 6 with each block's endpoints along its principal axis and
-fitted again by least squares, and BC4 twice for BC5, so the import needs Python 3.14, whose own
-compression module has zstd, and Pillow, and nothing else. Each level is made from the one above by
+fitted again by least squares, and BC4 twice for BC5, so the import needs Python 3.14 and Pillow
+and nothing else. Each level is made from the one above by
 a box filter, and the color under a cut-out leaf's transparent texels is the color of the leaf
 nearest, so no dark rim shows as it shrinks. A leaf atlas's color and its surface's four channels
 are each level's means weighted by how much of each texel the leaves cover, and the surface's texels
@@ -67,7 +67,6 @@ import math
 import os
 import struct
 import sys
-from compression import zstd
 
 from PIL import Image, ImageChops, ImageEnhance, ImageFilter, ImageMath
 
@@ -88,8 +87,6 @@ MODEL_BC5 = 132
 MODEL_BC7 = 134
 TRANSFER_LINEAR = 1
 TRANSFER_SRGB = 2
-
-ZSTD_LEVEL = 19
 
 # BC7's interpolation weights for four-bit indices, in sixty-fourths, and the nearest index for each
 # sixty-fourth, so a texel's place between the endpoints is turned into its index by a lookup.
@@ -892,10 +889,11 @@ def psnr_bc5(image, blocks):
 # The file.
 
 def ktx2(format, levels, blocks):
-    """A KTX2 file of the levels' blocks, each level compressed with zstd, the largest first in the
-    index and last in the file."""
+    """A KTX2 file of the levels' blocks as they are, with no supercompression, the largest first in
+    the index and last in the file, each level starting at a multiple of its block's size, as KTX2
+    asks of a file whose levels a reader uploads in place."""
     width, height = levels[0].size
-    compressed = [zstd.compress(level, level=ZSTD_LEVEL) for level in blocks]
+    align = 8 if format == BC4_UNORM else 16
 
     descriptor = data_format(format)
     pairs = [(b"KTXwriter", b"build/textures.py")]
@@ -911,23 +909,26 @@ def ktx2(format, levels, blocks):
     key_values_at = descriptor_at + len(descriptor)
     data_at = key_values_at + len(key_values)
 
-    # The levels' bytes from the smallest to the largest, as the format lays them out.
+    # The levels' bytes from the smallest to the largest, as the format lays them out, each padded
+    # to its block's size before it.
     offsets = [0] * len(levels)
     at = data_at
     for level in reversed(range(len(levels))):
+        at += -at % align
         offsets[level] = at
-        at += len(compressed[level])
+        at += len(blocks[level])
 
     out = bytearray(b"\xabKTX 20\xbb\r\n\x1a\n")
-    out += struct.pack("<9I", format, 1, width, height, 0, 0, 1, len(levels), 2)
+    out += struct.pack("<9I", format, 1, width, height, 0, 0, 1, len(levels), 0)
     out += struct.pack("<4I", descriptor_at, len(descriptor), key_values_at, len(key_values))
     out += struct.pack("<2Q", 0, 0)
     for level in range(len(levels)):
-        out += struct.pack("<3Q", offsets[level], len(compressed[level]), len(blocks[level]))
+        out += struct.pack("<3Q", offsets[level], len(blocks[level]), len(blocks[level]))
     out += descriptor
     out += key_values
     for level in reversed(range(len(levels))):
-        out += compressed[level]
+        out += b"\0" * (offsets[level] - len(out))
+        out += blocks[level]
     return bytes(out)
 
 

@@ -136,11 +136,39 @@ public sealed class TreeTexturesTests
     [Fact]
     public void ASetsFilesAreKtx2InTheirFormatsWithEveryLevel()
     {
-        // The sample's albedo, 64 square with its levels to a texel, in BC7 as sRGB, each level
-        // compressed with zstd, its normal half the size in BC5 and its surface in BC7 as data.
-        Assert.Equal((146u, 64u, 64u, 7u, 2u), Header(File.ReadAllBytes(Path.Combine(Sample, "sample", "albedo.ktx2"))));
-        Assert.Equal((141u, 32u, 32u, 6u, 2u), Header(File.ReadAllBytes(Path.Combine(Sample, "sample", "normal.ktx2"))));
-        Assert.Equal((145u, 32u, 32u, 6u, 2u), Header(File.ReadAllBytes(Path.Combine(Sample, "sample", "surface.ktx2"))));
+        // The sample's albedo, 64 square with its levels to a texel, in BC7 as sRGB, with no
+        // supercompression, its normal half the size in BC5 and its surface in BC7 as data.
+        Assert.Equal((146u, 64u, 64u, 7u, 0u), Header(File.ReadAllBytes(Path.Combine(Sample, "sample", "albedo.ktx2"))));
+        Assert.Equal((141u, 32u, 32u, 6u, 0u), Header(File.ReadAllBytes(Path.Combine(Sample, "sample", "normal.ktx2"))));
+        Assert.Equal((145u, 32u, 32u, 6u, 0u), Header(File.ReadAllBytes(Path.Combine(Sample, "sample", "surface.ktx2"))));
+    }
+
+    /// <summary>
+    /// Every file the library carries says no supercompression in its header, and each of its
+    /// levels is as long as its blocks uncompressed and starts at a multiple of its block's size,
+    /// 16 bytes for BC7 and BC5 and 8 for BC4, so a reader with no decompressor uploads it in
+    /// place.
+    /// </summary>
+    [Fact]
+    public void EveryCarriedFileIsPlainKtx2()
+    {
+        var carried = TreeTextures.Files.Where(path => !path.StartsWith("added/", StringComparison.Ordinal)).ToList();
+        Assert.Equal(43, carried.Count);
+        foreach (var path in carried)
+        {
+            using var stream = TreeTextures.Open(path)!;
+            using var bytes = new MemoryStream();
+            stream.CopyTo(bytes);
+            var file = bytes.ToArray();
+            var (format, levels, scheme) = (BitConverter.ToUInt32(file, 12), BitConverter.ToUInt32(file, 40), BitConverter.ToUInt32(file, 44));
+            Assert.True(scheme == 0, $"{path} is supercompressed by scheme {scheme}.");
+            var align = format == 139 ? 8ul : 16ul;
+            for (var level = 0; level < levels; level++)
+            {
+                var (offset, length, uncompressed) = (BitConverter.ToUInt64(file, 80 + 24 * level), BitConverter.ToUInt64(file, 88 + 24 * level), BitConverter.ToUInt64(file, 96 + 24 * level));
+                Assert.True(length == uncompressed && offset % align == 0 && offset + length <= (ulong)file.Length, $"{path}'s level {level} lies at {offset} for {length} bytes of {uncompressed}.");
+            }
+        }
     }
 
     [Fact]
@@ -161,10 +189,10 @@ public sealed class TreeTexturesTests
             Assert.Equal((139u, albedo.Width / 2, albedo.Height / 2), (depth.Format, depth.Width, depth.Height));
         }
 
-        // The sample's depth, derived from its normal map, is half its 64 square, in BC4 under
-        // zstd.
+        // The sample's depth, derived from its normal map, is half its 64 square, in BC4 with no
+        // supercompression.
         var sample = Header(File.ReadAllBytes(Path.Combine(Sample, "sample", "depth.ktx2")));
-        Assert.Equal((139u, 32u, 32u, 2u), (sample.Format, sample.Width, sample.Height, sample.Supercompression));
+        Assert.Equal((139u, 32u, 32u, 0u), (sample.Format, sample.Width, sample.Height, sample.Supercompression));
     }
 
     [Fact]

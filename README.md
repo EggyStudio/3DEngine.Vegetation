@@ -65,7 +65,7 @@ engines that take it, 3DEngine and BevyCSharp, are two such bindings.
 | Pictures | RGBA, a row at a time from the top, the colors sRGB-encoded and the normals and depths linear |
 | Normal maps | Tangent space, X toward the picture's right and Y toward its top row, as OpenGL and glTF read them |
 | Depth maps | 255 the deepest, a depth below the surface for parallax occlusion rather than a height |
-| Texture files | KTX2 with zstd over each mipmap level, BC7 for color and surface, BC5 for normals, BC4 for depth |
+| Texture files | KTX2 with every mipmap level and no supercompression, each level's blocks as a GPU samples them, BC7 for color and surface, BC5 for normals, BC4 for depth |
 | Light | None of the module's. `TreeCrown.Shade` gives a share of the sky from 0 to 1, which an engine scales by its own light |
 | A leaf vertex's place and normal | Meters, Y up, from the tree's root at the origin, and a normal at unit length, the way its card faces, a card counterclockwise seen from its face |
 | A leaf vertex's texture coordinates | 0 to 1 in the atlas, U from its left and V from its top, a card's stalk at its box's bottom |
@@ -149,12 +149,12 @@ dotnet test Vegetation.Tests
 ## The texture collection
 
 `Vegetation/Textures` holds the bark, leaf and grass sets the module carries in its assembly, which
-`TreeTextures` finds by name, each three KTX2 files in BC7 and BC5 with their mipmaps and zstd over
-each level, and a bark a fourth, its depth in BC4. `build/textures.py` makes them from the sources
+`TreeTextures` finds by name, each three KTX2 files in BC7 and BC5 with their mipmaps and no
+supercompression, and a bark a fourth, its depth in BC4. `build/textures.py` makes them from the sources
 sorted under `.vegetation/`, which the repository leaves out, or under the folder `--sources` names,
 by the recipe the collection's `textures.json` gives each set, the crop, the size, the maps packed
 into each file and any change of color, so a set is made again from its source byte for byte. It
-needs Python 3.14, whose own modules have zstd, and Pillow:
+needs Python 3.14 and Pillow:
 
 ```bash
 build/textures.py                              # import every set whose source is here

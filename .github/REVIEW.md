@@ -574,3 +574,32 @@ since the trees are the module's own. The probes' test goes as well, its functio
 runtime's, which part by system as the run read. The strict build is clean and the tests pass, 84
 where there were 78 with the probe. DEVLOG.md is written by Tools' scripts/devlog.py, four days,
 three pictures and six items done, the README links it at its top and AGENTS.md names its command.
+
+Plain KTX2, in the commit carrying this line. build/textures.py writes every level's blocks as they
+are, supercompression scheme 0, each level starting at a multiple of its block's size, 16 bytes for
+BC7 and BC5 and 8 for BC4, as KTX2 asks of levels a reader uploads in place, and no longer imports
+zstd. The 13 sets were made again from their sources and the tests' sample with it, and each of the
+47 files' levels is the zstd file's level decompressed to the byte, at an aligned offset, the
+manifest changing in the files' sizes alone. The collection's 43 files are 6,987,376 bytes where
+they were 4,956,158 under zstd, 2,031,218 more in the assembly, the largest species' bark and leaves
+1.10 MB against the 3 MB a species is held to and the collection 6.99 MB against 32 MB.
+EveryCarriedFileIsPlainKtx2 reads each carried file's header and levels and failed on the zstd
+collection, at broadleaf-bark/albedo.ktx2 by scheme 2, before the plain one went in, and the
+sample's headers are held at scheme 0. The README's conventions row, its collection section, the
+set's remarks and the recipe's docstring say no supercompression.
+
+Of the bridge, nothing reads a file's size or hash. TreeTextureAssets mounts the files by their
+paths and opens each through TreeTextures.Open, its test comparing what Open gives with what the
+mount serves, and its two recipe tests compare what the recipe writes with the collection and the
+sample, which change together; its skip check imports zstd where the recipe needs it no longer,
+which asks more than it must and stops nothing. The bridge's own KTX2 reader is to read scheme 0,
+which its pointer's commit shows.
+
+build/textures.py gives way to Materials' scripts/textures.py, which builds the bark, leaf and grass
+sets from a manifest it is named, writes plain levels and carries the BC7 start's mend of 7e69a59,
+in a commit of its own after this one, which makes the collection again by it from the sources with
+--sources, its bytes changing by that mend alone, read level by level, and gives build/textures.py,
+its docstring and the README's section to the command that runs Materials' script. Until then the
+start's fault, a block whose red and blue move against each other encoded flat, is this recipe's,
+the tests' sample at 23.7 dB among what it makes. The strict build is clean and the tests pass, 85
+where there were 84.

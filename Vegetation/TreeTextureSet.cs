@@ -21,10 +21,10 @@ namespace Vegetation;
 /// <remarks>
 /// <para>
 /// Each file is a KTX2 with its mipmaps, compressed in the formats a desktop GPU samples as they
-/// are, a byte a texel, and each level supercompressed with zstd. The surface's first three
-/// channels are where glTF's occlusion and metallic-roughness textures place them and its fourth is
-/// the share of light let through, so an engine binds the one image as a material's occlusion, its
-/// metallic-roughness and its diffuse transmission texture.
+/// are, a byte a texel, with no supercompression, so a level is uploaded as it lies. The surface's
+/// first three channels are where glTF's occlusion and metallic-roughness textures place them and
+/// its fourth is the share of light let through, so an engine binds the one image as a material's
+/// occlusion, its metallic-roughness and its diffuse transmission texture.
 /// </para>
 /// <para>
 /// A path is the set's name and the file's, as <c>silver-birch-bark/albedo.ktx2</c>, below
