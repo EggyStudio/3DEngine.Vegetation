@@ -449,3 +449,58 @@ planted with the bridge's name failed it before it was taken out. Nothing in the
 engine, the assembly's name apart, which is the owner's and is no reference, and the README names
 the engines as two bindings in its section on binding and as the two that take the module in its
 opening. The strict build is clean and the tests pass, 67 where there were 66.
+
+Item 9's third part proposed, the leaves. TreeDetail moves as it is, and TreeLeaves.Build of a
+skeleton, a species, a seed and a detail gives a TreeLeafMesh of the module's own arrays, each
+vertex's place, normal, texture coordinates, the sky it sees from TreeCrown and its way out of the
+crown, with its limb's pivot and phase and its own pivot and phase for the sway, the triangles'
+indices, and each card's twig, which a far card is drawn from. The bridge's cards, fronds, their
+spread and bend, the reduced level's every other card drawn larger and the subset a far card takes
+move with it, numbers drawn from Pcg in the bridge's order. The limb plan moves with them as
+TreeLimbs, which limb each node sways with and where it pivots, since the stems' sway reads it too
+and it is the skeleton's alone; the stiffness, the wind's direction, the streams' formats and
+places, the leaf material, the shade's floor of a half and the folding of the way out into texture
+coordinates stay in the engines, each copying the arrays into its mesh. The same to the bit as the
+bridge over the presets at four seeds and both details, compared as the volume was, with the
+bridge's eight leaf tests that need no GPU moved and the rest staying. One commit, the stems and the
+far cards after it once Modeling holds the edit mesh.
+
+The texture files' zstd, which 3DEngine's KTX2 reader and Materials' first part refuse, is better
+dropped on the module's side. The 43 files are 4.96 MB with zstd over each level and 6.99 MB as
+plain KTX2, summed from their own level indexes, 2.03 MB more in the assembly; the largest species'
+bark and leaves stand at 1.10 MB against the 3 MB a species is held to and the collection at 6.99 MB
+against 32 MB, and a plain file's levels are the BC blocks an engine uploads as they lie, so a
+stranger's loader reads them with no decompressor. A reader gaining zstd keeps the 2 MB and asks
+every engine that binds the module for a zstd decoder. The recipe writes plain KTX2 when Materials,
+which owns the pictures' encoding, agrees.
+
+Item 9's third part, the leaves, in the commit carrying this line, as proposed and answered.
+TreeDetail moves as it was, TreeLeaves.Build of a skeleton, a species, a seed and a level gives a
+TreeLeafMesh of the module's arrays, each vertex's place, normal, texture coordinates, sky, way out,
+limb pivot and own pivot, the triangles and each card's twig, and TreeLimbs is the bridge's limb
+plan, its sixteen thickest stems, which limb each stem swings with, its pivot and Knuth's phase. The
+bridge's cards, fronds, spread, bend, reduced level and sway move with them, the numbers drawn from
+Pcg in the bridge's order and each product and sum written out as its Vec3 wrote it; the stiffness,
+the wind, the streams, the leaf material, the shade's floor of a half and the folding of the way out
+into texture coordinates stay in the engines. A reduced level's twigs are every other card's of the
+full level, which the bridge's reduced mesh did not carry. The README names the four types and gives
+each per-vertex field its units and range in the conventions table.
+
+The check is a fixture, Vegetation.Tests/references/leaves.json, of SHA-256 hashes of each array's
+bytes for the six presets at seeds 1 to 4 and both levels, 48 cases, written by build/leaves-fixture
+from the bridge's build at 8e7fa0f5 by reflection, its private card builder, limb plan and crown
+volume, with the sky held at one as the module holds it. The library and its tests reference no
+engine; the script loads the bridge's assembly from the folder named on its command line and is no
+project of the solution. It is remade with `dotnet run --project build/leaves-fixture -- BIN
+COMMIT`, BIN the folder of the bridge's build holding BevyCSharp.Vegetation.dll and COMMIT the
+bridge's commit, which the fixture names. All 48 cases' nine arrays hash as the fixture, and one
+more draw from Pcg planted after a twig's first turn failed it from the aspen's first case on, its
+places, normals, texture coordinates, sky and way out apart, before it was taken out. The hashes are
+of sines, cosines and powers, which the systems' libraries may round apart, so the first run on
+Windows and macOS reads whether a seed grows the same leaves on every system; where it does not, the
+review decides between a fixture a system and a reading by tolerance.
+
+Ten tests come with the code, the bridge's eight leaf tests that need no GPU, the shade read as the
+sky itself, its floor being the engine's, the fixture, and one of the limbs and the leaves' pivots,
+the bridge keeping its tests that draw. The strict build is clean and the tests pass, 77 where there
+were 67.

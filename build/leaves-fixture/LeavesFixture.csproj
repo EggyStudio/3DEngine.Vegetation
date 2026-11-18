@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- Writes the leaves' fixture the tests compare with, from an engine's own build of the leaves
+         read once through reflection, so neither the library nor its tests reference it. Not part
+         of the solution, and run by hand as Program.cs says. -->
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Vegetation\Vegetation.csproj" />
+    </ItemGroup>
+
+</Project>

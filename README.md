@@ -16,6 +16,8 @@ interfaces it declares where it binds the module.
 | `TreePlanting` and `TreeStance` | Where trees stand, a forest's trees spread over a disc from a seed, none nearer another than an even spread allows, each with a seed of its own, and how a tree stands by its seed, which of its species' variants it is, its turn and its size, with the variants' count and the seed each variant grows from |
 | `TreeTextures`, `TreeTextureSet` and `TreeTextureKind` | The texture collection the module carries in its assembly, bark, leaf and grass sets found by name, each set's files by their paths with the mean color and surface its manifest measured and a leaf atlas's boxes, and a game's own folders of sets added beside them |
 | `TreeLooks` | The bark's color, normal and depth and a leaf atlas of four leaves of a shape, made in code where a species names no set, the same each time and white or gray for the species' colors to tint, with the boxes of the atlas's leaves |
+| `TreeLeaves`, `TreeLeafMesh` and `TreeDetail` | A grown tree's leaves as vertex arrays at two levels of detail, a card a leaf along its twigs or a frond along each stem, each vertex's place, normal, texture coordinates, sky, way out and sway, with the triangles and each card's twig |
+| `TreeLimbs` | Which of a tree's sixteen limbs each stem sways with and where each limb pivots, with a phase a limb or a leaf |
 | `TreeCrown` | A crown as a volume of its leaves, from which each leaf takes the share of the sky it sees through the leaves round it and the way out of the crown at it, so a leaf deep in the crown is drawn darker than one on its rim |
 | `GrassScatter`, `GrassSettings`, `GrassPatch` and `GrassClump` | Where grass stands over a stretch of ground, the stretch cut into square patches an engine draws as a mesh each, and each patch's clumps scattered a cell each by the patch's own seed, a clump's root, turn, height and phases in the wind, with the settings a stretch is planted with |
 
@@ -63,6 +65,11 @@ engines that take it, 3DEngine and BevyCSharp, are two such bindings.
 | Depth maps | 255 the deepest, a depth below the surface for parallax occlusion rather than a height |
 | Texture files | KTX2 with zstd over each mipmap level, BC7 for color and surface, BC5 for normals, BC4 for depth |
 | Light | None of the module's. `TreeCrown.Shade` gives a share of the sky from 0 to 1, which an engine scales by its own light |
+| A leaf vertex's place and normal | Meters, Y up, from the tree's root at the origin, and a normal at unit length, the way its card faces, a card counterclockwise seen from its face |
+| A leaf vertex's texture coordinates | 0 to 1 in the atlas, U from its left and V from its top, a card's stalk at its box's bottom |
+| A leaf vertex's sky | 0 to 1, the share of the sky that reaches its card through the crown, the same at a card's four corners, absent for fronds; an engine darkens the leaf by it to a floor of its own |
+| A leaf vertex's way out | A unit vector, the way out of the crown at its card, absent for fronds; an engine bends the leaf's diffuse light toward it |
+| A leaf vertex's limb and own pivots | Meters in X, Y and Z and a phase from 0 up to 1 in W, the limb's where it leaves its parent and the leaf's at its stalk, or a frond's foot; an engine's wind moves the vertex about them |
 | Random numbers | `Pcg` from a seed, the same on every runtime, so a seed plants and grows the same in every engine |
 
 The smallest binding plants a forest of a species and a field of grass. It is the body of
