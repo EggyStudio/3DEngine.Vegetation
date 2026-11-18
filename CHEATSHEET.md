@@ -84,16 +84,16 @@ class TreeLooks                                          // The bark's pictures 
 int BarkWidth = 128;                                     // The bark's pictures' width in texels, round the stem
 int BarkHeight = 512;                                    // The bark's pictures' height in texels, along the stem
 int LeafSize = 256;                                      // The leaves' atlas's width and height in texels, two leaves by two
-IReadOnlyList<(float, float, float, float)> LeafBoxes { get; }  // Where each of the atlas's four leaves is, a square cell each, as the share of the atlas's width and height from its left and top and the share it spans, in the form LeafBoxes gives a set's, each leaf's stalk at the bottom
-(byte[], byte[], byte[]) Bark();                         // Makes the bark's color, its normal map and its depth, each tiling both ways
+IReadOnlyList<(float U, float V, float Width, float Height)> LeafBoxes { get; }  // Where each of the atlas's four leaves is, a square cell each, as the share of the atlas's width and height from its left and top and the share it spans, in the form LeafBoxes gives a set's, each leaf's stalk at the bottom
+(byte[] Color, byte[] Normal, byte[] Depth) Bark();      // Makes the bark's color, its normal map and its depth, each tiling both ways
 byte[] Leaves(TreeLeafShape shape, float width);         // Makes the leaves' atlas, four leaves of a shape, each a little wider than the last
 
 record TreeSkeleton                                      // A grown tree's stems as points, each with the point it grew from, its place and its radius, which Grow grows from a species and a seed and an engine builds into a mesh
 TreeSkeleton(IReadOnlyList<TreeNode> nodes);             // A skeleton of the points given
 IReadOnlyList<TreeNode> Nodes { get; }                   // The points, the trunk's foot first and each after the point it grew from
-(Vector3, Vector3) Bounds { get; }                       // The smallest box holding every point, not counting the stems' thickness
+(Vector3 Low, Vector3 High) Bounds { get; }              // The smallest box holding every point, not counting the stems' thickness
 TreeSkeleton Grow(TreeSpecies species, uint seed);       // Grows a tree of a species from a seed
-TreeSkeleton Grow(TreeSpecies species, uint seed, IReadOnlyList<(Vector3, Vector3)> blockers);  // Grows a tree of a species from a seed, round boxes it does not grow into and that shade it
+TreeSkeleton Grow(TreeSpecies species, uint seed, IReadOnlyList<(Vector3 Low, Vector3 High)> blockers);  // Grows a tree of a species from a seed, round boxes it does not grow into and that shade it
 bool Equals(TreeSkeleton? other);                        // Whether another skeleton has the same points in the same order, compared one by one
 int GetHashCode();                                       // A hash of the count of points and the first and last of them, the same for equal skeletons
 
@@ -114,7 +114,7 @@ class TreePlanting                                       // Where trees stand an
 int Variants = 8;                                        // How many variants a species grows, which the trees planted from it share, each turned and sized by its own seed
 uint VariantSeed(int variant);                           // The seed a species' variant grows from, as Grow takes it
 TreeStance Stance(uint seed);                            // How a tree planted with a seed stands, which variant of its species it is, its turn and its size
-IReadOnlyList<(Vector3, uint)> Forest(uint seed, Vector3 middle, float radius, int count);  // Spreads a forest's trees over a disc on level ground, none nearer another than an even spread allows
+IReadOnlyList<(Vector3 Place, uint Seed)> Forest(uint seed, Vector3 middle, float radius, int count);  // Spreads a forest's trees over a disc on level ground, none nearer another than an even spread allows
 
 record struct TreeStance                                 // How a tree stands where it is planted, from its seed by Stance
 TreeStance(int Variant, float Turn, float Size);
@@ -136,10 +136,10 @@ TreeTextureKind Kind { get; init; }                      // Whether it is a bark
 string Albedo { get; init; }                             // The path of the color in RGB and the opacity in A, BC7 in sRGB
 string Normal { get; init; }                             // The path of the tangent-space normal's X and Y, BC5, a two-channel normal map
 string Surface { get; init; }                            // The path of occlusion in R, roughness in G, metallic in B and translucency in A, BC7
-(int, int)? Size { get; init; }                          // The albedo's width and height in texels, the normal and the surface being half of each, or nothing where the set's manifest does not say
-IReadOnlyList<(float, float, float, float)> LeafBoxes { get; init; }  // Where each leaf of a leaf set's atlas is, as the share of the atlas's width and height from its left and top and the share it spans, its stalk at the bottom, or the whole atlas as one leaf where the manifest gives none
+(int Width, int Height)? Size { get; init; }             // The albedo's width and height in texels, the normal and the surface being half of each, or nothing where the set's manifest does not say
+IReadOnlyList<(float U, float V, float Width, float Height)> LeafBoxes { get; init; }  // Where each leaf of a leaf set's atlas is, as the share of the atlas's width and height from its left and top and the share it spans, its stalk at the bottom, or the whole atlas as one leaf where the manifest gives none
 Vector3 MeanColor { get; init; }                         // The mean color of the albedo's opaque texels in linear sRGB, the summer color a fall tint is worked out against, or white where the manifest does not say
-(float, float, float, float) MeanSurface { get; init; }  // The mean of the surface's occlusion, roughness, metallic and translucency over the albedo's opaque texels, which a tree's far card, a picture of a whole branch, is drawn with, or a surface fully rough and lit through nowhere where the manifest does not say
+(float Occlusion, float Roughness, float Metallic, float Translucency) MeanSurface { get; init; }  // The mean of the surface's occlusion, roughness, metallic and translucency over the albedo's opaque texels, which a tree's far card, a picture of a whole branch, is drawn with, or a surface fully rough and lit through nowhere where the manifest does not say
 string? Depth { get; init; }                             // The path of a bark's depth for parallax occlusion, one channel in BC4, white the deepest, a depth below the surface rather than a height, or nothing for a set without one
 
 enum TreeTextureKind                                     // What a set of TreeTextures is for
@@ -178,7 +178,7 @@ Vector4 Pivot(int limb, Vector3 at);                     // A limb's pivot and p
 float Phase(int number);                                 // A phase from 0 up to 1 for a limb or a leaf, by its number, spread by Knuth's hash
 
 class TreeCrown                                          // A tree's crown as a volume of leaves, from which each leaf takes how much of the sky reaches it through the leaves round it and which way is out of the crown at it, so an engine shades a leaf deep in the crown darker than one on its rim and bends its light toward the outside
-(float[], Vector3[]) Shade(IReadOnlyList<Vector3> places, IReadOnlyList<float> areas);  // Finds how much of the sky each leaf sees through the crown and which way is out of the crown at it
+(float[] Sky, Vector3[] Out) Shade(IReadOnlyList<Vector3> places, IReadOnlyList<float> areas);  // Finds how much of the sky each leaf sees through the crown and which way is out of the crown at it
 
 class GrassScatter                                       // Where grass stands over a stretch of ground, the stretch cut into square patches and each patch's clumps scattered over it from a seed, which an engine draws as a mesh a patch, two cards crossed a clump
 IReadOnlyList<GrassPatch> Patches(Vector2 size, GrassSettings settings);  // Cuts a stretch of ground into the patches its grass is drawn in

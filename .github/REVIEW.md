@@ -666,3 +666,40 @@ the engines to refuse them, go with the shared checks; and DEVLOG.md, written ag
 captions as they stand, four days, four pictures and six items done. What the engines do with the
 module goes in the reports to the review alone. The strict build is clean and the tests pass, 79
 where there were 86, the fourteen of the local copies giving way to the seven facts.
+
+The leaves by a twig's length, in the commit carrying this line, as the review answered. The curtain
+the willow was to hang was the wrong reading. Twigs stand all along a hanging curtain, so the outer
+tips' median stays near half the height however far it hangs, as five changes to the willow's levels
+showed, 0.43 to 0.59 at seeds 1 to 4 where 0.3 was asked, and the willow weeps already by what
+weeping is. TheWeepingWillowsStemsFallAndItsRimsLeavesHang holds it, its long outer stems falling
+0.42 to 0.80 of their length and 85 to 91 percent of its rim's cards pointing down, where the oak's
+rise 0.59 to 0.71 and 15 to 17 percent of its rim's point down.
+
+ALongTwigCarriesAsManyLeavesAMeterAsATypicalOne failed first on all twenty trees with leaves, their
+longest quarter of twigs carrying a quarter to a half of the cards a meter of their twigs about the
+median, the willow's 13 to 30 where 26 to 59, since a twig's share was held at most twigs'. The
+share follows the twig's length, three tenths of most at the least, the total drawn by the paper's
+count as before, so each preset's cards at seeds 1 to 4 stand within one of their count, the aspen
+at 22,499, 22,500, 22,500 and 22,500 where 22,499, 22,500, 22,500 and 22,499, the tupelo at 30,000,
+29,999, 30,000 and 30,000 where 30,000, 29,999, 29,999 and 29,999, the willow at 29,999, 30,000,
+29,999 and 29,999 where 30,000, 29,999, 30,000 and 29,999, the oak at 29,999, 29,999, 29,999 and
+30,000 where 29,999, 30,000, 29,999 and 29,999, the bush at 10,080, 10,079, 10,079 and 10,080 where
+10,080, 10,080, 10,080 and 10,079, and the fern's fronds, which share nothing, at 814, 586, 884 and
+930 vertices as before. The fixture is written again, its 40 cases of cards changing in their
+leaves' arrays alone and every case's skeleton and count of nodes the same, which its test holds.
+
+The picture, `2026-11-18-item-10-leaf-spread.webp`, sets the six presets before and after side by
+side with their sets and the willow large beside them, and the change reads little at that size. It
+shows what holds the willow's curtain bare. Its long hanging stems carry their few twigs near their
+ends, so they are no twigs themselves and take no leaves along them, their side buds having stayed
+shut in the crown's shade, where a bud breaks only in the light it reads above it. That is the light
+of (b), a growth change for a weeping species alone, proposed apart. The strict build is clean and
+the tests pass, 81 where there were 79.
+
+Tools is pinned at 4e922ea in the same commit by its pin.py, which moved it by 11 commits from
+75d77f2 and named one fact changed, the cheatsheet's, which the module's test calls as before, its
+writer naming a tuple's elements, so CHEATSHEET.md written again changes nine lines, each a tuple
+now named, the two LeafBoxes, Bark, Bounds, Grow's blockers, Forest, Size, MeanSurface and Shade.
+The summaries of the two hash codes stay as they are. DEVLOG.md is written by the new pin's
+devlog.py without its days' commits, since five commits' sentences say how an earlier form stood,
+which the next pin's devlog.py leaves out.

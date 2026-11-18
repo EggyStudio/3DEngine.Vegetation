@@ -113,9 +113,12 @@ public static class TreeLeaves
         var drawn = MathF.Min(papers, MostLeaves);
         var larger = Math.Clamp(MathF.Sqrt(papers / MathF.Max(drawn, 1f)), 1f, MostLarger);
 
-        // Shared by each twig's length against most twigs', a short one taking fewer, so the leaves
-        // drawn come to the count.
-        var weights = twigs.Select(twig => Math.Clamp(Length(twig.Points) / typical, 0.3f, 1f)).ToArray();
+        // Shared by each twig's length against most twigs', so a twig is leafed alike along its
+        // length, a long hanging one as a short one, and the leaves drawn come to the count. A twig
+        // shorter than three tenths of most takes that share, so a stub still carries a leaf. Held
+        // at most twigs' share instead, the longest quarter carries half the leaves a meter, and a
+        // weeping crown's hanging twigs stand bare but for their tips.
+        var weights = twigs.Select(twig => MathF.Max(Length(twig.Points) / typical, 0.3f)).ToArray();
         var perWeight = weights.Length > 0 ? drawn / weights.Sum() : 0f;
         var owed = 0f;
 

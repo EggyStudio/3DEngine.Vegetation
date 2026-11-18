@@ -29,6 +29,11 @@ sets' mean colors, as bright as the sets they stand for; the bark is mapped roun
 stand-in, since the module holds no stem mesh, and the fern, which names no bark set, takes its bark
 color.
 
+![](.github/assets/readings/2026-11-18-item-10-leaf-spread.webp)
+The six presets at seed 1 before and after the leaves are shared by a twig's length, drawn with
+their sets, the weeping willow large beside them; a long twig is leafed along its length, and the
+willow's long hanging stems, which carry their few twigs near their ends, stand as bare as before.
+
 ## 2026-11-09
 
 Done that day
