@@ -24,6 +24,13 @@ same seed grown with the module's own arithmetic, which every system grows alike
 of its 22,499 cards that moved more than a millimeter, by 9.8 cm; its stems moved by a micrometer at
 most.
 
+![](.github/assets/readings/2026-11-18-item-9-presets-sets.webp)
+The six presets at seed 1 drawn with their own bark and leaf sets from the carried KTX2 files, the
+leaves sampled by their own texture coordinates and cut by alpha, each beside the same tree in its
+sets' mean colors, as bright as the sets they stand for; the bark is mapped round its stems by a
+stand-in, since the module holds no stem mesh, and the fern, which names no bark set, takes its bark
+color.
+
 ## 2026-11-09
 
 Done that day

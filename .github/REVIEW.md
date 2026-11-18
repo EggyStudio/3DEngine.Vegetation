@@ -622,3 +622,16 @@ sources change the manifest's colors alone, every file and the sample the same b
 right and stays as it is. Materials' scripts/textures.py takes the mean as this recipe did, so its
 mean_color takes the same mend before the collection is made with it. The strict build is clean and
 the tests pass, 86 where there were 85.
+
+The sets drawn, in the commit carrying this line, as the owner asked. The picture,
+`2026-11-18-item-9-presets-sets.webp`, draws each of the six presets at seed 1 with its own sets,
+decoded from the carried KTX2 files' BC7 by the sheet's script, the leaves sampled by the leaf
+mesh's own texture coordinates into their atlas and cut by its alpha, beside the same tree in its
+sets' mean colors, from the side on white with a title and a label a panel. Every preset's leaves
+take their set, the atlas's boxes being the mesh's, and each tree in its mean colors stands as
+bright as with its sets, which the mean color's mend asked. The bark cannot take its set by a mesh's
+coordinates, since the module holds no stem mesh, the stems being built on the edit mesh Modeling
+does not hold yet, so the sheet maps it round each stem by a stand-in, a turn of the picture to a
+stem's girth, and the stems' own coordinates come with them. The fern names no bark set and is drawn
+in its bark color, where an engine draws TreeLooks' bark. The weeping willow's crown stands round
+rather than weeping, which is its growth's and no set's. No engine is used.
