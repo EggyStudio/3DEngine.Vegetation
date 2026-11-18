@@ -422,3 +422,15 @@ are the depth map, deepest at 255 where an engine of heights turns it over; the 
 the picture, which an engine of DirectX's convention flips; and the texture files, KTX2 with zstd
 over BC7, BC5 and BC4, which an engine without a KTX2 reader of zstd cannot load, 3DEngine's among
 them as Materials found, left for Materials' Reply.
+
+The binding's host, in the commit carrying this line, the second. BindingTests runs the README's
+binding against a host in the tests that records each stem, texture file, picture and clump an
+engine would draw, for the quaking aspen with its sets, 200 trees whose stems stand on the ground
+within the forest's disc, six KTX2 files opened by their marks and the grass on the ground within
+its field, and for the same species with no sets, which takes the bark's and a five-lobed maple's
+pictures at their sizes. A third test holds the README's code block the same as the body of the
+host's Bind line for line, and a drift planted in the README's block failed it before it was taken
+out. The README says so under its block. The lone leaf's rounding has its test in the same commit,
+the leaf at the origin looking straight up and at 3, 5, -2 and at 120 meters from the origin leaning
+toward its grid's low corner, at unit length with a sky from 0 to 1. The strict build is clean and
+the tests pass, 54 where there were 48.

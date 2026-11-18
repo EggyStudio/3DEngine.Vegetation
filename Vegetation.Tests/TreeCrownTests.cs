@@ -65,6 +65,26 @@ public sealed class TreeCrownTests
     }
 
     /// <summary>
+    /// A lone leaf, which no crown of a tree is, looks out at unit length, straight up at the
+    /// origin, where nothing rounds, and elsewhere leaning toward the low corner its grid is laid
+    /// from along each axis where rounding drops it into the voxel below its own, as at 120 meters
+    /// from the origin it does along all three; and it sees a share of the sky from 0 to 1.
+    /// </summary>
+    [Theory]
+    [InlineData(0f, 0f, 0f)]
+    [InlineData(3f, 5f, -2f)]
+    [InlineData(-120.5f, 0.25f, 77f)]
+    public void ALoneLeafLooksOutTowardItsGridsLowCorner(float x, float y, float z)
+    {
+        var (sky, outward) = TreeCrown.Shade([new Vector3(x, y, z)], [0.02f]);
+        Assert.InRange(Assert.Single(sky), 0f, 1f);
+        var way = Assert.Single(outward);
+        Assert.InRange(way.Length(), 0.999f, 1.001f);
+        Assert.True(way.X <= 1e-6f && way.Z <= 1e-6f, $"A lone leaf at {(x, y, z)} looks out along {way}.");
+        if ((x, y, z) == (0f, 0f, 0f)) Assert.Equal(Vector3.UnitY, way);
+    }
+
+    /// <summary>
     /// A place that is not finite is refused as the places argument, and areas not as many as the
     /// places, or one below zero or not finite, as the areas argument.
     /// </summary>

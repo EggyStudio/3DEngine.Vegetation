@@ -65,7 +65,9 @@ engines that take it, 3DEngine and BevyCSharp, are two such bindings.
 | Light | None of the module's. `TreeCrown.Shade` gives a share of the sky from 0 to 1, which an engine scales by its own light |
 | Random numbers | `Pcg` from a seed, the same on every runtime, so a seed plants and grows the same in every engine |
 
-The smallest binding plants a forest of a species and a field of grass. `host` is the engine's
+The smallest binding plants a forest of a species and a field of grass. It is the body of
+`Bind` in `Vegetation.Tests/BindingTests.cs`, which the tests run against a host that records what
+an engine would draw, and a test holds this block the same as that body. `host` is the engine's
 side, which draws a stem as a tapered cylinder, loads a texture file with its KTX2 loader, uploads
 a picture as an image and draws a clump as two cards crossed about its root. The code takes
 `using System.Numerics;` and `using Vegetation;`.
