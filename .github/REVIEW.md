@@ -703,3 +703,40 @@ now named, the two LeafBoxes, Bark, Bounds, Grow's blockers, Forest, Size, MeanS
 The summaries of the two hash codes stay as they are. DEVLOG.md is written by the new pin's
 devlog.py without its days' commits, since five commits' sentences say how an earlier form stood,
 which the next pin's devlog.py leaves out.
+
+The willow's curtain, in the commit carrying this line, as the review answered. Its long hanging
+stems stood bare because their side buds stayed shut in the pyramid of shadow every point above
+casts on the voxels under it. A weeping species' bud, where its attraction up is below zero, reads
+the most light it finds at its place or an internode at a time outward from the trunk's axis as far
+as a point's shadow spreads, so a stem hanging at the crown's rim takes the sky beside it. Every
+other species reads its light as before, and the fixture holds their skeletons and leaves to the
+bit, the willow's eight cases alone written again.
+TheWeepingWillowsHangingStemsAreLeafedDownTheirLength failed first, 13 to 18 percent of the willow's
+long outer stems leafed in every third of their length, and reads 29 to 38 percent with the mend;
+the picture, `2026-11-18-item-10-willow-curtain.webp`, draws the willow large at seeds 1 to 4 before
+and after, its curtain hanging from the crown to near the ground where it stood round, so the bound
+is a quarter, as the picture reads. A look at the side twigs' spacing moved nothing, the willow's
+twigs a tenth of their parent's length being stubs of one point under its 0.375 m internode however
+they are let grow, and lifting the room a side bud must perceive left a tenth leafed. The twig
+spread's bound is three quarters for the willow alone, its many twigs sharing its cards at 4 to 12 a
+meter so flooring each share puts its longest at 0.76 to 1.25 of its typical ones. The crown's shade
+asks a fifth of the willow where a round crown's ask 0.24, its curtain letting the sky in among its
+deep leaves, its rim reading 0.21 over them at seed 2. The strict build is clean and the tests pass,
+82 where there were 81. Tools is pinned at its head, 457dd21, by pin.py, which named
+EngineNameInTextFault changed and the module's test calling it as before, DEVLOG.md written with its
+days' commits and AGENTS.md's devlog row naming --commits.
+
+Handoff. The module stands at the commit carrying this line with the review's items 1 to 8 done and
+item 9 in parts, TreeLooks, TreeCrown and the leaves with their limbs moved and mended, a seed
+growing the same tree to the bit on every system through Exact, the texture files plain KTX2 with
+their mean colors linear, the shared checks and cheatsheet from Tools, and the willow weeping. Next
+in order is the textures' handover to Materials' scripts/textures.py at its head, run as the review
+gives it with --sources at the machine's sorted sources, every albedo changing and the normals,
+surfaces and depths keeping their bytes, build/textures.py going in that commit, the manifest's
+figures before and after reported, and the linear-mean test's decoder reading BC7 modes 1 and 7 or
+reading through Materials' Ktx2; a decoder with mode 1 waits in the session's scratch and is to be
+written again. After it the stems by Modeling's EditMesh.Tube, the question open whether the module
+names Modeling or an engine builds the stems from the points and radii, the review leaning to the
+second. A fresh session reads AGENTS.md, this file's head, Decisions 7 and the last Replies,
+NORM.md's N 4.11 and N 7.9, and README.md's binding section first, runs the suite to a file under
+its work folder and reads the summary line, and reports one finished item at a time in ten lines.

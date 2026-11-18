@@ -16,7 +16,7 @@ only its own assembly and the folders a game names.
 | [.github/COMMITS.md](.github/COMMITS.md) | How and when work is committed |
 | [.github/REVIEW.md](.github/REVIEW.md) | Direction from the reviewing session, which comes before any other order of work |
 | [.github/NORM.md](.github/NORM.md) | The numbered rules the module keeps, each with what checks it, the same text in the six module repositories |
-| [DEVLOG.md](DEVLOG.md) | What landed by day, with the pictures `.github/assets/readings` keeps, generated from them and the history by `python3 -I modules/Tools/scripts/devlog.py . Vegetation` in every commit that closes an item or adds a picture |
+| [DEVLOG.md](DEVLOG.md) | What landed by day, with the pictures `.github/assets/readings` keeps, generated from them and the history by `python3 -I modules/Tools/scripts/devlog.py . Vegetation --commits`, or `python3 -I modules/Tools/scripts/pin.py` as the pin moves, in every commit that closes an item or adds a picture |
 | [CHEATSHEET.md](CHEATSHEET.md) | Every public type and member of the library with the first sentence of its summary, written by the Tools module's `Cheatsheet.Write` when the tests run with `CHEATSHEET_WRITE=1` and held to the built library by `ModuleTests` |
 
 ## Building and testing

@@ -270,6 +270,26 @@ internal sealed partial class TreeGrowth
     private float Light(Vector3 place) => MathF.Min(1f, 1f - ShadowAt(Voxel(place)) + Darkening);
 
     /// <summary>
+    /// The light a weeping species' bud reads, the most it finds at its place or an internode at a
+    /// time outward from the trunk's axis as far as a point's shadow spreads, so a stem hanging at
+    /// the crown's rim takes the sky beside it where the crown above shades it.
+    /// </summary>
+    /// <remarks>
+    /// Read straight down from above, a curtain hanging under the crown's rim stands in the pyramid
+    /// of shadow every point above casts, and its side buds stay shut, so it stands bare but for
+    /// the twigs at its foot. A bud near the axis reads its own place alone.
+    /// </remarks>
+    private float LightOutward(Vector3 place)
+    {
+        var level = new Vector3(place.X, 0f, place.Z);
+        var light = Light(place);
+        if (level.SquaredLength < _step * _step) return light;
+        var outward = level.Normalized * _step;
+        for (var k = 1; k <= ShadowDepth && light < 1f; k++) light = MathF.Max(light, Light(place + outward * k));
+        return light;
+    }
+
+    /// <summary>
     /// The level way the shadow lessens fastest from a place, or nothing where it is even, level
     /// since the shadow always lessens upward and the attraction up stands for that.
     /// </summary>

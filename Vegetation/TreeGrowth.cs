@@ -225,7 +225,7 @@ internal sealed partial class TreeGrowth
                 var bud = _buds[i];
                 if (bud.Dead) continue;
 
-                var light = Light(_places[bud.Node]);
+                var light = _species.AttractionUp < 0f ? LightOutward(_places[bud.Node]) : Light(_places[bud.Node]);
                 var grows = bud.Stem is { } stem ? stem.Level == 0 || light >= TipLight
                     : bud.Level == 1 || (bud.Perceived > 0 && light >= SideLight);
                 if (grows) grew |= Lengthen(bud);

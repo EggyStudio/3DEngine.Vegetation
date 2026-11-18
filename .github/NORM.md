@@ -72,13 +72,14 @@ capture sent to the owner, is saved in the repository in the commit of the work 
 pictures are the devlog's substance, and one left in a session's scratch space is gone with the
 session. Each is a WebP under `.github/assets/readings/`, named by the date and the item, as
 `2026-11-02-item-3-stamps.webp`, and its caption in DEVLOG.md, which is generated from them, is the
-line the folder's `captions.md` gives it, the file's name then a bar then one sentence, or the
-commit's sentence where the file has none; a picture of no item takes the day and a name. An item
-that changes what is seen ends with at least one such picture, a pair before and after where it
-mends, and an item built in phases one a phase; DEVLOG.md is regenerated as each item ends, and the
-commit after carries it as it carries the review's files. A reading worth the devlog's reader with
-no picture to carry it, a table of numbers or a few sentences, is saved beside the pictures as a
-Markdown file named the same way, and DEVLOG.md carries it on its day under the pictures. By review.
+line the folder's `captions.md` gives it, the file's name then a bar then one sentence, which the
+commit that adds the picture carries, a picture with no such line being refused at the commit's
+check; a picture of no item takes the day and a name. An item that changes what is seen ends with at
+least one such picture, a pair before and after where it mends, and an item built in phases one a
+phase; DEVLOG.md is regenerated as each item ends, and the commit after carries it as it carries the
+review's files. A reading worth the devlog's reader with no picture to carry it, a table of numbers
+or a few sentences, is saved beside the pictures as a Markdown file named the same way, and
+DEVLOG.md carries it on its day under the pictures. By review.
 
 **N 4.9 A picture shows what the words claim, and carries nothing for form's sake.** A plain
 capture, a pair before and after or a collage of views on a white ground is the form by default, and
