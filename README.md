@@ -32,6 +32,9 @@ git submodule add https://github.com/EggyStudio/Vegetation.git modules/Vegetatio
 <ProjectReference Include="..\modules\Vegetation\Vegetation\Vegetation.csproj" />
 ```
 
+The project builds the assembly `3DEngine.Vegetation`, whose types are in the namespace
+`Vegetation`.
+
 A clone of the engine fetches the module with `git clone --recurse-submodules`, or with
 `git submodule update --init` in a clone made without it, and a workflow checks it out with
 `submodules: true` on `actions/checkout`. A change the engine uses is committed and pushed here

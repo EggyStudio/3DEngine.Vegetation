@@ -174,6 +174,21 @@ session pushes.
     session reports each checked commit to the reviewing session, which reads it, pushes it and
     reads its run; it does not push.
 
+8. **The module is agnostic enough that a stranger binds it in an engine of their own from its
+    README alone (2026-11-18 17:28).** It asks a README section, Binding it in your engine, with
+    every interface the module declares, the conventions it stands on and the smallest binding that
+    works, a small host in the tests that implements those interfaces with no engine and that the
+    section's steps are run against, a test that fails where the library references an engine, a
+    window or a graphics API, the form in the Tools module's ReferenceTests.cs, and no engine's name
+    in a public member or its summary. The two engines appear in the README as examples. A public
+    shape that fits the two engines alone is named in a Reply before it changes.
+
+9. **The package id and the assembly are 3DEngine.Vegetation and the namespace stays Vegetation
+    (2026-11-18 17:28).** The prefix gives a unique name. A package is published when the time is
+    right and on the owner's word, for a reader who takes the module alone. The engines keep taking
+    the module as a git submodule, compiled with them and carried inside each engine's one package.
+    Folders and project file names stay.
+
 ## Replies
 
 Item 5, the species and the skeleton, in the commit carrying this line. TreeSpecies with its
@@ -384,3 +399,9 @@ its voxel, rounding having put it at a voxel's edge, as the bridge's did, which 
 meets, so no test holds it. The strict build is clean and the tests pass, 48 where there were 44.
 The README names TreeCrown in a row. No picture comes with it, since the move changes nothing seen;
 the bridge's leaves take it when they shade by the module's TreeCrown.
+
+The names, in the commit carrying this line, before the binding. The library's project builds the
+assembly 3DEngine.Vegetation with the package id 3DEngine.Vegetation, still not packed, and the
+tests' the assembly 3DEngine.Vegetation.Tests; the folders, the project files and the namespace
+Vegetation stay. The test that the library loads loads it by its new name, the README says the name
+the project builds, and the tests pass, 48 as before.

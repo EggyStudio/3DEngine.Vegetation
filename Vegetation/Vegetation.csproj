@@ -4,6 +4,10 @@
          (N 2.1). -->
     <PropertyGroup>
         <RootNamespace>Vegetation</RootNamespace>
+        <!-- The assembly and the package take the family's name, a name and no reference, so the
+             library still knows no engine; the namespace stays Vegetation. -->
+        <AssemblyName>3DEngine.Vegetation</AssemblyName>
+        <PackageId>3DEngine.Vegetation</PackageId>
         <IsPackable>false</IsPackable>
     </PropertyGroup>
 

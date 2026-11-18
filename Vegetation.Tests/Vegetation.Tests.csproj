@@ -4,6 +4,7 @@
     <PropertyGroup>
         <IsPackable>false</IsPackable>
         <RootNamespace>Vegetation.Tests</RootNamespace>
+        <AssemblyName>3DEngine.Vegetation.Tests</AssemblyName>
     </PropertyGroup>
 
     <ItemGroup>
