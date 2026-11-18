@@ -360,3 +360,27 @@ build/textures.py failed it, as did two of the mend's comments, before both were
 script's docstring paragraphs past the width are rewrapped with their words unchanged, and its two
 usage lines past it shortened by their comments. The strict build is clean and the tests pass, 44
 where there were 43.
+
+Item 9's second part, the crown's volume, in the commit carrying this line. The bridge's CrownVolume
+moves as TreeCrown.Shade, public in the namespace Vegetation, which takes each leaf's middle and its
+card's area and gives the share of the sky the leaf sees through the crown and the way out of the
+crown at it, places in meters with Y up as the skeleton's are. A length is summed a product at a
+time, as the bridge's Vec3 summed it, rather than by System.Numerics' dot product. Through the
+bridge's assembly beside the module's, the six presets at four seeds each, the 21 crowns whose
+leaves are cards of four corners, and 18 clouds of one to 3,000 leaves at spreads from a centimeter
+to ten meters, two of the leaves at one place among them, give 500,899 leaves the same skies and
+ways to the bit, but for one mend. A test that every leaf's sky is from 0 to 1 failed first on 33 of
+a ball's 2,109 leaves at 1.00000012, the nine ways' weights summing a float's last digit past one,
+and the sky is held at one, which moves 706 of the 500,899 leaves by that digit and nothing seen.
+Shade refuses a place that is not finite as the places argument, and areas not as many as the
+places, or one below zero or not finite, as the areas argument, where the bridge read past the end
+or drew a grid of NaN.
+
+Four tests come with the code, over a ball of 2,109 leaves a quarter meter apart. The leaf at the
+middle sees less sky than any on the upper half of the rim and the top more than the bottom; the way
+out is at unit length and on the rim within 46 degrees of the way from the middle; the shade is the
+same each time and no leaves give no shade; and the refusals. A lone leaf looks out along a side of
+its voxel, rounding having put it at a voxel's edge, as the bridge's did, which no crown of a tree
+meets, so no test holds it. The strict build is clean and the tests pass, 48 where there were 44.
+The README names TreeCrown in a row. No picture comes with it, since the move changes nothing seen;
+the bridge's leaves take it when they shade by the module's TreeCrown.
