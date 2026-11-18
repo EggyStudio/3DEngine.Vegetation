@@ -4,9 +4,9 @@ beside it, textures.json, names, by the recipe it gives each entry.
 
     build/textures.py                     # import every entry whose sources are here
     build/textures.py NAME ...            # import the entries named
-    build/textures.py --out DIR NAME ...  # write the entries under DIR, the collection left as it is
+    build/textures.py --out DIR NAME ...  # write the entries under DIR, the collection left alone
     build/textures.py --sources DIR ...   # read the sources under DIR rather than .vegetation/
-    build/textures.py --sample DIR        # write an entry made from no source under DIR, for the tests
+    build/textures.py --sample DIR        # write an entry of no source under DIR, for the tests
 
 An entry is three KTX2 files with their mipmaps, each level's blocks compressed with zstd, as a KTX2
 reader with zstd takes them:
@@ -21,33 +21,34 @@ reader with zstd takes them:
                                 below the surface rather than a height, half a byte a texel
 
 A bark's depth is its source's height turned over where the recipe names one, its grays stretched to
-black and white, and otherwise the height its normal map's slopes add up to, integrated over the whole picture at once through its
-Fourier transform, which a bark's tiling suits, scaled so its lowest and highest hundredths are
-black and white, and softened by a texel, as a steep step in a depth map shows as a jagged edge.
+black and white, and otherwise the height its normal map's slopes add up to, integrated over the
+whole picture at once through its Fourier transform, which a bark's tiling suits, scaled so its
+lowest and highest hundredths are black and white, and softened by a texel, as a steep step in a
+depth map shows as a jagged edge.
 
-A desktop GPU samples BC7 and BC5 as they are, a byte a texel. The normal and the surface are half the
-albedo's size, which a bark or a leaf does not show and which keeps a species under 3 MB. The
+A desktop GPU samples BC7 and BC5 as they are, a byte a texel. The normal and the surface are half
+the albedo's size, which a bark or a leaf does not show and which keeps a species under 3 MB. The
 encoding is the one function encode() below, so another format, Basis Universal's among them, is a
 second branch of it.
 
 The encoders are written here, BC7's mode 6 with each block's endpoints along its principal axis and
 fitted again by least squares, and BC4 twice for BC5, so the import needs Python 3.14, whose own
-compression module has zstd, and Pillow, and nothing else. Each level is made from the one above by a
-box filter, and the color under a cut-out leaf's transparent texels is the color of the leaf nearest,
-so no dark rim shows as it shrinks. A leaf atlas's color and its surface's four channels are each
-level's means weighted by how much of each texel the leaves cover, and the surface's texels outside
-the leaves take the nearest leaf's as the color's do, since averaged with the transparent texels
-round it a leaf two texels across took their light color and their translucency of none, a silver
-birch's leaves half as bright again and letting through half what they do where a card's distance
-had it sampled at eight texels across. A leaf atlas's opacity is scaled at each level so the share
-of each leaf's box past one half, read between the level's texels as a card samples it, stays the
-top level's on average, so a leaf holds in the distance until its box is about a texel across.
-Keeping the share of the whole atlas's texels instead loses the leaves a level sooner, where a box
-two texels across is averaged with the transparent texels round it.
+compression module has zstd, and Pillow, and nothing else. Each level is made from the one above by
+a box filter, and the color under a cut-out leaf's transparent texels is the color of the leaf
+nearest, so no dark rim shows as it shrinks. A leaf atlas's color and its surface's four channels
+are each level's means weighted by how much of each texel the leaves cover, and the surface's texels
+outside the leaves take the nearest leaf's as the color's do, since averaged with the transparent
+texels round it a leaf two texels across took their light color and their translucency of none, a
+silver birch's leaves half as bright again and letting through half what they do where a card's
+distance had it sampled at eight texels across. A leaf atlas's opacity is scaled at each level so
+the share of each leaf's box past one half, read between the level's texels as a card samples it,
+stays the top level's on average, so a leaf holds in the distance until its box is about a texel
+across. Keeping the share of the whole atlas's texels instead loses the leaves a level sooner, where
+a box two texels across is averaged with the transparent texels round it.
 
-A grass entry is a card of blades whose roots stand along its bottom edge, cut out as a leaf atlas is,
-its levels keeping the share of the whole card past one half, since its blades are one cluster rather
-than leaves apart.
+A grass entry is a card of blades whose roots stand along its bottom edge, cut out as a leaf atlas
+is, its levels keeping the share of the whole card past one half, since its blades are one cluster
+rather than leaves apart.
 
 A source is the folder the manifest names under .vegetation/, which the repository leaves out, or
 under the folder --sources names, as the sources are kept on the machine that imports them. An entry
@@ -177,7 +178,8 @@ def ships(entry):
 # The recipe.
 
 def read_entry(entry, source):
-    """The entry's albedo, normal and surface at their sizes, from its parts as the recipe places them."""
+    """The entry's albedo, normal and surface at their sizes, from its parts as the recipe places
+    them."""
     width, height = entry["size"]
     albedo = Image.new("RGBA", (width, height), (0, 0, 0, 0))
     normal = Image.new("RGB", (max(width // 2, 4), max(height // 2, 4)), (128, 128, 255))
@@ -229,7 +231,8 @@ def read_entry(entry, source):
 
 
 def stretched(image):
-    """A one-channel image with its lowest and highest hundredths made black and white, as a source's height is often a narrow band of grays."""
+    """A one-channel image with its lowest and highest hundredths made black and white, as a
+    source's height is often a narrow band of grays."""
     histogram = image.histogram()
     total = sum(histogram)
     counted, low, high = 0, 0, 255
@@ -282,7 +285,8 @@ def height_of(normal):
 
 
 def fourier(values, width, height, invert=False):
-    """A picture's two-dimensional discrete Fourier transform, or its inverse, its rows and then its columns."""
+    """A picture's two-dimensional discrete Fourier transform, or its inverse, its rows and then its
+    columns."""
     rows = [transform(values[row * width:(row + 1) * width], invert) for row in range(height)]
     out = [0j] * (width * height)
     for column in range(width):
@@ -336,7 +340,8 @@ def read_map(source, spec, mode):
 
 
 def read_channel(source, spec, size):
-    """One channel of a recipe, a number from zero to one over the whole size or a channel of a file."""
+    """One channel of a recipe, a number from zero to one over the whole size or a channel of a
+    file."""
     if isinstance(spec, (int, float)):
         return Image.new("L", size, round(255 * spec))
     image = Image.open(os.path.join(source, spec["file"]))
@@ -390,7 +395,8 @@ def size_of(box):
 
 
 def sample_maps():
-    """An entry from no source, a ringed bark of 64 by 64 with a hole cut in it and its depth from its normal, for the tests."""
+    """An entry from no source, a ringed bark of 64 by 64 with a hole cut in it and its depth from
+    its normal, for the tests."""
     albedo = Image.new("RGBA", (64, 64))
     normal = Image.new("RGB", (32, 32))
     surface = Image.new("RGBA", (32, 32))
@@ -616,7 +622,8 @@ def sampled_share(alpha, rects, size):
 
 
 def sampled_scale(alpha, rects, size, share):
-    """The scale of a level's opacity that keeps the leaves' sampled share nearest the top level's."""
+    """The scale of a level's opacity that keeps the leaves' sampled share nearest the top
+    level's."""
     low, high = 0.25, 16.0
     for _ in range(20):
         middle = (low + high) / 2
@@ -645,7 +652,8 @@ def encode(name, levels):
 
 
 def texel_blocks(image, channels):
-    """The image's 4 by 4 blocks, each its sixteen texels of the channels, a level smaller than a block repeating its edge."""
+    """The image's 4 by 4 blocks, each its sixteen texels of the channels, a level smaller than a
+    block repeating its edge."""
     width, height = image.size
     data = image.tobytes()
     stride = len(image.getbands())
@@ -661,7 +669,8 @@ def texel_blocks(image, channels):
 
 
 def bc7(image):
-    """The image in BC7, every block in mode 6, its RGBA endpoints with a bit each shared by their channels."""
+    """The image in BC7, every block in mode 6, its RGBA endpoints with a bit each shared by their
+    channels."""
     out = bytearray()
     for block in texel_blocks(image.convert("RGBA"), 4):
         out += bc7_block(block)
@@ -765,7 +774,8 @@ def bc7_error(texels, endpoints, indices):
 
 
 def least_squares(texels, indices):
-    """The endpoints that best give the texels at the weights the indices name, or nothing where they are all one."""
+    """The endpoints that best give the texels at the weights the indices name, or nothing where
+    they are all one."""
     a00 = a01 = a11 = 0.0
     b0 = [0.0] * 4
     b1 = [0.0] * 4
@@ -882,7 +892,8 @@ def psnr_bc5(image, blocks):
 # The file.
 
 def ktx2(format, levels, blocks):
-    """A KTX2 file of the levels' blocks, each level compressed with zstd, the largest first in the index and last in the file."""
+    """A KTX2 file of the levels' blocks, each level compressed with zstd, the largest first in the
+    index and last in the file."""
     width, height = levels[0].size
     compressed = [zstd.compress(level, level=ZSTD_LEVEL) for level in blocks]
 
@@ -921,7 +932,8 @@ def ktx2(format, levels, blocks):
 
 
 def data_format(format):
-    """The data format descriptor of a block format, its total size first and its one basic block."""
+    """The data format descriptor of a block format, its total size first and its one basic
+    block."""
     if format == BC4_UNORM:
         model, transfer = MODEL_BC4, TRANSFER_LINEAR
         samples = [(0, 63, 0)]

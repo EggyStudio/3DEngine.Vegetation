@@ -143,11 +143,13 @@ public static class TreeLooks
     // Whether a point of a leaf's space is in the leaf, and on its midrib or its stalk.
     private static (bool Inside, bool Rib) Inside(TreeLeafShape shape, float along, float across, float width)
     {
-        // The stalk, the bottom tenth, a thin line up the middle.
+        // The stalk, the bottom tenth, a thin line up the middle, running on into the blade's foot
+        // so it meets a blade narrower there than itself.
         const float Stalk = 0.1f;
         if (along < Stalk) return (MathF.Abs(across) < 0.012f, true);
         var y = (along - Stalk) / (1f - Stalk);
         var rib = MathF.Abs(across) < 0.008f + 0.006f * (1f - y);
+        if (y < 0.1f && MathF.Abs(across) < 0.012f) return (true, true);
 
         var half = shape switch
         {
@@ -160,31 +162,60 @@ public static class TreeLooks
 
         if (shape is TreeLeafShape.ThreeLobeMaple or TreeLeafShape.FiveLobeMaple)
         {
-            // Lobes spreading from a point a third of the way up, pointed at their tips.
-            var lobes = shape == TreeLeafShape.ThreeLobeMaple ? 3 : 5;
+            // Lobes spreading from a point a third of the way up, one up the midrib and the rest a
+            // spread apart each side, each narrowing straight to its point from the sinuses between
+            // them and shorter the further it leans from the midrib. Below the lowest the blade
+            // closes round the point in a small base, and the stalk runs on up to the point. A vein
+            // runs from the point to each lobe's tip, as a maple's do, so a narrow leaf's thin tips
+            // stay joined to it and the leaf is one piece from the stalk to the tips.
+            var three = shape == TreeLeafShape.ThreeLobeMaple;
+            var spread = (three ? 0.32f : 0.25f) * MathF.PI;
+            var sinus = three ? 0.45f : 0.5f;
+            var side = three ? 1 : 2;
             var dx = across / (0.5f * width);
             var dy = (y - 0.33f) / 0.67f;
             var angle = MathF.Atan2(dx, dy);
-            if (MathF.Abs(angle) > MathF.PI * 0.75f) return (false, false);
-            var reach = 0.45f + 0.55f * MathF.Pow(MathF.Abs(MathF.Cos(angle * lobes * 0.5f)), 3f);
-            return (MathF.Sqrt(dx * dx + dy * dy) < reach, rib && dy > 0f);
+            var turns = angle / spread;
+            var fromLobe = 2f * MathF.Abs(turns - MathF.Round(turns));
+            var shorter = 1f - 0.3f * MathF.Abs(angle) / MathF.PI;
+            var reach = MathF.Abs(angle) > (side + 0.5f) * spread ? 0.2f : (sinus + (1f - sinus) * (1f - fromLobe)) * shorter;
+            var stalk = dy < 0f && MathF.Abs(across) < 0.012f;
+            for (var lobe = -side; lobe <= side; lobe++)
+            {
+                var (sin, cos) = MathF.SinCos(lobe * spread);
+                var tip = 1f - 0.3f * MathF.Abs(lobe * spread) / MathF.PI;
+                if (Segment(across, y, 0.5f * width * tip * sin, 0.33f + 0.67f * tip * cos) < 0.009f) return (true, true);
+            }
+
+            return (stalk || MathF.Sqrt(dx * dx + dy * dy) < reach, rib);
         }
 
         if (shape == TreeLeafShape.ThreeLeaflets)
         {
-            // A long leaflet up the middle and two shorter ones leaning out, each an oval.
+            // A long leaflet up the middle and two shorter ones leaning out, each an oval no
+            // thinner than its midrib, so a narrow one still meets the stalk where the three join.
             foreach (var (lean, length) in (ReadOnlySpan<(float, float)>)[(0f, 1f), (0.7f, 0.6f), (-0.7f, 0.6f)])
             {
                 var (sin, cos) = MathF.SinCos(lean);
                 var u = (y * cos + across * sin) / length;
                 var v = -y * sin + across * cos;
-                if (u is > 0f and < 1f && MathF.Abs(v) < Oval(u, width) * length) return (true, MathF.Abs(v) < 0.008f);
+                if (u is > 0f and < 1f && MathF.Abs(v) < MathF.Max(Oval(u, width) * length, 0.008f)) return (true, MathF.Abs(v) < 0.008f);
             }
 
             return (false, false);
         }
 
         return (MathF.Abs(across) < half, rib);
+    }
+
+    // How far a point of a maple's space is from the vein running from the blade's point a third of
+    // the way up to a lobe's tip.
+    private static float Segment(float across, float y, float tipAcross, float tipY)
+    {
+        var (wayAcross, wayY) = (tipAcross, tipY - 0.33f);
+        var share = Math.Clamp((across * wayAcross + (y - 0.33f) * wayY) / (wayAcross * wayAcross + wayY * wayY), 0f, 1f);
+        var (offAcross, offY) = (across - share * wayAcross, y - 0.33f - share * wayY);
+        return MathF.Sqrt(offAcross * offAcross + offY * offY);
     }
 
     // An oval leaf's half width at a share of its length, widest a little below its middle.

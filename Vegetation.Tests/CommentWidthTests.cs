@@ -4,8 +4,8 @@ namespace Vegetation.Tests;
 
 /// <summary>
 /// Every comment line of the module's sources holds to 100 columns (NORM.md, N 4.11), the C#
-/// comments, the scripts' and the workflows' and the projects' MSBuild comments, a line holding an
-/// address alone apart.
+/// comments, the scripts' and the workflows' comments, the Python scripts' docstrings and the
+/// projects' MSBuild comments, a line holding an address alone apart.
 /// </summary>
 public sealed class CommentWidthTests
 {
@@ -38,7 +38,9 @@ public sealed class CommentWidthTests
             .Order();
     }
 
-    // Each line of a file that is a comment, numbered from one, by the comment marks of its kind.
+    // Each line of a file that is a comment, numbered from one, by the comment marks of its kind. A
+    // Python line is a comment from a hash, or inside or on the quotes of a docstring, the scripts
+    // holding no other string in three quotes.
     private static IEnumerable<(int Number, string Text)> CommentLines(string path)
     {
         var lines = File.ReadAllLines(path);
@@ -47,14 +49,18 @@ public sealed class CommentWidthTests
         for (var at = 0; at < lines.Length; at++)
         {
             var text = lines[at].TrimStart();
+            var quotes = (text.Length - text.Replace("\"\"\"", "", StringComparison.Ordinal).Length) / 3;
             var comment = extension switch
             {
                 ".cs" => text.StartsWith("//", StringComparison.Ordinal),
-                ".sh" or ".py" or ".yml" => text.StartsWith('#') && !text.StartsWith("#!", StringComparison.Ordinal),
+                ".py" => inside || quotes > 0 || text.StartsWith('#') && !text.StartsWith("#!", StringComparison.Ordinal),
+                ".sh" or ".yml" => text.StartsWith('#') && !text.StartsWith("#!", StringComparison.Ordinal),
                 _ => inside || text.StartsWith("<!--", StringComparison.Ordinal),
             };
             if (extension is ".csproj" or ".props" or ".targets")
                 inside = (inside || text.Contains("<!--", StringComparison.Ordinal)) && !text.Contains("-->", StringComparison.Ordinal);
+            if (extension == ".py" && quotes % 2 == 1)
+                inside = !inside;
             if (comment) yield return (at + 1, lines[at]);
         }
     }

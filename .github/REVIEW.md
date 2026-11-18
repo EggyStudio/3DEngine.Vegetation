@@ -337,3 +337,26 @@ summary, a parameter, a return or a remark too long for one line opening onto li
 The build script's docstrings, some 20 lines past 100 with two of its usage's commands among them,
 are not comments to the test, and take a rewrap and a test of their own if N 4.11 is read to hold
 them. AGENTS.md's DEVLOG.md row carries its link, and the picture a title line.
+
+Item 9's mend of the leaf outlines, in the commit carrying this line, after TreeLooks. A test that
+each shape's leaf is one piece, its middle column opaque with no gap from the stalk's foot to the
+tip, at six widths from 0.1 to 1, failed first on the oval at 0.1, a texel clear between its stalk
+and its blade, and on the maples, their blades parted below their lobes over a gap down to the
+stalk. The stalk runs on a tenth into the blade's foot, which mends the narrow oval and oak. Each
+maple's lobes are a spread apart, 58 degrees for three and 45 for five, each narrowing straight to
+its point from sinuses at 0.45 and 0.5 of the reach and shorter the further it leans from the
+midrib, over a small base round the blade's point with the stalk running up to it, and a vein runs
+from the point to each lobe's tip, which keeps a narrow maple's thin tips joined. The three leaflets
+are each no thinner than their midrib, so at 0.1 the side ones meet the stalk where they were five
+pieces. Through the bridge's assembly beside the module's, the bark and the triangle are the same
+to the byte, and 129 of the 222 atlases change, the maples and the leaflets at every width and the
+oval and the oak at the nine narrowest. The sheet, `2026-11-18-item-9-leaf-outlines.webp`, puts
+each beside the bridge's on a white ground. The bridge takes the mend when it draws from the
+module's TreeLooks in place of its own copy.
+
+N 4.11 holds the scripts' docstrings in the same commit. CommentWidthTests reads a Python line
+inside or on the quotes of a docstring, and a docstring line of 102 columns planted in
+build/textures.py failed it, as did two of the mend's comments, before both were mended. The
+script's docstring paragraphs past the width are rewrapped with their words unchanged, and its two
+usage lines past it shortened by their comments. The strict build is clean and the tests pass, 44
+where there were 43.

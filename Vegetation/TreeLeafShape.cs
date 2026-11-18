@@ -17,10 +17,16 @@ public enum TreeLeafShape
     /// <summary>Three rounded lobes down each side and one at the tip, as an oak's.</summary>
     ThreeLobeOak,
 
-    /// <summary>Three pointed lobes spreading from the stalk, as a maple's.</summary>
+    /// <summary>
+    /// Three pointed lobes spreading from the top of the stalk over a small base, a vein to each,
+    /// as a red maple's.
+    /// </summary>
     ThreeLobeMaple,
 
-    /// <summary>Five pointed lobes spreading from the stalk, as a sugar maple's.</summary>
+    /// <summary>
+    /// Five pointed lobes spreading from the top of the stalk over a small base, a vein to each,
+    /// as a sugar maple's.
+    /// </summary>
     FiveLobeMaple,
 
     /// <summary>Three small leaflets on one stalk, the middle one the longest.</summary>

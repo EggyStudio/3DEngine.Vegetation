@@ -115,6 +115,33 @@ public sealed class TreeLooksTests
         }
     }
 
+    /// <summary>
+    /// Every shape's leaf is one piece, its stalk meeting its blade and its blade joined below its
+    /// lobes, the middle column opaque with no gap from the stalk's foot to the leaf's tip, at the
+    /// widths the presets give and the narrowest and widest a leaf is drawn at.
+    /// </summary>
+    [Fact]
+    public void EachLeafIsOnePieceFromItsStalkToItsTip()
+    {
+        foreach (var shape in Enum.GetValues<TreeLeafShape>())
+        foreach (var width in (float[])[0.1f, 0.2f, 0.5f, 0.6f, 0.66f, 1f])
+        {
+            var atlas = TreeLooks.Leaves(shape, width);
+            for (var leaf = 0; leaf < 4; leaf++)
+            {
+                var (left, top) = ((leaf % 2) * Cell, (leaf / 2) * Cell);
+                foreach (var middle in (int[])[left + Cell / 2 - 1, left + Cell / 2])
+                {
+                    var tip = Enumerable.Range(top, Cell).First(y => Alpha(atlas, middle, y) == 255);
+                    var gaps = Enumerable.Range(tip, top + Cell - tip).Count(y => Alpha(atlas, middle, y) == 0);
+                    Assert.True(gaps == 0, $"{shape} at {width}, leaf {leaf}, has {gaps} clear texels in column {middle} below its tip.");
+                }
+
+                Assert.True(Pieces(atlas, left, top) == 1, $"{shape} at {width}, leaf {leaf}, is {Pieces(atlas, left, top)} pieces.");
+            }
+        }
+    }
+
     /// <summary>A width that is not a positive number is refused as the width argument.</summary>
     [Theory]
     [InlineData(0f)]
@@ -128,6 +155,34 @@ public sealed class TreeLooksTests
     }
 
     private static byte Alpha(byte[] atlas, int x, int y) => atlas[4 * (x + TreeLooks.LeafSize * y) + 3];
+
+    // The pieces the opaque texels of a cell make, two texels side by side or one above the other
+    // being of one piece.
+    private static int Pieces(byte[] atlas, int left, int top)
+    {
+        var seen = new bool[Cell * Cell];
+        var pieces = 0;
+        for (var start = 0; start < seen.Length; start++)
+        {
+            if (seen[start] || Alpha(atlas, left + start % Cell, top + start / Cell) == 0) continue;
+            pieces++;
+            var open = new Stack<int>([start]);
+            seen[start] = true;
+            while (open.TryPop(out var at))
+            {
+                var (x, y) = (at % Cell, at / Cell);
+                foreach (var (nx, ny) in (ReadOnlySpan<(int, int)>)[(x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)])
+                {
+                    if (nx < 0 || ny < 0 || nx >= Cell || ny >= Cell || seen[nx + Cell * ny]) continue;
+                    if (Alpha(atlas, left + nx, top + ny) == 0) continue;
+                    seen[nx + Cell * ny] = true;
+                    open.Push(nx + Cell * ny);
+                }
+            }
+        }
+
+        return pieces;
+    }
 
     // The opaque texels in each of the atlas's four cells, in the order of its boxes.
     private static int[] Covered(byte[] atlas)
