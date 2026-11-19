@@ -29,12 +29,12 @@
         "albedo.ktx2": 349952,
         "normal.ktx2": 87808,
         "surface.ktx2": 87792,
-        "depth.ktx2": 44080
+        "depth.ktx2": 44112
       },
       "error": {
-        "albedo.ktx2": 44.7,
+        "albedo.ktx2": 45.0,
         "normal.ktx2": 42.3,
-        "surface.ktx2": 45.1,
+        "surface.ktx2": 46.1,
         "depth.ktx2": 42.4
       },
       "color": [
@@ -72,10 +72,10 @@
         "albedo.ktx2": 350016,
         "normal.ktx2": 87856,
         "surface.ktx2": 87840,
-        "depth.ktx2": 44120
+        "depth.ktx2": 44144
       },
       "error": {
-        "albedo.ktx2": 42.3,
+        "albedo.ktx2": 43.1,
         "normal.ktx2": 38.9,
         "surface.ktx2": 51.1,
         "depth.ktx2": 38.0
@@ -121,10 +121,10 @@
         "albedo.ktx2": 350016,
         "normal.ktx2": 87856,
         "surface.ktx2": 87840,
-        "depth.ktx2": 44120
+        "depth.ktx2": 44144
       },
       "error": {
-        "albedo.ktx2": 45.5,
+        "albedo.ktx2": 46.8,
         "normal.ktx2": 40.0,
         "surface.ktx2": 48.6,
         "depth.ktx2": 39.9
@@ -173,12 +173,12 @@
         "albedo.ktx2": 175200,
         "normal.ktx2": 44128,
         "surface.ktx2": 44112,
-        "depth.ktx2": 22240
+        "depth.ktx2": 22272
       },
       "error": {
-        "albedo.ktx2": 43.6,
+        "albedo.ktx2": 45.0,
         "normal.ktx2": 45.9,
-        "surface.ktx2": 47.9,
+        "surface.ktx2": 48.0,
         "depth.ktx2": 42.4
       },
       "color": [
@@ -226,9 +226,9 @@
         "surface.ktx2": 87792
       },
       "error": {
-        "albedo.ktx2": 46.1,
+        "albedo.ktx2": 46.8,
         "normal.ktx2": 52.2,
-        "surface.ktx2": 48.4
+        "surface.ktx2": 48.5
       },
       "leaves": [
         [
@@ -380,9 +380,9 @@
         "surface.ktx2": 87840
       },
       "error": {
-        "albedo.ktx2": 31.7,
+        "albedo.ktx2": 38.0,
         "normal.ktx2": 50.1,
-        "surface.ktx2": 37.7
+        "surface.ktx2": 42.3
       },
       "leaves": [
         [
@@ -465,9 +465,9 @@
         "surface.ktx2": 87792
       },
       "error": {
-        "albedo.ktx2": 31.3,
+        "albedo.ktx2": 35.6,
         "normal.ktx2": 42.9,
-        "surface.ktx2": 37.9
+        "surface.ktx2": 40.2
       },
       "leaves": [
         [
@@ -661,9 +661,9 @@
         "surface.ktx2": 44112
       },
       "error": {
-        "albedo.ktx2": 32.2,
+        "albedo.ktx2": 38.2,
         "normal.ktx2": 48.9,
-        "surface.ktx2": 35.7
+        "surface.ktx2": 40.9
       },
       "leaves": [
         [
@@ -821,9 +821,9 @@
         "surface.ktx2": 87792
       },
       "error": {
-        "albedo.ktx2": 35.7,
+        "albedo.ktx2": 40.5,
         "normal.ktx2": 99.0,
-        "surface.ktx2": 38.8
+        "surface.ktx2": 42.4
       },
       "leaves": [
         [
@@ -907,9 +907,9 @@
         "surface.ktx2": 87792
       },
       "error": {
-        "albedo.ktx2": 30.3,
+        "albedo.ktx2": 34.7,
         "normal.ktx2": 48.5,
-        "surface.ktx2": 40.5
+        "surface.ktx2": 42.9
       },
       "leaves": [
         [
@@ -1009,9 +1009,9 @@
         "surface.ktx2": 175200
       },
       "error": {
-        "albedo.ktx2": 32.3,
+        "albedo.ktx2": 37.4,
         "normal.ktx2": 42.1,
-        "surface.ktx2": 39.2
+        "surface.ktx2": 43.6
       },
       "color": [
         0.553,
@@ -1073,9 +1073,9 @@
         "surface.ktx2": 87792
       },
       "error": {
-        "albedo.ktx2": 29.6,
+        "albedo.ktx2": 35.9,
         "normal.ktx2": 41.6,
-        "surface.ktx2": 38.5
+        "surface.ktx2": 43.8
       },
       "color": [
         0.5089,
@@ -1137,9 +1137,9 @@
         "surface.ktx2": 87792
       },
       "error": {
-        "albedo.ktx2": 28.9,
+        "albedo.ktx2": 34.7,
         "normal.ktx2": 38.7,
-        "surface.ktx2": 38.9
+        "surface.ktx2": 43.5
       },
       "color": [
         0.4979,

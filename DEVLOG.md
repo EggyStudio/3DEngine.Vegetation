@@ -41,6 +41,8 @@ where it stood round.
 
 Commits that day
 
+- `87aee13` A weeping species' buds read their light outward from the trunk, so the willow's hanging
+  stems leaf down their length and its crown hangs as a curtain where it stood round.
 - `c096761` A twig takes its share of the leaves by its length, so a long one is leafed along it as
   a typical one is, the total held at the count, and the weeping willow is held to the fall of its
   stems and the hang of its rim's leaves.

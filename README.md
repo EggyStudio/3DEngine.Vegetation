@@ -149,16 +149,17 @@ dotnet test Vegetation.Tests
 
 `Vegetation/Textures` holds the bark, leaf and grass sets the module carries in its assembly, which
 `TreeTextures` finds by name, each three KTX2 files in BC7 and BC5 with their mipmaps and no
-supercompression, and a bark a fourth, its depth in BC4. `build/textures.py` makes them from the sources
-sorted under `.vegetation/`, which the repository leaves out, or under the folder `--sources` names,
-by the recipe the collection's `textures.json` gives each set, the crop, the size, the maps packed
-into each file and any change of color, so a set is made again from its source byte for byte. It
-needs Python 3.14 and Pillow:
+supercompression, and a bark a fourth, its depth in BC4. The Materials module's
+`scripts/textures.py` makes them from the sources sorted under the folder `--sources` names, which
+the repository leaves out, by the recipe the collection's `textures.json` gives each set, the crop,
+the size, the maps packed into each file and any change of color, so a set is made again from its
+source byte for byte. From the module's root with a checkout of Materials beside it, and Python 3.14
+and Pillow:
 
 ```bash
-build/textures.py                              # import every set whose source is here
-build/textures.py fern-leaves                  # import one
-build/textures.py --sources DIR fern-leaves    # import one from the sources under DIR
+python3 -I -B ../Materials/scripts/textures.py Vegetation/Textures/textures.json --sources DIR
+python3 -I -B ../Materials/scripts/textures.py Vegetation/Textures/textures.json --sources DIR fern-leaves
+python3 -I -B ../Materials/scripts/textures.py --sample Vegetation.Tests/references/textures
 ```
 
 A set the manifest marks waiting is imported into `waiting/`, which the repository and the build

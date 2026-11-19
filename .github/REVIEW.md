@@ -740,3 +740,27 @@ names Modeling or an engine builds the stems from the points and radii, the revi
 second. A fresh session reads AGENTS.md, this file's head, Decisions 7 and the last Replies,
 NORM.md's N 4.11 and N 7.9, and README.md's binding section first, runs the suite to a file under
 its work folder and reads the summary line, and reports one finished item at a time in ten lines.
+
+The textures' handover, in the commit carrying this line. The collection and the tests' sample are
+made by the Materials module's scripts/textures.py at f6b99fe, from the module's root with the
+sorted sources named by --sources, and build/textures.py is gone, the README's section,
+TreeTextures' documentation, a test's comment and the ignore file naming Materials' script. Every
+albedo changes, the manifest's figures rising from 44.7, 42.3, 45.5 and 43.6 dB to 45.0, 43.1, 46.8
+and 45.0 for the silver birch's, the broadleaf's, the willow's and the hornbeam's bark, and from
+46.1, 31.7, 31.3, 32.2, 35.7, 30.3, 32.3, 29.6 and 28.9 dB to 46.8, 38.0, 35.6, 38.2, 40.5, 34.7,
+37.4, 35.9 and 34.7 for the birch's, the willow's, the hornbeam's, the oak's, the alder's and the
+fern's leaves, the wheat and the two grass tufts. The normals keep their bytes. The surfaces change
+in 12 of the 14 files, their translucency being the alpha mode 7 takes, the birch bark's in 4 of its
+9 levels. The depths keep their blocks, laid at levels aligned to 16 bytes where they were to 8,
+each file 32 bytes longer. The manifest's mean colors and surfaces stand as they were, the script
+taking the linear mean as this module's recipe did. The linear-mean test decodes BC7's modes 6, 1
+and 7, the partitions' table being the Khronos table Materials' encoder carries, and passes on the
+new files. The strict build is clean and the tests pass, 82 as before.
+
+Handoff, written again. The textures are handed over, so next in order are the stems by Modeling's
+EditMesh.Tube, the question open whether the module names Modeling or an engine builds the stems
+from the points and radii, the review leaning to the second. A fresh session reads AGENTS.md, this
+file's head, Decision 7 and the last Replies, NORM.md's N 4.11 and N 7.9, and README.md's binding
+section first, runs the suite to a file under its work folder and reads the summary line, makes the
+texture collection again with the README's commands where Materials' encoder moves, and reports one
+finished item at a time in ten lines.

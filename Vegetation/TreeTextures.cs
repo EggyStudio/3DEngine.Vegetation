@@ -9,11 +9,11 @@ namespace Vegetation;
 /// <remarks>
 /// <para>
 /// The module carries each set it was built with inside its assembly, three KTX2 files a set and a
-/// bark's depth a fourth, that <c>build/textures.py</c> imports by a recipe in its manifest, so a
-/// game ships no folder for them. An engine reads every file by its path in the collection, which
-/// <see cref="Files"/> lists and <see cref="Open"/> opens, and loads a set's images from those
-/// paths with its own loader. A tree whose species names a set the collection does not hold is
-/// drawn with the bark and leaves <see cref="TreeLooks"/> makes.
+/// bark's depth a fourth, that the Materials module's <c>scripts/textures.py</c> imports by a
+/// recipe in its manifest, so a game ships no folder for them. An engine reads every file by its
+/// path in the collection, which <see cref="Files"/> lists and <see cref="Open"/> opens, and loads
+/// a set's images from those paths with its own loader. A tree whose species names a set the
+/// collection does not hold is drawn with the bark and leaves <see cref="TreeLooks"/> makes.
 /// </para>
 /// <para>
 /// A game adds a folder of its own sets with <see cref="Add"/>, as the import writes them, each in
@@ -99,7 +99,9 @@ public static class TreeTextures
     /// Adds the sets of a folder on this machine, each in a folder of its name beside a
     /// <c>textures.json</c> naming them.
     /// </summary>
-    /// <param name="directory">The folder, as <c>build/textures.py --out</c> writes one.</param>
+    /// <param name="directory">
+    /// The folder, as the Materials module's <c>scripts/textures.py --out</c> writes one.
+    /// </param>
     /// <returns>The sets it added, in the order the folder names them.</returns>
     /// <exception cref="InvalidDataException">
     /// The folder's <c>textures.json</c> is missing or names a set none of whose files are there.
@@ -114,7 +116,7 @@ public static class TreeTextures
         ArgumentException.ThrowIfNullOrWhiteSpace(directory);
         var full = Path.GetFullPath(directory);
         var manifest = Path.Combine(full, "textures.json");
-        if (!File.Exists(manifest)) throw new InvalidDataException($"{full} holds no textures.json naming its sets, which build/textures.py writes beside them.");
+        if (!File.Exists(manifest)) throw new InvalidDataException($"{full} holds no textures.json naming its sets, which the texture recipe writes beside them.");
 
         lock (Gate)
         {
