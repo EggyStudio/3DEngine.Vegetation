@@ -6,6 +6,19 @@ under `.github/assets/readings` as WebP files named by their day, each on the da
 the notes written beside them as Markdown files named the same way. A line under Done names the item
 of .github/REVIEW.md or .github/REVIEW-ARCHIVE.md and the commit that closed it.
 
+## 2026-11-19
+
+![](.github/assets/readings/2026-11-19-item-9-stems-bark.webp)
+The quaking aspen's stems at seed 1 drawn with the silver birch's bark by their own count round and
+coordinate along, the whole tree beside its lowest three meters, lit as round, the bark's marks
+keeping their shape up the tapering trunk.
+
+Commits that day
+
+- `ffcb8c1` The texture collection is made by the Materials module's script in place of the module's
+  own, every albedo encoded closer to its source, and the mean color's test reads the BC7 modes it
+  writes.
+
 ## 2026-11-18
 
 ![](.github/assets/readings/2026-11-18-item-9-looks.webp)

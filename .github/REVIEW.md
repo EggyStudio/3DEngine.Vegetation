@@ -764,3 +764,30 @@ file's head, Decision 7 and the last Replies, NORM.md's N 4.11 and N 7.9, and RE
 section first, runs the suite to a file under its work folder and reads the summary line, makes the
 texture collection again with the README's commands where Materials' encoder moves, and reports one
 finished item at a time in ten lines.
+
+The stems as tubes need them, in the commit carrying this line, as the review answered; the library
+names no other module. TreeStems.Build of a skeleton and its species gives each stem as a TreeStem,
+its points from the joint on its parent, its radii, a whole count round, the trunk's nearest its
+circumference over the bark's repeat round and a branch's nearest its parent's count times its
+radius over the parent's at the joint, at least one, and each point's coordinate along in repeats, a
+repeat as long as the circumference over the count in the picture's proportion, so it shortens with
+the radius. EveryStemKeepsItsBarksTexelsTheirShapeAlongItsLength holds every segment of the six
+presets at seeds 1 and 2 to a squeeze of a hundredth, and failed first with the repeat held at the
+stem's base, a texel squeezed 235 times on the willow at seed 2. A bark set's repeat in meters is
+the manifest's meters, which TreeTextureSet.Meters reads, written by hand for the four barks, half a
+meter round each and 0.5, 2.0, 2.0 and 1.0 m along for the birch, the broadleaf, the willow and the
+hornbeam by their pictures' proportions, since their sources record no scale; TreeLooks' bark takes
+0.5 by 2.0. The README's binding block builds each stem as a tube from them, its rows and
+conventions name the stems and the bark's wrap, the host records tubes, and CHEATSHEET.md is written
+again. The picture, `2026-11-19-item-9-stems-bark.webp`, draws the aspen's stems at seed 1 in the
+birch's bark by those coordinates, the whole tree beside its lowest three meters. The strict build
+is clean and the tests pass, 84 where there were 82.
+
+Handoff. Vegetation is idle at the commit carrying this line until the review or the owner brings
+work. The review's items stand done but item 9's stems' mesh, which an engine builds from TreeStems
+with its own tube, and item 4's 3DEngine half, which is that engine's. Nothing is open in the
+module. A fresh session reads AGENTS.md, this file's head, Decision 7 and the last Replies,
+NORM.md's N 4.11 and N 7.9, and README.md's binding section first, runs the suite to a file under
+its work folder and reads its summary line, makes the texture collection again with the README's
+commands where Materials' encoder moves, moves the Tools pin with modules/Tools/scripts/pin.py, and
+reports one finished item at a time in ten lines.

@@ -140,6 +140,7 @@ string Surface { get; init; }                            // The path of occlusio
 IReadOnlyList<(float U, float V, float Width, float Height)> LeafBoxes { get; init; }  // Where each leaf of a leaf set's atlas is, as the share of the atlas's width and height from its left and top and the share it spans, its stalk at the bottom, or the whole atlas as one leaf where the manifest gives none
 Vector3 MeanColor { get; init; }                         // The mean color of the albedo's opaque texels in linear sRGB, the summer color a fall tint is worked out against, or white where the manifest does not say
 (float Occlusion, float Roughness, float Metallic, float Translucency) MeanSurface { get; init; }  // The mean of the surface's occlusion, roughness, metallic and translucency over the albedo's opaque texels, which a tree's far card, a picture of a whole branch, is drawn with, or a surface fully rough and lit through nowhere where the manifest does not say
+(float Across, float Down)? Meters { get; init; }        // How many meters of a stem one repeat of a bark's picture covers, round the stem across its width and along it down its height, or nothing where the manifest does not say
 string? Depth { get; init; }                             // The path of a bark's depth for parallax occlusion, one channel in BC4, white the deepest, a depth below the surface rather than a height, or nothing for a set without one
 
 enum TreeTextureKind                                     // What a set of TreeTextures is for
@@ -176,6 +177,17 @@ int OwnerOf(int stem);                                   // The limb a stem grow
 int LimbOf(int stem);                                    // The limb a stem swings with, none for the trunk, the limb it grows from, or itself for a stem that grows from the trunk below every limb
 Vector4 Pivot(int limb, Vector3 at);                     // A limb's pivot and phase, where it leaves its parent in X, Y and Z and its phase from 0 up to 1 in W, or a point's own place and no phase for no limb, so the point does not swing
 float Phase(int number);                                 // A phase from 0 up to 1 for a limb or a leaf, by its number, spread by Knuth's hash
+
+class TreeStems                                          // A grown tree's stems as tubes need them, each with its bark wrapped round and along it, which an engine builds its stems' meshes from with whatever tube it has
+IReadOnlyList<TreeStem> Build(TreeSkeleton skeleton, TreeSpecies species);  // Gives a grown tree's stems with its species' bark wrapped round them
+IReadOnlyList<TreeStem> Build(TreeSkeleton skeleton, (float Across, float Down) repeat);  // Gives a grown tree's stems with a bark of a given repeat wrapped round them
+
+record TreeStem                                          // A stem of a tree as a tube needs it, its points from the joint where it leaves its parent, the radius at each, how many times its bark goes round it, and how far along the bark's picture each point stands, from Build
+TreeStem(IReadOnlyList<Vector3> Points, IReadOnlyList<float> Radii, int Around, IReadOnlyList<float> Along);
+IReadOnlyList<Vector3> Points { get; init; }             // The stem's points in meters, the joint on its parent first, Y up
+IReadOnlyList<float> Radii { get; init; }                // The stem's radius at each point in meters
+int Around { get; init; }                                // How many times the bark's picture goes round the stem, a whole count above zero
+IReadOnlyList<float> Along { get; init; }                // How far along the bark's picture each point stands, in repeats from the stem's first point, a tube's texture coordinate along it, the picture's across being its coordinate round
 
 class TreeCrown                                          // A tree's crown as a volume of leaves, from which each leaf takes how much of the sky reaches it through the leaves round it and which way is out of the crown at it, so an engine shades a leaf deep in the crown darker than one on its rim and bends its light toward the outside
 (float[] Sky, Vector3[] Out) Shade(IReadOnlyList<Vector3> places, IReadOnlyList<float> areas);  // Finds how much of the sky each leaf sees through the crown and which way is out of the crown at it

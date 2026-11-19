@@ -20,6 +20,7 @@ binds it by calling it and drawing what it returns.
 | `TreeLooks` | The bark's color, normal and depth and a leaf atlas of four leaves of a shape, made in code where a species names no set, the same each time and white or gray for the species' colors to tint, with the boxes of the atlas's leaves |
 | `TreeLeaves`, `TreeLeafMesh` and `TreeDetail` | A grown tree's leaves as vertex arrays at two levels of detail, a card a leaf along its twigs or a frond along each stem, each vertex's place, normal, texture coordinates, sky, way out and sway, with the triangles and each card's twig |
 | `TreeLimbs` | Which of a tree's sixteen limbs each stem sways with and where each limb pivots, with a phase a limb or a leaf |
+| `TreeStems` and `TreeStem` | A tree's stems as a tube needs them, each one's points from the joint on its parent, its radii, how many times its bark goes round it and how far along the bark's picture each point stands, the bark's texels keeping their shape the length of a tapering stem |
 | `TreeCrown` | A crown as a volume of its leaves, from which each leaf takes the share of the sky it sees through the leaves round it and the way out of the crown at it, so a leaf deep in the crown is drawn darker than one on its rim |
 | `GrassScatter`, `GrassSettings`, `GrassPatch` and `GrassClump` | Where grass stands over a stretch of ground, the stretch cut into square patches an engine draws as a mesh each, and each patch's clumps scattered a cell each by the patch's own seed, a clump's root, turn, height and phases in the wind, with the settings a stretch is planted with |
 
@@ -66,6 +67,7 @@ it and drawing what it returns, with no window, scheduler or graphics API of the
 | Depth maps | 255 the deepest, a depth below the surface for parallax occlusion rather than a height |
 | Texture files | KTX2 with every mipmap level and no supercompression, each level's blocks as a GPU samples them, BC7 for color and surface, BC5 for normals, BC4 for depth |
 | Light | None of the module's. `TreeCrown.Shade` gives a share of the sky from 0 to 1, which an engine scales by its own light |
+| A stem's bark | A whole count round, the trunk's nearest its circumference over the set's repeat round and a branch's nearest its parent's times its radius over the parent's at the joint, and a coordinate along in repeats, each repeat as long as the circumference over the count in the picture's proportion, so it shortens with the radius |
 | A leaf vertex's place and normal | Meters, Y up, from the tree's root at the origin, and a normal at unit length, the way its card faces, a card counterclockwise seen from its face |
 | A leaf vertex's texture coordinates | 0 to 1 in the atlas, U from its left and V from its top, a card's stalk at its box's bottom |
 | A leaf vertex's sky | 0 to 1, the share of the sky that reaches its card through the crown, the same at a card's four corners, absent for fronds; an engine darkens the leaf by it to a floor of its own |
@@ -76,7 +78,7 @@ it and drawing what it returns, with no window, scheduler or graphics API of the
 The smallest binding plants a forest of a species and a field of grass. It is the body of
 `Bind` in `Vegetation.Tests/BindingTests.cs`, which the tests run against a host that records what
 an engine would draw, and a test holds this block the same as that body. `host` is the engine's
-side, which draws a stem as a tapered cylinder, loads a texture file with its KTX2 loader, uploads
+side, which builds a stem as a tube round its points with its bark wrapped by its count round and its coordinates along, loads a texture file with its KTX2 loader, uploads
 a picture as an image and draws a clump as two cards crossed about its root. The code takes
 `using System.Numerics;` and `using Vegetation;`.
 
@@ -85,18 +87,18 @@ a picture as an image and draws a clump as two cards crossed about its root. The
 var variants = new TreeSkeleton[TreePlanting.Variants];
 for (var variant = 0; variant < variants.Length; variant++)
     variants[variant] = TreeSkeleton.Grow(species, TreePlanting.VariantSeed(variant));
+var stems = variants.Select(variant => TreeStems.Build(variant, species)).ToArray();
 
 // Two hundred trees over a disc of 50 meters about the origin, each standing by its seed.
 foreach (var (place, seed) in TreePlanting.Forest(1, Vector3.Zero, 50f, 200))
 {
     var stance = TreePlanting.Stance(seed);
     var turn = Quaternion.CreateFromAxisAngle(Vector3.UnitY, stance.Turn);
-    var nodes = variants[stance.Variant].Nodes;
     Vector3 At(Vector3 point) => place + Vector3.Transform(point * stance.Size, turn);
-    foreach (var node in nodes)
+    foreach (var stem in stems[stance.Variant])
     {
-        if (node.Parent >= 0)
-            host.Stem(At(nodes[node.Parent].Place), At(node.Place), node.Radius * stance.Size);
+        var radii = stem.Radii.Select(radius => radius * stance.Size).ToArray();
+        host.Tube([.. stem.Points.Select(At)], radii, stem.Around, stem.Along);
     }
 }
 

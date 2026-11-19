@@ -191,6 +191,7 @@ public static class TreeTextures
 
             var set = new TreeTextureSet(name, kind, $"{name}/albedo.ktx2", $"{name}/normal.ktx2", $"{name}/surface.ktx2");
             if (entry.TryGetProperty("size", out var size)) set = set with { Size = (size[0].GetInt32(), size[1].GetInt32()) };
+            if (entry.TryGetProperty("meters", out var repeat)) set = set with { Meters = (repeat[0].GetSingle(), repeat[1].GetSingle()) };
             if (exists($"{name}/depth.ktx2")) set = set with { Depth = $"{name}/depth.ktx2" };
             if (entry.TryGetProperty("color", out var color)) set = set with { MeanColor = TreeSpecies.Srgb(color[0].GetSingle(), color[1].GetSingle(), color[2].GetSingle()) };
             if (entry.TryGetProperty("surface", out var surface)) set = set with { MeanSurface = (surface[0].GetSingle(), surface[1].GetSingle(), surface[2].GetSingle(), surface[3].GetSingle()) };

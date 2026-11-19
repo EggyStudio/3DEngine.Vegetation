@@ -12,8 +12,9 @@ public sealed class BindingTests
 {
     /// <summary>
     /// The binding plants 200 trees of the quaking aspen, whose stems stand on the ground and
-    /// inside the forest's disc, opens its bark's and leaves' KTX2 files from the collection and
-    /// scatters the field's grass, every clump on the ground inside the field.
+    /// inside the forest's disc as tubes with their bark wrapped round them, opens its bark's and
+    /// leaves' KTX2 files from the collection and scatters the field's grass, every clump on the
+    /// ground inside the field.
     /// </summary>
     [Fact]
     public void ASpeciesWithSetsIsBoundWithNoEngine()
@@ -21,12 +22,16 @@ public sealed class BindingTests
         var host = new Host();
         Bind(host, TreeSpecies.QuakingAspen);
 
-        Assert.True(host.Stems.Count > 200 * 100, $"{host.Stems.Count} stems for 200 trees.");
-        Assert.All(host.Stems, stem =>
+        Assert.True(host.Tubes.Count > 200 * 50, $"{host.Tubes.Count} stems for 200 trees.");
+        Assert.All(host.Tubes, tube =>
         {
-            Assert.True(float.IsFinite(stem.Radius) && stem.Radius > 0f);
-            Assert.InRange(new Vector2(stem.To.X, stem.To.Z).Length(), 0f, 50f + TreeSpecies.QuakingAspen.Scale);
-            Assert.True(stem.From.Y >= -0.01f && stem.To.Y >= -0.01f, $"A stem reaches {stem.From.Y} and {stem.To.Y} below the ground.");
+            Assert.True(tube.Around >= 1 && tube.Radii.All(radius => float.IsFinite(radius) && radius > 0f));
+            Assert.True(tube.Along.Zip(tube.Along.Skip(1)).All(pair => pair.Second >= pair.First), "A stem's bark runs back along it.");
+            Assert.All(tube.Points, point =>
+            {
+                Assert.InRange(new Vector2(point.X, point.Z).Length(), 0f, 50f + TreeSpecies.QuakingAspen.Scale);
+                Assert.True(point.Y >= -0.01f, $"A stem reaches {point.Y} below the ground.");
+            });
         });
 
         Assert.Equal(6, host.Textures.Count);
@@ -67,18 +72,18 @@ public sealed class BindingTests
         var variants = new TreeSkeleton[TreePlanting.Variants];
         for (var variant = 0; variant < variants.Length; variant++)
             variants[variant] = TreeSkeleton.Grow(species, TreePlanting.VariantSeed(variant));
+        var stems = variants.Select(variant => TreeStems.Build(variant, species)).ToArray();
 
         // Two hundred trees over a disc of 50 meters about the origin, each standing by its seed.
         foreach (var (place, seed) in TreePlanting.Forest(1, Vector3.Zero, 50f, 200))
         {
             var stance = TreePlanting.Stance(seed);
             var turn = Quaternion.CreateFromAxisAngle(Vector3.UnitY, stance.Turn);
-            var nodes = variants[stance.Variant].Nodes;
             Vector3 At(Vector3 point) => place + Vector3.Transform(point * stance.Size, turn);
-            foreach (var node in nodes)
+            foreach (var stem in stems[stance.Variant])
             {
-                if (node.Parent >= 0)
-                    host.Stem(At(nodes[node.Parent].Place), At(node.Place), node.Radius * stance.Size);
+                var radii = stem.Radii.Select(radius => radius * stance.Size).ToArray();
+                host.Tube([.. stem.Points.Select(At)], radii, stem.Around, stem.Along);
             }
         }
 
@@ -119,13 +124,14 @@ public sealed class BindingTests
     // What an engine does with what the module gives, recorded rather than drawn.
     private sealed class Host
     {
-        public List<(Vector3 From, Vector3 To, float Radius)> Stems { get; } = [];
+        public List<(Vector3[] Points, float[] Radii, int Around, IReadOnlyList<float> Along)> Tubes { get; } = [];
         public List<(string Path, byte[] Head)> Textures { get; } = [];
         public List<(string Name, int Length)> Pictures { get; } = [];
         public List<(Vector3 Root, float Turn, float Height)> Clumps { get; } = [];
 
-        // A stem from one point to the next, which an engine draws as a tapered cylinder.
-        public void Stem(Vector3 from, Vector3 to, float radius) => Stems.Add((from, to, radius));
+        // A stem, which an engine builds as a tube round its points by their radii, its bark
+        // wrapped round it the count given and along it by the coordinate at each point.
+        public void Tube(Vector3[] points, float[] radii, int around, IReadOnlyList<float> along) => Tubes.Add((points, radii, around, along));
 
         // A texture file of the collection, which an engine reads with its KTX2 loader.
         public void Texture(string path, Stream file)

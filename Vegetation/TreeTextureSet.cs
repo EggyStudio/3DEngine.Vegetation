@@ -62,6 +62,16 @@ public sealed record TreeTextureSet(string Name, TreeTextureKind Kind, string Al
     public (float Occlusion, float Roughness, float Metallic, float Translucency) MeanSurface { get; init; } = (1f, 1f, 0f, 0f);
 
     /// <summary>
+    /// How many meters of a stem one repeat of a bark's picture covers, round the stem across its
+    /// width and along it down its height, or nothing where the manifest does not say.
+    /// </summary>
+    /// <remarks>
+    /// <see cref="TreeStems"/> wraps a stem's bark by it, so a trunk and a twig carry the picture
+    /// at the scale it was made for.
+    /// </remarks>
+    public (float Across, float Down)? Meters { get; init; }
+
+    /// <summary>
     /// The path of a bark's depth for parallax occlusion, one channel in BC4, white the deepest, a
     /// depth below the surface rather than a height, or nothing for a set without one.
     /// </summary>
