@@ -1,4 +1,4 @@
-[Devlog](https://github.com/EggyStudio/Vegetation/blob/main/DEVLOG.md) [Cheatsheet](https://github.com/EggyStudio/Vegetation/blob/main/CHEATSHEET.md)
+[Devlog](https://github.com/EggyStudio/3DEngine.Vegetation/blob/main/DEVLOG.md) [Cheatsheet](https://github.com/EggyStudio/3DEngine.Vegetation/blob/main/CHEATSHEET.md)
 
 # Vegetation
 
@@ -30,7 +30,7 @@ An engine adds the repository as a git submodule under `modules/` and references
 from a project one folder below the engine's root.
 
 ```bash
-git submodule add https://github.com/EggyStudio/Vegetation.git modules/Vegetation
+git submodule add https://github.com/EggyStudio/3DEngine.Vegetation.git modules/Vegetation
 ```
 
 ```xml

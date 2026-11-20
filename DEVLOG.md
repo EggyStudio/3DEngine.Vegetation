@@ -15,6 +15,9 @@ keeping their shape up the tapering trunk.
 
 Commits that day
 
+- `d478a7e` The library gives each stem as a tube needs it, its points, its radii and its bark
+  wrapped round and along it so the bark keeps its shape the length of a tapering stem, and the
+  binding builds its tubes from them.
 - `ffcb8c1` The texture collection is made by the Materials module's script in place of the module's
   own, every albedo encoded closer to its source, and the mean color's test reads the BC7 modes it
   writes.
