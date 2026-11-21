@@ -195,6 +195,10 @@ with no quiet wait before it and held no longer than ten minutes, since two such
 side overfill the 8 GB. A session whose wait grows long tells the reviewing session in a line, which
 gives the order, an engine's illumination read first. By review.
 
+The Tools module's `scripts/gpu.py` is the one gate for this lock, and no session writes its own.
+`gpu.py shared -- <command>` and `gpu.py exclusive -- <command>` take the lock, write and clear the
+marks and keep the bounds, and `gpu.py status` lists who holds and who waits.
+
 **N 7.10 A session's programs keep their caches in a folder of the session's own.** The engine's
 caches of shaders, pipelines and scene packs stand in the account's cache folder, which the
 account's own programs read and write, and a session's plays on 2026-11-11 read and wrote the game's
