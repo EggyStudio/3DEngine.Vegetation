@@ -39,7 +39,7 @@ public sealed class ModuleTests
     [Fact]
     public void The_Library_Takes_No_Engine_Window_Or_Graphics_Api()
     {
-        var fault = ModuleChecks.ReferenceFault(Assembly.Load(Library), Deps);
+        var fault = ModuleChecks.ReferenceFault(Assembly.Load(Library), Deps, allowed: ["3DEngine.Materials"]);
         Assert.True(fault is null, fault);
     }
 

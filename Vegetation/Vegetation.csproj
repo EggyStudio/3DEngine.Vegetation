@@ -18,6 +18,21 @@
         <WarningsAsErrors>$(WarningsAsErrors);CS1591;CS1574</WarningsAsErrors>
     </PropertyGroup>
 
+    <!-- Materials reads the texture collection's manifest, which TreeTextures takes its sets from.
+         A Materials checkout beside this one is taken where it stands, so a program that takes
+         both builds one Materials, and this repository's own submodule is the one taken where none
+         stands beside it. -->
+    <PropertyGroup>
+        <MaterialsProject>$(MSBuildThisFileDirectory)..\..\Materials\Materials\Materials.csproj</MaterialsProject>
+        <MaterialsProject Condition="!Exists('$(MaterialsProject)')">$(MSBuildThisFileDirectory)..\modules\Materials\Materials\Materials.csproj</MaterialsProject>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="$(MaterialsProject)" />
+    </ItemGroup>
+    <Target Name="NeedsMaterials" BeforeTargets="Restore;CollectPackageReferences;ResolveProjectReferences" Condition="!Exists('$(MaterialsProject)')">
+        <Error Text="No Materials checkout stands beside this one and the Materials submodule is not fetched. Run git submodule update --init modules/Materials." />
+    </Target>
+
     <!-- The tests reach Exact, the module's own arithmetic, to hold it against the runtime's. -->
     <ItemGroup>
         <InternalsVisibleTo Include="3DEngine.Vegetation.Tests" />

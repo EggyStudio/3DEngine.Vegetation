@@ -54,6 +54,13 @@ its own things of, points and radii it builds stems from, places and seeds it pl
 files and pictures it uploads, and shades it writes into a leaf's vertices. Binding it is calling
 it and drawing what it returns, with no window, scheduler or graphics API of the module's.
 
+The module takes the Materials module for its texture collection's manifest, which Materials'
+`TextureCollection.Read` reads, so a set's name, its kind, its size, its meters, its leaf boxes and
+its mean color and surface are the entry's that class gives, and the paths of its pictures are the
+entry's too. A binding that references Materials gets from the same pictures the layouts they are
+read by, `PictureLayout.Color` for an albedo, `Normal`, `Surface` and `Depth` for the others, and
+loads each file by the path `TreeTextures.Open` opens, with no manifest of its own to read.
+
 | Quantity | Convention |
 |---|---|
 | Length | Meters |
@@ -140,6 +147,11 @@ shades them from their middles and areas.
 
 ## Building and testing
 
+The library takes the Materials module and the tests take the checks every module keeps from the
+Tools module, git submodules under `modules/Materials` and `modules/Tools`, so a clone fetches them
+with `git clone --recurse-submodules`, or with `git submodule update --init` in a clone made
+without it. A Materials checkout beside this one is built where it stands, so a program that takes
+both builds one Materials, and this repository's submodule is built where none stands beside it.
 With the .NET 10 SDK:
 
 ```bash

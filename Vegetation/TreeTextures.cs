@@ -1,4 +1,5 @@
-using System.Text.Json;
+using System.Numerics;
+using Materials;
 
 namespace Vegetation;
 
@@ -10,7 +11,8 @@ namespace Vegetation;
 /// <para>
 /// The module carries each set it was built with inside its assembly, three KTX2 files a set and a
 /// bark's depth a fourth, that the Materials module's <c>scripts/textures.py</c> imports by a
-/// recipe in its manifest, so a game ships no folder for them. An engine reads every file by its
+/// recipe in its manifest, which its <see cref="TextureCollection"/> reads, so a game ships no
+/// folder for them. An engine reads every file by its
 /// path in the collection, which <see cref="Files"/> lists and <see cref="Open"/> opens, and loads
 /// a set's images from those paths with its own loader. A tree whose species names a set the
 /// collection does not hold is drawn with the bark and leaves <see cref="TreeLooks"/> makes.
@@ -166,41 +168,46 @@ public static class TreeTextures
         set.Depth is { } depth ? [set.Albedo, set.Normal, set.Surface, depth] : [set.Albedo, set.Normal, set.Surface];
 
     /// <summary>
-    /// The sets a manifest names whose three files are there, each file by its set's name and its
-    /// own.
+    /// The sets a manifest names whose three files are there, each file at the path the Materials
+    /// module's <see cref="TextureCollection"/> gives it.
     /// </summary>
     private static List<TreeTextureSet> Listed(string json, bool carried, Func<string, bool> exists, string what)
     {
-        var sets = new List<TreeTextureSet>();
-        using var document = JsonDocument.Parse(json);
-        foreach (var entry in document.RootElement.GetProperty("entries").EnumerateArray())
+        IReadOnlyList<TextureEntry> entries;
+        try
         {
-            var name = entry.GetProperty("name").GetString() ?? throw new InvalidDataException($"{what} names a set with no name.");
-            var kind = entry.GetProperty("kind").GetString() switch
+            entries = TextureCollection.Read(json, "textures.json");
+        }
+        catch (InvalidDataException fault)
+        {
+            throw new InvalidDataException($"The manifest {what} is not read, {fault.Message}", fault);
+        }
+
+        var sets = new List<TreeTextureSet>();
+        foreach (var entry in entries)
+        {
+            var kind = entry.Kind switch
             {
-                "bark" => TreeTextureKind.Bark,
-                "leaves" => TreeTextureKind.Leaves,
-                "grass" => TreeTextureKind.Grass,
-                var other => throw new InvalidDataException($"{what} gives the set {name} the kind {other}, which is not bark, leaves or grass."),
+                TextureKind.Bark => TreeTextureKind.Bark,
+                TextureKind.Leaves => TreeTextureKind.Leaves,
+                TextureKind.Grass => TreeTextureKind.Grass,
+                var other => throw new InvalidDataException($"{what} gives the set {entry.Name} the kind {other}, which is not bark, leaves or grass."),
             };
 
-            string[] files = ["albedo.ktx2", "normal.ktx2", "surface.ktx2"];
-            var present = files.Count(file => exists($"{name}/{file}"));
+            string[] files = [entry.Albedo.Path, entry.Normal.Path, entry.Surface.Path];
+            var present = files.Count(exists);
             if (present == 0 && carried) continue;
-            if (present < files.Length) throw new InvalidDataException($"{what} names the set {name}, and {files.Length - present} of its three files are not there.");
+            if (present < files.Length) throw new InvalidDataException($"{what} names the set {entry.Name}, and {files.Length - present} of its three files are not there.");
 
-            var set = new TreeTextureSet(name, kind, $"{name}/albedo.ktx2", $"{name}/normal.ktx2", $"{name}/surface.ktx2");
-            if (entry.TryGetProperty("size", out var size)) set = set with { Size = (size[0].GetInt32(), size[1].GetInt32()) };
-            if (entry.TryGetProperty("meters", out var repeat)) set = set with { Meters = (repeat[0].GetSingle(), repeat[1].GetSingle()) };
-            if (exists($"{name}/depth.ktx2")) set = set with { Depth = $"{name}/depth.ktx2" };
-            if (entry.TryGetProperty("color", out var color)) set = set with { MeanColor = TreeSpecies.Srgb(color[0].GetSingle(), color[1].GetSingle(), color[2].GetSingle()) };
-            if (entry.TryGetProperty("surface", out var surface)) set = set with { MeanSurface = (surface[0].GetSingle(), surface[1].GetSingle(), surface[2].GetSingle(), surface[3].GetSingle()) };
-            if (entry.TryGetProperty("leaves", out var leaves) && leaves.GetArrayLength() > 0)
+            sets.Add(new TreeTextureSet(entry.Name, kind, files[0], files[1], files[2])
             {
-                set = set with { LeafBoxes = [.. leaves.EnumerateArray().Select(box => (box[0].GetSingle(), box[1].GetSingle(), box[2].GetSingle(), box[3].GetSingle()))] };
-            }
-
-            sets.Add(set);
+                Size = entry.Size,
+                Meters = entry.Meters,
+                Depth = entry.Depth is { } depth && exists(depth.Path) ? depth.Path : null,
+                MeanColor = entry.MeanColor ?? Vector3.One,
+                MeanSurface = entry.MeanSurface is { } surface ? (surface.X, surface.Y, surface.Z, surface.W) : (1f, 1f, 0f, 0f),
+                LeafBoxes = entry.LeafBoxes.Count > 0 ? entry.LeafBoxes : [(0f, 0f, 1f, 1f)],
+            });
         }
 
         return sets;
