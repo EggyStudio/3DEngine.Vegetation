@@ -2,7 +2,7 @@
 
 The rules this module keeps, each with a number, a reason and what checks it, written by the session
 that writes [REVIEW.md](REVIEW.md). The text is the same in the eight module repositories, Modeling,
-Vegetation, Levels, Landscape, RadianceCascades, Sky, Tools and Materials. The rules are the
+Vegetation, Levels, Landscape, RadianceCascades, Atmosphere, Tools and Materials. The rules are the
 engines' of the same number, from the norm BevyCSharp and 3DEngine share, taken where they fit a
 library both engines use; a rule the engines have and this file does not is not asked of the module.
 

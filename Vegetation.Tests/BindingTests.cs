@@ -39,6 +39,8 @@ public sealed class BindingTests
         Assert.All(host.Textures, texture => Assert.Equal(ktx2, texture.Head));
         Assert.Empty(host.Pictures);
 
+        Assert.NotEmpty(host.Meshes);
+        Assert.All(host.Meshes, mesh => Assert.True(mesh.Vertices > 0 && mesh.Indices > 0));
         Assert.NotEmpty(host.Clumps);
         Assert.All(host.Clumps, clump =>
         {
@@ -110,11 +112,14 @@ public sealed class BindingTests
             host.Picture("leaves", atlas, TreeLooks.LeafSize, TreeLooks.LeafSize);
         }
 
-        // Grass over a field of 40 by 40 meters about the origin, a clump at a time.
+        // Grass over a field of 40 by 40 meters about the origin, a patch at a time. A near patch
+        // is drawn as blades, all five segments of each, and a far one as two crossed cards.
         var grass = new GrassSettings();
         foreach (var patch in GrassScatter.Patches(new Vector2(40f, 40f), grass))
         {
             var middle = new Vector3(patch.Middle.X, 0f, patch.Middle.Y);
+            var blades = GrassBlades.Write(grass, patch.Size, patch.Seed, 5);
+            host.Blades(middle, blades.Positions, blades.Normals, blades.Uvs, blades.Colors, blades.Indices);
             foreach (var clump in GrassScatter.Clumps(grass, patch.Size, patch.Seed))
                 host.Clump(middle + clump.Root, clump.Turn, clump.Height);
         }
@@ -128,6 +133,7 @@ public sealed class BindingTests
         public List<(string Path, byte[] Head)> Textures { get; } = [];
         public List<(string Name, int Length)> Pictures { get; } = [];
         public List<(Vector3 Root, float Turn, float Height)> Clumps { get; } = [];
+        public List<(Vector3 Middle, int Vertices, int Indices)> Meshes { get; } = [];
 
         // A stem, which an engine builds as a tube round its points by their radii, its bark
         // wrapped round it the count given and along it by the coordinate at each point.
@@ -149,6 +155,22 @@ public sealed class BindingTests
         {
             Assert.Equal(4 * width * height, rgba.Length);
             Pictures.Add((name, rgba.Length));
+        }
+
+        // A patch's blades, which an engine draws from the arrays as they are, both sides of each
+        // triangle, about the patch's middle.
+        public void Blades(
+            Vector3 middle,
+            IReadOnlyList<Vector3> positions,
+            IReadOnlyList<Vector3> normals,
+            IReadOnlyList<Vector2> uvs,
+            IReadOnlyList<Vector3> colors,
+            IReadOnlyList<uint> indices)
+        {
+            Assert.Equal(positions.Count, normals.Count);
+            Assert.Equal(positions.Count, uvs.Count);
+            Assert.Equal(positions.Count, colors.Count);
+            Meshes.Add((middle, positions.Count, indices.Count));
         }
 
         // A clump of grass, which an engine draws as two cards crossed about its root.

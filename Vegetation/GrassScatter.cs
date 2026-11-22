@@ -4,8 +4,8 @@ namespace Vegetation;
 
 /// <summary>
 /// Where grass stands over a stretch of ground, the stretch cut into square patches and each
-/// patch's clumps scattered over it from a seed, which an engine draws as a mesh a patch, two cards
-/// crossed a clump.
+/// patch's clumps scattered over it from a seed, which an engine draws as a mesh a patch, the
+/// blades of <see cref="GrassBlades"/> near and two cards crossed a clump far.
 /// </summary>
 /// <remarks>
 /// <para>

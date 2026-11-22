@@ -1,6 +1,7 @@
-// Writes what the README's two captures are drawn from: the skeleton, the leaf mesh and the sets of
-// four presets grown at seed 1, and the clumps of a patch of grass, each as plain text beside the
-// sets' albedo files, for scripts/captures.py to draw. It takes the folder to write into.
+// Writes what the README's captures are drawn from: the skeleton, the leaf mesh and the sets of
+// four presets grown at seed 1, and the clumps and blades of two patches of grass, each as plain
+// text beside the sets' albedo files, for scripts/captures.py to draw. It takes the folder to write
+// into.
 using System.Globalization;
 using System.Numerics;
 using System.Text.Json;
@@ -38,17 +39,38 @@ foreach (var (name, species) in presets)
 }
 File.WriteAllText(Path.Combine(folder, "presets.json"), JsonSerializer.Serialize(index));
 
-var grass = new GrassSettings { Density = 14f, Height = 0.5f, Seed = 3 };
-var clumps = GrassScatter.Clumps(grass, new Vector2(2f, 1f), 5);
-File.WriteAllLines(Path.Combine(folder, "grass-clumps.tsv"),
-    clumps.Select(c => string.Join('\t', F(c.Root.X), F(c.Root.Z), F(c.Turn), F(c.Height))));
+// The two patches of grass, the meadow's near the camera and a closer, smaller one, each as its
+// clumps for the far cards and its blades' arrays for the near level.
+var grass = GrassSettings.Meadow with { Seed = 3 };
+DumpGrass("grass", grass, new Vector2(2.4f, 0.6f), 5);
+DumpGrass("close", grass, new Vector2(0.35f, 0.25f), 9);
 var grassSet = TreeTextures.Find(grass.Set)!;
+var bladeSet = TreeTextures.Find(GrassBlades.Set)!;
 Copy(grassSet.Albedo);
+Copy(bladeSet.Albedo);
+Copy(bladeSet.Normal);
+Copy(bladeSet.Surface);
 File.WriteAllText(Path.Combine(folder, "grass.json"), JsonSerializer.Serialize(new
 {
     albedo = grassSet.Albedo,
     size = new[] { grassSet.Size?.Width ?? 0, grassSet.Size?.Height ?? 0 },
+    blade = new { albedo = bladeSet.Albedo, normal = bladeSet.Normal, surface = bladeSet.Surface },
 }));
+
+void DumpGrass(string name, GrassSettings settings, Vector2 size, uint seed)
+{
+    var clumps = GrassScatter.Clumps(settings, size, seed);
+    File.WriteAllLines(Path.Combine(folder, $"{name}-clumps.tsv"),
+        clumps.Select(c => string.Join('\t', F(c.Root.X), F(c.Root.Z), F(c.Turn), F(c.Height))));
+    var mesh = GrassBlades.Write(settings, size, seed, 5);
+    File.WriteAllLines(Path.Combine(folder, $"{name}-mesh.tsv"),
+        mesh.Positions.Select((p, i) => string.Join('\t', F(p.X), F(p.Y), F(p.Z),
+            F(mesh.Normals[i].X), F(mesh.Normals[i].Y), F(mesh.Normals[i].Z),
+            F(mesh.Colors[i].X), F(mesh.Colors[i].Y), F(mesh.Colors[i].Z),
+            F(mesh.Uvs[i].X), F(mesh.Uvs[i].Y))));
+    File.WriteAllLines(Path.Combine(folder, $"{name}-mesh-indices.tsv"),
+        mesh.Indices.Select(i => i.ToString(CultureInfo.InvariantCulture)));
+}
 
 // A set as the drawing reads it, its albedo copied beside, or only its name where the collection
 // has none of that name and the species is drawn in its own color.

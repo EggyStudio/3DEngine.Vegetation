@@ -9,15 +9,22 @@ of .github/REVIEW.md or .github/REVIEW-ARCHIVE.md and the commit that closed it.
 ## 2026-11-22
 
 ![](.github/assets/readings/2026-11-22-readme-grass.webp)
-A patch of wheat grass two meters by one at 14 clumps a meter, each clump two crossed cards of the
-grass texture scattered by a seed, seen from a little above.
+A patch of meadow grass 2.4 meters by 0.6 at 350 clumps a square meter, each clump five to nine
+blades cut from photographed wheat grass and tinted green with some dry, in a high sun and a sky,
+seen from a little above.
 
 ![](.github/assets/readings/2026-11-22-readme-trees.webp)
 The quaking aspen, the black tupelo, the weeping willow and the California black oak at seed 1, each
 grown from its preset and drawn with its own bark and leaf textures from the carried KTX2 files.
 
+![](.github/assets/readings/2026-11-22-readme-grass-close.webp)
+A patch 0.35 meters by 0.25 seen from near the ground, where single blades with their midribs and
+veins, their light through them and their shadow on one another show.
+
 Commits that day
 
+- `ef81919` The program that draws the README's two captures is kept in a scripts folder and takes
+  the folder to write them into, so a capture can be retaken when what it shows changes.
 - `81f316b` The README's two captures are retaken with each pixel the average of sixteen samples and
   the grass stands on soil.
 - `8f8f082` The README shows four preset trees and a patch of grass under its title.

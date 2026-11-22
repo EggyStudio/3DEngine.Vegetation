@@ -6,7 +6,10 @@
 Four of the presets grown at seed 1 and drawn with their own bark and leaf textures.
 
 ![](.github/assets/readings/2026-11-22-readme-grass.webp)
-A patch of wheat grass scattered by a seed, each clump two crossed cards of its texture.
+A patch of meadow grass scattered by a seed, each clump five to nine blades cut from photographed wheat grass and tinted green with some dry, on a strip of soil under a sun and a sky.
+
+![](.github/assets/readings/2026-11-22-readme-grass-close.webp)
+A smaller patch from near the ground, where single blades, their light through them and their shadow on one another show.
 
 Vegetation is a library an engine takes as a git submodule, for plant species, each one's skeleton
 grown from a seed, the tree and grass meshes built through Modeling, their texture sets and their
@@ -28,7 +31,8 @@ binds it by calling it and drawing what it returns.
 | `TreeLimbs` | Which of a tree's sixteen limbs each stem sways with and where each limb pivots, with a phase a limb or a leaf |
 | `TreeStems` and `TreeStem` | A tree's stems as a tube needs them, each one's points from the joint on its parent, its radii, how many times its bark goes round it and how far along the bark's picture each point stands, the bark's texels keeping their shape the length of a tapering stem |
 | `TreeCrown` | A crown as a volume of its leaves, from which each leaf takes the share of the sky it sees through the leaves round it and the way out of the crown at it, so a leaf deep in the crown is drawn darker than one on its rim |
-| `GrassScatter`, `GrassSettings`, `GrassPatch` and `GrassClump` | Where grass stands over a stretch of ground, the stretch cut into square patches an engine draws as a mesh each, and each patch's clumps scattered a cell each by the patch's own seed, a clump's root, turn, height and phases in the wind, with the settings a stretch is planted with |
+| `GrassScatter`, `GrassSettings`, `GrassPatch` and `GrassClump` | Where grass stands over a stretch of ground, the stretch cut into square patches an engine draws as a mesh each, and each patch's clumps scattered a cell each by the patch's own seed, a clump's root, turn, height and phases in the wind, with the settings a stretch is planted with, the meadow and the wheat among them, and the crossed cards of a far patch |
+| `GrassBlades`, `GrassBlade` and `GrassMesh` | A clump's five to nine blades from the clump and the settings, each a strip narrowing to a point with its own height, facing, lean and curl and a look cut from a photographed blade of the wheat-grass set, dry and yellowed in a share of them, and a tint that brings the picture to the settings' colors from root to tip, and a patch's blades written as plain arrays of positions, normals, texture coordinates, tints and indices, with a count of segments so a far patch takes fewer |
 
 ## Taking it into an engine
 
@@ -138,11 +142,14 @@ else
     host.Picture("leaves", atlas, TreeLooks.LeafSize, TreeLooks.LeafSize);
 }
 
-// Grass over a field of 40 by 40 meters about the origin, a clump at a time.
+// Grass over a field of 40 by 40 meters about the origin, a patch at a time. A near patch
+// is drawn as blades, all five segments of each, and a far one as two crossed cards.
 var grass = new GrassSettings();
 foreach (var patch in GrassScatter.Patches(new Vector2(40f, 40f), grass))
 {
     var middle = new Vector3(patch.Middle.X, 0f, patch.Middle.Y);
+    var blades = GrassBlades.Write(grass, patch.Size, patch.Seed, 5);
+    host.Blades(middle, blades.Positions, blades.Normals, blades.Uvs, blades.Colors, blades.Indices);
     foreach (var clump in GrassScatter.Clumps(grass, patch.Size, patch.Seed))
         host.Clump(middle + clump.Root, clump.Turn, clump.Height);
 }

@@ -116,6 +116,34 @@ pointer. One commit an engine, after item 3's first part.
     bridge as its binding, with the wind, the materials, the impostors, the card pictures, the
     memory and the Tree component, which stay there for good. After Modeling's item 3.
 
+10. **Grass as blades.** The grass reads badly in its capture, in its mesh and in its texture. A
+    clump is two flat upright cards with a photograph of straight wheat blades, so a patch is a
+    curtain of stripes with no bend, no tips against the sky and one look for every clump, and the
+    photograph's yellowed and spotted blades read as sick. The module gives the grass as blades. A
+    clump holds five to nine blades by its seed, each a strip narrowing from its root to a point,
+    three to five segments along a curve, with its own height, facing, lean and curl, and a width at
+    the root of three to eight millimeters as meadow grass has. The grass reads as a photograph of
+    grass and not as a drawing. A blade takes its color, its normals and the light it lets through
+    from a photographed blade set of the texture collection, its midrib and veins along its length,
+    the blade folded a little about its midrib, and the root and tip colors of the settings tint it
+    and do not replace it. A patch mixes its blades as a meadow does, green ones of two or three
+    kinds with dry and yellowed ones among them by a share of the settings, and their sizes and
+    colors stray by the seed. Where the collection holds no set a single blade can be cut from, the
+    session names a source with its license to the review before taking anything in. The surface is
+    a record of a blade, a call that gives a clump's blades from the clump and the settings, and a
+    call that writes a patch's blades as plain arrays of positions, normals, colors and indices that
+    any engine draws, with a count of segments so a far patch takes fewer. The settings' default is
+    a meadow grass 0.3 meters tall and green, and the wheat is a second preset, taller and paler.
+    The crossed cards and their three sets stay as the far level. The scatter, its seeds and its
+    tests are unchanged. Tests hold the same blades from the same seed, the counts, a blade inside
+    its clump's reach and the arrays' sizes. The README's grass capture is retaken from the blades
+    on its soil strip, lit by a sun and a sky with the light through the blades, their shadow on one
+    another and the dark at their roots, beside it in the dump the pair of cards and blades at one
+    view, and a second capture close to the ground where single blades show. The cheatsheet and the
+    guide take the surface in the same commit. No engine is named, and no engine's drawing changes
+    with it; the engines take the blades when they next move their pins, by rows in their own
+    reviews.
+
 ## Verdicts
 
 One verdict stands, the first, on the red run of the leaves' fixture.
@@ -791,3 +819,15 @@ NORM.md's N 4.11 and N 7.9, and README.md's binding section first, runs the suit
 its work folder and reads its summary line, makes the texture collection again with the README's
 commands where Materials' encoder moves, moves the Tools pin with modules/Tools/scripts/pin.py, and
 reports one finished item at a time in ten lines.
+
+Item 10, grass as blades. A clump grows five to nine blades by its seed through `GrassBlades.Of`,
+and `GrassBlades.Write` writes a patch's blades as positions, normals, UVs, tints and indices at a
+segment count a far patch lowers. Each blade is a strip of three to five segments, three to eight
+millimeters at its root, folded about its midrib, cut from one of three boxes of the wheat-grass
+photograph, so the color, normals and light through come from that set and the settings' root and
+tip colors tint it. The dry share, color variation and a third to a half height of underfill blades
+by `LowShare` mix a patch. The meadow stands 350 clumps a square meter and the wheat 200, and the
+crossed cards stay the far level. The pictures are drawn by `scripts/captures.py` in a high sun and
+a sky, the light through the blades, their shadow on one another and the dark at their roots, at 16
+samples a pixel, and the README shows the patch and a close one. The strict build is clean and the
+tests pass, 96 where there were 84.

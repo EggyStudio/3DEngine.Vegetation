@@ -1,12 +1,19 @@
 #!/usr/bin/env python3
 """Draws the README's two captures, the trees and the grass, and writes them into a folder.
 
-    scripts/captures.py <output folder>
+    scripts/captures.py <output folder> [picture file name ...]
+
+With no names it draws all four pictures below, and with names only those.
 
 The module's own program, scripts/ReadmeDump, grows four presets at seed 1 and scatters a patch of
-grass, and this script draws what it wrote with each set's own albedo, decoded from the KTX2 files
-the collection carries. It writes readme-trees.webp, 1156 by 350, and readme-grass.webp, 1200 by
-420, and a file moved from there into .github/assets/readings takes the day's date in its name.
+grass as blades, and this script draws what it wrote, the trees with each set's own albedo, decoded
+from the KTX2 files the collection carries, and the grass on a strip of soil under a sun and a sky,
+each blade cut from the photographed blades' albedo, normal and surface, tinted by its colors, lit
+from the front and through from behind, in the blades' shadow on one another and on the soil. It
+writes readme-trees.webp, 1156 by 350, and readme-grass.webp, 1200 by 420, and
+beside them readme-grass-close.webp, a patch seen from near the ground where single blades show,
+and grass-pair.webp, the crossed cards and the blades at one view. A file moved from there into
+.github/assets/readings takes the day's date in its name.
 
 Each picture is drawn four times as wide and as tall and each pixel is the average of the sixteen
 samples under it, taken in linear light, so a leaf's or a blade's cutout counts by the share of the
@@ -33,6 +40,10 @@ TREES = ["QuakingAspen", "BlackTupelo", "WeepingWillow", "CaliforniaBlackOak"]
 TREE_HEIGHT = 330
 GAP = 10
 GRASS_SIZE = (1200, 420)
+PAIR_SIZE = (1000, 420)
+GRASS_PATCH = (2.4, 0.6)
+CLOSE_PATCH = (0.35, 0.25)
+CLOSE_SIZE = (960, 640)
 
 # Samples along each side of a pixel, so sixteen a pixel.
 S = 4
@@ -65,16 +76,20 @@ def reduce(img):
     return Image.merge("RGB", bands)
 
 
-def decode(path):
-    """A KTX2 file of one BC7 level as its width, height and RGBA bytes, through Pillow's decoder
-    given the level under a DDS header, which names the format as BC7 in sRGB."""
+BC7_SRGB, BC7_LINEAR, BC5 = 99, 98, 83
+
+
+def decode(path, fmt=BC7_SRGB):
+    """A KTX2 file of one BC7 or BC5 level as its width, height and RGBA bytes, through Pillow's
+    decoder given the level under a DDS header, which names the format as BC7 in sRGB unless given
+    BC7 in linear or BC5."""
     with open(path, "rb") as file:
         data = file.read()
     _, _, width, height = struct.unpack_from("<4I", data, 12)
     offset, length, _ = struct.unpack_from("<3Q", data, 80)
     header = (b"DDS " + struct.pack("<7I", 124, 0x1 | 0x2 | 0x4 | 0x1000 | 0x80000, height, width, length, 0, 1)
               + b"\0" * 44 + struct.pack("<2I4s5I", 32, 4, b"DX10", 0, 0, 0, 0, 0)
-              + struct.pack("<5I", 0x1000, 0, 0, 0, 0) + struct.pack("<5I", 99, 3, 0, 1, 0))
+              + struct.pack("<5I", 0x1000, 0, 0, 0, 0) + struct.pack("<5I", fmt, 3, 0, 1, 0))
     image = Image.open(io.BytesIO(header + data[offset:offset + length])).convert("RGBA")
     return width, height, bytearray(image.tobytes())
 
@@ -191,74 +206,371 @@ def trees():
     return sheet
 
 
-def grass():
-    """The patch seen from the front and above, each clump two crossed cards of the set's albedo,
-    far to near, on a strip of soil."""
-    width, height = GRASS_SIZE
-    with open(os.path.join(dump.folder, "grass.json")) as file:
-        g = json.load(file)
-    tw, th, data = decode(os.path.join(dump.folder, "sets", g["albedo"]))
-    clumps = lines(os.path.join(dump.folder, "grass-clumps.tsv"))
-    el = math.radians(28)
-    aspect = g["size"][0] / g["size"][1]
+class View:
+    """A patch of grass seen from the front and above on a strip of soil, in orthographic view,
+    under a sun and a sky, scaled to fill a frame of its height and width."""
+
     # The soil strip is this program's own, a brown block to stand the blades on, not the module's.
-    soil_x, soil_z, soil_h, soil_f = 1.5, 0.6, 0.09, 0.95
-    # The scale that holds the soil's front edge and the tallest blades inside the frame.
-    top_y = max(h for _, _, _, h in clumps) * math.cos(el) + soil_z * math.sin(el)
-    low_y = -soil_h * math.cos(el) - soil_f * math.sin(el)
-    margin = 14
-    scale = (height - 2 * margin) / (top_y - low_y)
-    base = margin + top_y * scale
-    W, H = width * S, height * S
-    img = Image.new("RGB", (W, H), "white")
-    px = img.load()
+    SOIL_ALBEDO = tuple(LINEAR[c] for c in (128, 94, 66))
+    SOIL_DEPTH = 0.09
+    # Toward the sun, high, from the left and a little behind the grass, so the blades' faces and
+    # their backs are lit differently, and the light is lighter than the shade it leaves.
+    SUN = (-0.45, 0.8, 0.4)
+    SUN_COLOR = (1.7, 1.45, 1.1)
+    SKY_COLOR = (0.30, 0.38, 0.52)
+    # How much of the light on a blade's far side shows through it.
+    THROUGH = 1.4
+    # The height above which a blade's sky is open past the blades about it, in meters.
+    ROOTS = 0.12
 
-    def screen(X, Y, Z):
-        return (S * (width / 2 + X * scale), S * (base - (Y * math.cos(el) + Z * math.sin(el)) * scale))
+    def __init__(self, size, patch, elevation, tallest):
+        self.width, self.height = size
+        self.patch = patch
+        self.el = math.radians(elevation)
+        norm = math.sqrt(sum(c * c for c in self.SUN))
+        self.sun = tuple(c / norm for c in self.SUN)
+        self.eye = (0.0, math.sin(self.el), -math.cos(self.el))
+        # The soil reaches only a twentieth of the patch's width and a fifth of its depth past its
+        # edges.
+        self.soil_x = patch[0] * 0.55
+        self.soil_z = patch[1] / 2 + patch[1] * 0.05
+        self.soil_f = patch[1] / 2 + patch[1] * 0.2
+        top_y = tallest * math.cos(self.el) + self.soil_z * math.sin(self.el)
+        low_y = -self.SOIL_DEPTH * math.cos(self.el) - self.soil_f * math.sin(self.el)
+        margin = 14
+        self.scale = min((self.height - 2 * margin) / (top_y - low_y), (self.width - 2 * margin) / (2 * self.soil_x))
+        self.base = margin + top_y * self.scale
+        self.image = Image.new("RGB", (self.width * S, self.height * S), "white")
+        self.soil()
 
-    d = ImageDraw.Draw(img)
-    d.polygon([screen(-soil_x, 0, soil_z), screen(soil_x, 0, soil_z), screen(soil_x, 0, -soil_f), screen(-soil_x, 0, -soil_f)], fill=(112, 82, 56))
-    d.polygon([screen(-soil_x, 0, -soil_f), screen(soil_x, 0, -soil_f), screen(soil_x, -soil_h, -soil_f), screen(-soil_x, -soil_h, -soil_f)], fill=(78, 55, 38))
-    cards = []
-    for x, z, turn, h in clumps:
-        for k in range(2):
-            cards.append((z, x, turn + k * math.pi / 2, h))
-    cards.sort(reverse=True)
-    for z, x, t, h in cards:
-        w = h * aspect
-        c, s_ = math.cos(t), math.sin(t)
-        l = screen(x - w / 2 * c, 0, z - w / 2 * s_)
-        r = screen(x + w / 2 * c, 0, z + w / 2 * s_)
-        lt = screen(x - w / 2 * c, h, z - w / 2 * s_)
-        rt = screen(x + w / 2 * c, h, z + w / 2 * s_)
-        x0, x1 = int(min(l[0], r[0])), int(max(l[0], r[0])) + 1
-        for xx in range(max(0, x0), min(W, x1 + 1)):
-            f = (xx + 0.5 - l[0]) / (r[0] - l[0]) if abs(r[0] - l[0]) > 1e-6 else 0.5
-            if not 0 <= f <= 1:
+    def screen(self, X, Y, Z):
+        """A place of the scene as a sample of the image, its Z away from the eye rising up."""
+        return (S * (self.width / 2 + X * self.scale),
+                S * (self.base - (Y * math.cos(self.el) + Z * math.sin(self.el)) * self.scale))
+
+    def depth(self, Y, Z):
+        """How far from the eye along its way, larger the farther."""
+        return Z * math.cos(self.el) - Y * math.sin(self.el)
+
+    def lit(self, albedo, normal):
+        """A color in linear light of an albedo under the sun and the sky for a normal, turned to
+        face the eye, a part of the sun's light showing through from the far side."""
+        n = normal
+        if sum(a * b for a, b in zip(n, self.eye)) < 0:
+            n = (-n[0], -n[1], -n[2])
+        facing = sum(a * b for a, b in zip(n, self.sun))
+        sun = max(0.0, facing) + self.THROUGH * max(0.0, -facing)
+        sky = 0.5 + 0.5 * n[1]
+        return tuple(a * (sun * c + sky * k) for a, c, k in zip(albedo, self.SUN_COLOR, self.SKY_COLOR))
+
+    def soil(self):
+        top = srgb(self.lit(self.SOIL_ALBEDO, (0, 1, 0)))
+        front = srgb(self.lit(self.SOIL_ALBEDO, (0, 0, -1)))
+        draw = ImageDraw.Draw(self.image)
+        s = self.screen
+        draw.polygon([s(-self.soil_x, 0, self.soil_z), s(self.soil_x, 0, self.soil_z),
+                      s(self.soil_x, 0, -self.soil_f), s(-self.soil_x, 0, -self.soil_f)], fill=top)
+        draw.polygon([s(-self.soil_x, 0, -self.soil_f), s(self.soil_x, 0, -self.soil_f),
+                      s(self.soil_x, -self.SOIL_DEPTH, -self.soil_f),
+                      s(-self.soil_x, -self.SOIL_DEPTH, -self.soil_f)], fill=front)
+
+    def cards(self, name, tex):
+        """Each clump as two crossed cards of the set's albedo, far to near, lit by their flat
+        faces."""
+        tw, th, data = tex
+        with open(os.path.join(dump.folder, "grass.json")) as file:
+            aspect = json.load(file)["size"]
+        aspect = aspect[0] / aspect[1]
+        W, H = self.width * S, self.height * S
+        px = self.image.load()
+        cards = []
+        for x, z, turn, h in lines(os.path.join(dump.folder, f"{name}-clumps.tsv")):
+            for k in range(2):
+                cards.append((z, x, turn + k * math.pi / 2, h))
+        cards.sort(reverse=True)
+        for z, x, t, h in cards:
+            w = h * aspect
+            c, s_ = math.cos(t), math.sin(t)
+            light = self.lit((1.0, 1.0, 1.0), (-s_, 0.0, c))
+            l = self.screen(x - w / 2 * c, 0, z - w / 2 * s_)
+            r = self.screen(x + w / 2 * c, 0, z + w / 2 * s_)
+            lt = self.screen(x - w / 2 * c, h, z - w / 2 * s_)
+            rt = self.screen(x + w / 2 * c, h, z + w / 2 * s_)
+            for xx in range(max(0, int(min(l[0], r[0]))), min(W, int(max(l[0], r[0])) + 2)):
+                f = (xx + 0.5 - l[0]) / (r[0] - l[0]) if abs(r[0] - l[0]) > 1e-6 else 0.5
+                if not 0 <= f <= 1:
+                    continue
+                by = l[1] + f * (r[1] - l[1])
+                ty = lt[1] + f * (rt[1] - lt[1])
+                for yy in range(max(0, int(min(by, ty))), min(H, int(max(by, ty)) + 1)):
+                    v = (yy + 0.5 - ty) / (by - ty) if abs(by - ty) > 1e-6 else 0.5
+                    if not 0 <= v <= 1:
+                        continue
+                    o = 4 * (min(tw - 1, int(f * tw)) + tw * min(th - 1, int(v * th)))
+                    if data[o + 3] <= 127:
+                        continue
+                    px[xx, yy] = tuple(encode(LINEAR[data[o + k]] * light[k]) for k in range(3))
+
+    def blades(self, name):
+        """The blades' triangles, far to near by their middles, each sample lit by the photographed
+        blade's albedo, normal and surface at its coordinates, tinted, in the sun's shadow of the
+        blades and in the sky's light dimmed at the roots, drawn a band of rows to a process."""
+        global JOB
+        rows = lines(os.path.join(dump.folder, f"{name}-mesh.tsv"))
+        with open(os.path.join(dump.folder, f"{name}-mesh-indices.tsv")) as file:
+            idx = [int(line) for line in file]
+        with open(os.path.join(dump.folder, "grass.json")) as file:
+            blade = json.load(file)["blade"]
+        sets = os.path.join(dump.folder, "sets")
+        textures = (decode(os.path.join(sets, blade["albedo"])),
+                    decode(os.path.join(sets, blade["normal"]), BC5),
+                    decode(os.path.join(sets, blade["surface"]), BC7_LINEAR))
+        tris = []
+        for t in range(0, len(idx), 3):
+            corners = []
+            for j in range(3):
+                x, y, z, nx, ny, nz, cr, cg, cb, u, v = rows[idx[t + j]]
+                sx, sy = self.screen(x, y, z)
+                corners.append((sx, sy, x, y, z, nx, ny, nz, u, v, cr, cg, cb, self.depth(y, z)))
+            tris.append((-sum(c[13] for c in corners) / 3, corners, tangents(corners)))
+        tris.sort(key=lambda t: t[0])
+        shadow = Shadow(self.sun, [t[1] for t in tris])
+        JOB = (self, [(t[1], t[2]) for t in tris], textures, shadow)
+        height = self.height * S
+        step = height // (4 * os.cpu_count()) + 1
+        bands = [(y, min(height, y + step)) for y in range(0, height, step)]
+        with multiprocessing.get_context("fork").Pool() as pool:
+            parts = pool.map(blade_band, bands)
+        for (y0, y1), part in zip(bands, parts):
+            self.image.paste(Image.frombytes("RGB", (self.width * S, y1 - y0), part), (0, y0))
+
+    def shade(self, albedo, normal, tangent, bitangent, tex, y, shadow, position):
+        """A sample's color in linear light, from its albedo, the vertex normal bent by the normal
+        map of its texel, the share of its light that passes through and its occlusion."""
+        nw, nh, normals = tex[1]
+        sw, sh, surface = tex[2]
+        u, v = position[3], position[4]
+        o = 4 * (min(nw - 1, int(u * nw)) + nw * min(nh - 1, int(v * nh)))
+        mx, my = normals[o] / 127.5 - 1, normals[o + 1] / 127.5 - 1
+        mz = math.sqrt(max(0.0, 1 - mx * mx - my * my))
+        n = tuple(tangent[k] * mx + bitangent[k] * my + normal[k] * mz for k in range(3))
+        length = math.sqrt(n[0] * n[0] + n[1] * n[1] + n[2] * n[2]) or 1.0
+        n = (n[0] / length, n[1] / length, n[2] / length)
+        if sum(a * b for a, b in zip(n, self.eye)) < 0:
+            n = (-n[0], -n[1], -n[2])
+        o = 4 * (min(sw - 1, int(u * sw)) + sw * min(sh - 1, int(v * sh)))
+        occlusion, through = surface[o] / 255, surface[o + 3] / 255
+        facing = sum(a * b for a, b in zip(n, self.sun))
+        lit = 0.0 if shadow.covers(position[:3]) else 1.0
+        sun = lit * (max(0.0, facing) + self.THROUGH * through * max(0.0, -facing))
+        # Close to the ground the sky is hidden by the blades round, more so the lower it is.
+        roots = 0.12 + 0.88 * min(1.0, y / self.ROOTS) ** 0.8
+        sky = (0.5 + 0.5 * n[1]) * occlusion * roots
+        return tuple(a * (sun * c + sky * k) for a, c, k in zip(albedo, self.SUN_COLOR, self.SKY_COLOR))
+
+    def soil_band(self, pix, y0, y1, shadow):
+        """The soil's top face over the rows y0 up to y1, in the shadow of the blades and under the
+        canopy's dimmer sky, its edge washing out to the open sky within a tenth of the patch's
+        width."""
+        W = self.width * S
+        sin_el = math.sin(self.el)
+        facing = max(0.0, self.sun[1])
+        edge = 0.05 + 0.05 * self.patch[0]
+        for yy in range(y0, y1):
+            z = (self.base - (yy + 0.5) / S) / (sin_el * self.scale)
+            if not -self.soil_f <= z <= self.soil_z:
                 continue
-            by = l[1] + f * (r[1] - l[1])
-            ty = lt[1] + f * (rt[1] - lt[1])
-            for yy in range(max(0, int(min(by, ty))), min(H, int(max(by, ty)) + 1)):
-                v = (yy + 0.5 - ty) / (by - ty) if abs(by - ty) > 1e-6 else 0.5
-                if not 0 <= v <= 1:
+            for xx in range(0, W):
+                x = ((xx + 0.5) / S - self.width / 2) / self.scale
+                if not -self.soil_x <= x <= self.soil_x:
                     continue
-                o = 4 * (min(tw - 1, int(f * tw)) + tw * min(th - 1, int(v * th)))
-                if data[o + 3] <= 127:
+                lit = 0.0 if shadow.covers((x, 0.0, z)) else 1.0
+                inside = max(abs(x) - self.patch[0] / 2, abs(z) - self.patch[1] / 2)
+                sky = 1.0 if inside > edge else 0.3 + 0.7 * max(0.0, inside) / edge
+                color = tuple(a * (lit * facing * c + sky * k)
+                              for a, c, k in zip(self.SOIL_ALBEDO, self.SUN_COLOR, self.SKY_COLOR))
+                pix[xx, yy - y0] = (encode(color[0]), encode(color[1]), encode(color[2]))
+
+    def finish(self):
+        return reduce(self.image)
+
+
+JOB = None
+
+
+def tangents(corners):
+    """The unit directions along a triangle's width and up its length, from its places and its
+    coordinates, a blade's picture standing up its box, so up the length is against v."""
+    p0, p1, p2 = (c[2:5] for c in corners)
+    u0, v0, u1, v1, u2, v2 = (corners[i][j] for i in range(3) for j in (8, 9))
+    e1 = [p1[k] - p0[k] for k in range(3)]
+    e2 = [p2[k] - p0[k] for k in range(3)]
+    du1, dv1, du2, dv2 = u1 - u0, v1 - v0, u2 - u0, v2 - v0
+    det = du1 * dv2 - du2 * dv1
+    if abs(det) < 1e-12:
+        return (1.0, 0.0, 0.0), (0.0, 1.0, 0.0)
+    across = [(e1[k] * dv2 - e2[k] * dv1) / det for k in range(3)]
+    down = [(e2[k] * du1 - e1[k] * du2) / det for k in range(3)]
+    return unit(across), unit([-c for c in down])
+
+
+def unit(v):
+    length = math.sqrt(sum(c * c for c in v)) or 1.0
+    return tuple(c / length for c in v)
+
+
+class Shadow:
+    """The blades' shadow as the sun makes it, a depth map seen from the sun in cells of a
+    millimeter and a half, a point shadowed when something stands nearer the sun over its cell."""
+
+    CELL = 0.0015
+    BIAS = 0.004
+
+    def __init__(self, sun, tris):
+        self.sun = sun
+        up = (0.0, 1.0, 0.0)
+        self.e1 = unit((up[1] * sun[2] - up[2] * sun[1], up[2] * sun[0] - up[0] * sun[2],
+                        up[0] * sun[1] - up[1] * sun[0]))
+        self.e2 = (sun[1] * self.e1[2] - sun[2] * self.e1[1], sun[2] * self.e1[0] - sun[0] * self.e1[2],
+                   sun[0] * self.e1[1] - sun[1] * self.e1[0])
+        placed = [[self.place(c[2:5]) for c in tri] for tri in tris]
+        points = [q for tri in placed for q in tri]
+        self.a0 = min(q[0] for q in points) - 0.01
+        self.b0 = min(q[1] for q in points) - 0.01
+        self.na = int((max(q[0] for q in points) + 0.01 - self.a0) / self.CELL) + 1
+        self.nb = int((max(q[1] for q in points) + 0.01 - self.b0) / self.CELL) + 1
+        self.depth = [-1e9] * (self.na * self.nb)
+        for tri in placed:
+            self.raster(tri)
+
+    def place(self, p):
+        """A place as its two coordinates across the sun's view and its nearness to the sun."""
+        return (sum(a * b for a, b in zip(p, self.e1)), sum(a * b for a, b in zip(p, self.e2)),
+                sum(a * b for a, b in zip(p, self.sun)))
+
+    def raster(self, tri):
+        (ax, ay, az), (bx, by, bz), (cx, cy, cz) = tri
+        d = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
+        if abs(d) < 1e-12:
+            return
+        c = self.CELL
+        ia, ib = max(0, int((min(ax, bx, cx) - self.a0) / c) - 1), min(self.na - 1, int((max(ax, bx, cx) - self.a0) / c) + 1)
+        ja, jb = max(0, int((min(ay, by, cy) - self.b0) / c) - 1), min(self.nb - 1, int((max(ay, by, cy) - self.b0) / c) + 1)
+        depth = self.depth
+        for j in range(ja, jb + 1):
+            y = self.b0 + (j + 0.5) * c
+            for i in range(ia, ib + 1):
+                x = self.a0 + (i + 0.5) * c
+                l1 = ((by - cy) * (x - cx) + (cx - bx) * (y - cy)) / d
+                l2 = ((cy - ay) * (x - cx) + (ax - cx) * (y - cy)) / d
+                l3 = 1 - l1 - l2
+                if l1 < -0.3 or l2 < -0.3 or l3 < -0.3:
                     continue
-                px[xx, yy] = (data[o], data[o + 1], data[o + 2])
-    return reduce(img)
+                z = l1 * az + l2 * bz + l3 * cz
+                if z > depth[i + j * self.na]:
+                    depth[i + j * self.na] = z
+
+    def covers(self, p):
+        """Whether something stands between a place and the sun."""
+        x, y, z = self.place(p)
+        i, j = int((x - self.a0) / self.CELL), int((y - self.b0) / self.CELL)
+        if not (0 <= i < self.na and 0 <= j < self.nb):
+            return False
+        return self.depth[i + j * self.na] > z + self.BIAS
+
+
+def blade_band(band):
+    """The rows y0 up to y1 of the view with the soil and every blade's triangle drawn into them."""
+    view, tris, textures, shadow = JOB
+    y0, y1 = band
+    W = view.width * S
+    px = view.image.crop((0, y0, W, y1))
+    pix = px.load()
+    view.soil_band(pix, y0, y1, shadow)
+    aw, ah, albedo_data = textures[0]
+    for corners, (tangent, bitangent) in tris:
+        (ax, ay, *pa), (bx, by, *pb), (cx, cy, *pc) = corners
+        if max(ay, by, cy) < y0 or min(ay, by, cy) >= y1:
+            continue
+        d = (by - cy) * (ax - cx) + (cx - bx) * (ay - cy)
+        if abs(d) < 1e-9:
+            continue
+        xa, xb = max(0, int(min(ax, bx, cx))), min(W - 1, int(max(ax, bx, cx)) + 1)
+        ya, yb = max(y0, int(min(ay, by, cy))), min(y1 - 1, int(max(ay, by, cy)) + 1)
+        for yy in range(ya, yb + 1):
+            sy = yy + 0.5
+            for xx in range(xa, xb + 1):
+                sx = xx + 0.5
+                l1 = ((by - cy) * (sx - cx) + (cx - bx) * (sy - cy)) / d
+                l2 = ((cy - ay) * (sx - cx) + (ax - cx) * (sy - cy)) / d
+                l3 = 1 - l1 - l2
+                if l1 < -1e-6 or l2 < -1e-6 or l3 < -1e-6:
+                    continue
+                # pa holds x y z, nx ny nz, u v, r g b and depth for each corner.
+                mix = [l1 * pa[k] + l2 * pb[k] + l3 * pc[k] for k in range(12)]
+                u, v = mix[6], mix[7]
+                o = 4 * (min(aw - 1, int(u * aw)) + aw * min(ah - 1, int(v * ah)))
+                if albedo_data[o + 3] <= 127:
+                    continue
+                albedo = tuple(LINEAR[albedo_data[o + k]] * mix[8 + k] for k in range(3))
+                color = view.shade(albedo, unit(mix[3:6]), tangent, bitangent, textures, mix[1], shadow, mix[:3] + [u, v])
+                pix[xx, yy - y0] = (encode(color[0]), encode(color[1]), encode(color[2]))
+    return px.tobytes()
+
+
+def patch_height(name):
+    return max(h for _, _, _, h in lines(os.path.join(dump.folder, f"{name}-clumps.tsv")))
+
+
+def grass_view(name, size, patch, elevation, near, room=1.0):
+    """A patch drawn as its near level, the blades, or as its far level, the crossed cards, with
+    room times its tallest clump's height above the soil, for cards that stand wider than tall."""
+    view = View(size, patch, elevation, patch_height(name) * room)
+    if near:
+        view.blades(name)
+    else:
+        with open(os.path.join(dump.folder, "grass.json")) as file:
+            albedo = json.load(file)["albedo"]
+        view.cards(name, decode(os.path.join(dump.folder, "sets", albedo)))
+    return view.finish()
+
+
+def grass():
+    """The README's patch of meadow grass as blades."""
+    return grass_view("grass", GRASS_SIZE, GRASS_PATCH, 28, True)
+
+
+def close():
+    """A smaller patch from near the ground, where single blades show."""
+    return grass_view("close", CLOSE_SIZE, CLOSE_PATCH, 9, True)
+
+
+def pair():
+    """The patch of the README as its far level's cards beside its near level's blades, from one
+    view, for the dump."""
+    cards, blades = (grass_view("grass", PAIR_SIZE, GRASS_PATCH, 28, near, 1.5) for near in (False, True))
+    sheet = Image.new("RGB", (2 * PAIR_SIZE[0] + GAP, PAIR_SIZE[1]), "white")
+    sheet.paste(cards, (0, 0))
+    sheet.paste(blades, (PAIR_SIZE[0] + GAP, 0))
+    return sheet
 
 
 def main():
     global dump
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         sys.exit(__doc__)
     out = sys.argv[1]
+    only = sys.argv[2:]
     os.makedirs(out, exist_ok=True)
     with tempfile.TemporaryDirectory() as folder:
         subprocess.run(["dotnet", "run", "--project", DUMP_PROJECT, "-c", "Release", "--", folder], check=True)
         dump = Dump(folder)
-        for name, image in (("readme-trees.webp", trees()), ("readme-grass.webp", grass())):
+        pictures = (("readme-trees.webp", trees), ("readme-grass.webp", grass),
+                    ("readme-grass-close.webp", close), ("grass-pair.webp", pair))
+        for name, draw in pictures:
+            if only and name not in only:
+                continue
+            image = draw()
             image.save(os.path.join(out, name), quality=92, method=6)
             print(os.path.join(out, name), image.size)
 
