@@ -16,6 +16,10 @@ grass texture scattered by a seed, seen from a little above.
 The quaking aspen, the black tupelo, the weeping willow and the California black oak at seed 1, each
 grown from its preset and drawn with its own bark and leaf textures from the carried KTX2 files.
 
+Commits that day
+
+- `8f8f082` The README shows four preset trees and a patch of grass under its title.
+
 ## 2026-11-21
 
 Commits that day
