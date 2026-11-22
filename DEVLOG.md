@@ -6,6 +6,25 @@ under `.github/assets/readings` as WebP files named by their day, each on the da
 the notes written beside them as Markdown files named the same way. A line under Done names the item
 of .github/REVIEW.md or .github/REVIEW-ARCHIVE.md and the commit that closed it.
 
+## 2026-11-22
+
+![](.github/assets/readings/2026-11-22-readme-grass.webp)
+A patch of wheat grass two meters by one at 14 clumps a meter, each clump two crossed cards of the
+grass texture scattered by a seed, seen from a little above.
+
+![](.github/assets/readings/2026-11-22-readme-trees.webp)
+The quaking aspen, the black tupelo, the weeping willow and the California black oak at seed 1, each
+grown from its preset and drawn with its own bark and leaf textures from the carried KTX2 files.
+
+## 2026-11-21
+
+Commits that day
+
+- `8b24587` The texture collection's manifest is read by the Materials module's TextureCollection,
+  taken as a submodule pinned at its head, in place of the reader the module wrote for it.
+- `9943234` Tools is pinned at be1b6ab, and the rules name the Tools module's gpu.py as the one gate
+  for the GPU lock.
+
 ## 2026-11-20
 
 Commits that day

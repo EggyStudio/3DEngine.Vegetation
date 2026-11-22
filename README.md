@@ -2,6 +2,12 @@
 
 # Vegetation
 
+![](.github/assets/readings/2026-11-22-readme-trees.webp)
+Four of the presets grown at seed 1 and drawn with their own bark and leaf textures.
+
+![](.github/assets/readings/2026-11-22-readme-grass.webp)
+A patch of wheat grass scattered by a seed, each clump two crossed cards of its texture.
+
 Vegetation is a library an engine takes as a git submodule, for plant species, each one's skeleton
 grown from a seed, the tree and grass meshes built through Modeling, their texture sets and their
 placement. It references no engine and declares no interface for one to implement, so an engine

@@ -106,6 +106,13 @@ one running past the width is cut there or scrolled. A summary, a parameter or a
 one line opens onto lines of its own. A line holding an address alone is free of it. By a test that
 reads the sources and fails on a longer comment line.
 
+**N 4.12 The README shows what the module makes before it tells it.** Under the title and before the
+first paragraph stand one to three captures of the module's own output, the plainest that show the
+thing, a plain picture or a pair and not a table of readings, each with one line under it that says
+what it shows. A capture there is made by the module's own programs, names no engine, is at most
+1280 wide and is kept beside the other readings. It is retaken when what it shows changes, in the
+commit that changes it.
+
 ## 6 Build and package
 
 **N 6.1 A build has no warnings, and a warning fails the workflow.** A warning left standing hides
@@ -195,9 +202,11 @@ with no quiet wait before it and held no longer than ten minutes, since two such
 side overfill the 8 GB. A session whose wait grows long tells the reviewing session in a line, which
 gives the order, an engine's illumination read first. By review.
 
-The Tools module's `scripts/gpu.py` is the one gate for this lock, and no session writes its own.
-`gpu.py shared -- <command>` and `gpu.py exclusive -- <command>` take the lock, write and clear the
-marks and keep the bounds, and `gpu.py status` lists who holds and who waits.
+The Tools module's `scripts/gpu.py` is the one gate for this lock, and no session writes its own or
+calls `flock` itself. `gpu.py shared -- <command>` and `gpu.py exclusive -- <command>` take the
+lock, write and clear the marks and keep the bounds, and `gpu.py status` lists who holds and who
+waits. A build or a test that opens no graphics device takes no lock at all, and a repository none
+of whose programs opens one never takes it.
 
 **N 7.10 A session's programs keep their caches in a folder of the session's own.** The engine's
 caches of shaders, pipelines and scene packs stand in the account's cache folder, which the
@@ -228,6 +237,7 @@ writes into nor clears a folder it did not make. By review.
 | N 4.9 | by review |
 | N 4.10 | by review |
 | N 4.11 | to check, a test in each module |
+| N 4.12 | by review |
 | N 6.1 | to check at the first push |
 | N 6.2 | to check at the first push |
 | N 6.6 | to check at the first commit |
