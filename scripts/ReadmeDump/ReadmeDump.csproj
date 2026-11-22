@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <!-- The half of the README captures' program that reads the library, which writes what
+         scripts/captures.py draws from, into the folder it is given. -->
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <AssemblyName>ReadmeDump</AssemblyName>
+        <RootNamespace>ReadmeDump</RootNamespace>
+        <IsPackable>false</IsPackable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\Vegetation\Vegetation.csproj" />
+    </ItemGroup>
+
+</Project>

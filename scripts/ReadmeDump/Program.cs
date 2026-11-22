@@ -1,0 +1,79 @@
+// Writes what the README's two captures are drawn from: the skeleton, the leaf mesh and the sets of
+// four presets grown at seed 1, and the clumps of a patch of grass, each as plain text beside the
+// sets' albedo files, for scripts/captures.py to draw. It takes the folder to write into.
+using System.Globalization;
+using System.Numerics;
+using System.Text.Json;
+using Vegetation;
+
+var folder = args[0];
+Directory.CreateDirectory(folder);
+
+(string Name, TreeSpecies Species)[] presets =
+[
+    ("QuakingAspen", TreeSpecies.QuakingAspen),
+    ("BlackTupelo", TreeSpecies.BlackTupelo),
+    ("WeepingWillow", TreeSpecies.WeepingWillow),
+    ("CaliforniaBlackOak", TreeSpecies.CaliforniaBlackOak),
+];
+
+var index = new List<object>();
+foreach (var (name, species) in presets)
+{
+    var skeleton = TreeSkeleton.Grow(species, 1);
+    var leaves = TreeLeaves.Build(skeleton, species, 1);
+    File.WriteAllLines(Path.Combine(folder, $"{name}-nodes.tsv"),
+        skeleton.Nodes.Select(n => string.Join('\t', n.Parent, F(n.Place.X), F(n.Place.Y), F(n.Place.Z), F(n.Radius))));
+    File.WriteAllLines(Path.Combine(folder, $"{name}-vertices.tsv"),
+        leaves.Positions.Select((p, i) => string.Join('\t', F(p.X), F(p.Y), F(p.Z), F(leaves.Uvs[i].X), F(leaves.Uvs[i].Y))));
+    File.WriteAllLines(Path.Combine(folder, $"{name}-indices.tsv"),
+        leaves.Indices.Select(i => i.ToString(CultureInfo.InvariantCulture)));
+    index.Add(new
+    {
+        name,
+        bark = Describe(species.BarkSet),
+        leaves = Describe(species.LeafSet),
+        barkColor = new[] { species.BarkColor.X, species.BarkColor.Y, species.BarkColor.Z },
+    });
+}
+File.WriteAllText(Path.Combine(folder, "presets.json"), JsonSerializer.Serialize(index));
+
+var grass = new GrassSettings { Density = 14f, Height = 0.5f, Seed = 3 };
+var clumps = GrassScatter.Clumps(grass, new Vector2(2f, 1f), 5);
+File.WriteAllLines(Path.Combine(folder, "grass-clumps.tsv"),
+    clumps.Select(c => string.Join('\t', F(c.Root.X), F(c.Root.Z), F(c.Turn), F(c.Height))));
+var grassSet = TreeTextures.Find(grass.Set)!;
+Copy(grassSet.Albedo);
+File.WriteAllText(Path.Combine(folder, "grass.json"), JsonSerializer.Serialize(new
+{
+    albedo = grassSet.Albedo,
+    size = new[] { grassSet.Size?.Width ?? 0, grassSet.Size?.Height ?? 0 },
+}));
+
+// A set as the drawing reads it, its albedo copied beside, or only its name where the collection
+// has none of that name and the species is drawn in its own color.
+object Describe(string? setName)
+{
+    var set = setName is null ? null : TreeTextures.Find(setName);
+    if (set is null) return new { name = setName, found = false };
+    Copy(set.Albedo);
+    return new
+    {
+        name = setName,
+        found = true,
+        albedo = set.Albedo,
+        mean = new[] { set.MeanColor.X, set.MeanColor.Y, set.MeanColor.Z },
+    };
+}
+
+void Copy(string path)
+{
+    var target = Path.Combine(folder, "sets", path);
+    if (File.Exists(target)) return;
+    Directory.CreateDirectory(Path.GetDirectoryName(target)!);
+    using var from = TreeTextures.Open(path)!;
+    using var to = File.Create(target);
+    from.CopyTo(to);
+}
+
+static string F(float value) => value.ToString("R", CultureInfo.InvariantCulture);

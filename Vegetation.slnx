@@ -6,4 +6,5 @@
   </Folder>
   <Project Path="Vegetation/Vegetation.csproj" />
   <Project Path="Vegetation.Tests/Vegetation.Tests.csproj" />
+  <Project Path="scripts/ReadmeDump/ReadmeDump.csproj" />
 </Solution>

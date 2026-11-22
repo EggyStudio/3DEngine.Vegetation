@@ -37,6 +37,7 @@ runs the tests on Linux, Windows and macOS on every push (NORM.md, N 6.1 and N 6
 | `Vegetation` | The library, `Vegetation.csproj` |
 | `Vegetation.Tests` | The xunit tests of the library |
 | `modules` | The Materials submodule, whose `TextureCollection` reads the texture manifest, and the Tools submodule, which the tests take the checks every module keeps from and whose scripts write DEVLOG.md and check a commit |
+| `scripts` | What is run by hand with Python 3 and Pillow, `captures.py`, which draws the README's two captures from what `ReadmeDump`, the small program beside it, writes of the library, to be run again when what they show changes |
 | `build` | The version, `version.txt`'s major and minor set by hand and `version.sh`, which prints it with the patch counted from the history |
 
 ## Conventions

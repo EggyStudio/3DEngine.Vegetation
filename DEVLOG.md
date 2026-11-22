@@ -18,6 +18,8 @@ grown from its preset and drawn with its own bark and leaf textures from the car
 
 Commits that day
 
+- `81f316b` The README's two captures are retaken with each pixel the average of sixteen samples and
+  the grass stands on soil.
 - `8f8f082` The README shows four preset trees and a patch of grass under its title.
 
 ## 2026-11-21
