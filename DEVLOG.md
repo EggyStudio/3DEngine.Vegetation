@@ -9,20 +9,29 @@ of .github/REVIEW.md or .github/REVIEW-ARCHIVE.md and the commit that closed it.
 ## 2026-11-22
 
 ![](.github/assets/readings/2026-11-22-readme-grass.webp)
-A patch of meadow grass 2.4 meters by 0.6 at 350 clumps a square meter, each clump five to nine
-blades cut from photographed wheat grass and tinted green with some dry, in a high sun and a sky,
-seen from a little above.
+The default lawn, autumn, healthy and thick, in a patch 2.4 meters by 0.6 at 800 clumps a square
+meter, a closed mat of fine blades under limp coarse tufts that cross, a few blades dry, in a high
+sun and a sky, seen from a little above with no soil showing.
 
 ![](.github/assets/readings/2026-11-22-readme-trees.webp)
 The quaking aspen, the black tupelo, the weeping willow and the California black oak at seed 1, each
 grown from its preset and drawn with its own bark and leaf textures from the carried KTX2 files.
 
 ![](.github/assets/readings/2026-11-22-readme-grass-close.webp)
-A patch 0.35 meters by 0.25 seen from near the ground, where single blades with their midribs and
-veins, their light through them and their shadow on one another show.
+A patch of the default lawn 0.35 meters by 0.25 seen from near the ground, where single blades,
+their light through them and their shadow on one another show, the coarse ones bending over the fine
+mat.
 
 Commits that day
 
+- `a130429` The README's two grass captures are retaken from the default lawn, one wide and one
+  close, since they showed the upright meadow the module no longer plants by default.
+- `7487466` The grass is now a lawn of two layers, a closed mat of fine blades under limp coarse
+  tufts that cross, set by a kind, a season, a health and a thickness that a host blends, so it
+  matches the photographs of a real lawn and the upright meadow stays as a preset.
+- `18bcf64` The grass grows as photographed blades, five to nine to a clump with three to eight
+  millimeters at the root, tinted by the settings and mixed with dry ones, standing 350 clumps a
+  square meter, and the README shows the patch and a close one in sun and shadow.
 - `ef81919` The program that draws the README's two captures is kept in a scripts folder and takes
   the folder to write them into, so a capture can be retaken when what it shows changes.
 - `81f316b` The README's two captures are retaken with each pixel the average of sixteen samples and

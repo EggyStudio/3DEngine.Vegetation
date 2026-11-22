@@ -6,10 +6,10 @@
 Four of the presets grown at seed 1 and drawn with their own bark and leaf textures.
 
 ![](.github/assets/readings/2026-11-22-readme-grass.webp)
-A patch of meadow grass scattered by a seed, each clump a few coarse blades and finer ones among them, cut from photographed wheat grass and tinted green with some dry, on a strip of soil under a sun and a sky.
+The default lawn scattered by a seed, a closed mat of fine blades under limp coarse tufts, cut from photographed wheat grass and tinted bright green with a few dry blades, on a strip of soil under a sun and a sky.
 
 ![](.github/assets/readings/2026-11-22-readme-grass-close.webp)
-A smaller patch from near the ground, where single blades, their light through them and their shadow on one another show.
+A smaller patch of the lawn from near the ground, where single blades, their light through them and their shadow on one another show.
 
 Vegetation is a library an engine takes as a git submodule, for plant species, each one's skeleton
 grown from a seed, the tree and grass meshes built through Modeling, their texture sets and their
