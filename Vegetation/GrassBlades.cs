@@ -11,29 +11,35 @@ namespace Vegetation;
 /// A clump's blades are drawn from <see cref="Pcg"/> seeded by the clump's own two phases, which
 /// <see cref="GrassScatter.Clumps"/> draws as whole multiples of a 24-bit step, so the same clump
 /// and the same settings give the same blades on every runtime and the scatter's own draws, its
-/// seeds and its order, are left as they were. A clump has five to nine blades, and the draws of
-/// each, in this order, are where its root falls in the clump's foot, how it faces, whether it is
-/// low and how tall it is, how wide at its root, how it leans and curls, how many segments it has,
-/// which look it has, whether it is dry and how its colors stray.
+/// seeds and its order, are left as they were.
 /// </para>
 /// <para>
-/// A blade faces outward from the clump's middle within a sixth of a turn either way, so a clump
-/// opens as a fountain, and every blade is shorter than its clump's height and bends no further
-/// than 77 degrees from the up axis, and <see cref="Reach"/> counts on that.
+/// A clump has two layers. Three to five coarse blades stand tallest, from six tenths of the
+/// clump's height up, and a short fine underfill of many more, a third to a half of the height
+/// less what the droop takes, fills in beneath them, the settings' fine share of all the blades.
+/// The underfill is dense enough that no ground shows between blades from any height of the eye
+/// while the thickness is whole, and a lower thickness thins the fine layer first and then leaves
+/// bare patches. Each blade draws, in this order, where its root falls in the clump's foot, how it
+/// faces, whether it stands upright, how tall it is, how wide, how it bends, how many segments it
+/// has, which look it has, whether it is dry and how its colors stray, whatever the settings.
 /// </para>
 /// <para>
-/// Two in five of the blades after the first are low, a third to a half of the clump's height
-/// where the others stand from 0.6 of it up, so the ground under a patch is hidden by a body of
-/// short blades with the tall blades' tips standing above it.
+/// A blade's bend grows with its length and with its distance from the clump's middle. It rises a
+/// little, arches over, and its outer half lies near level or drooping, and it faces anywhere about
+/// the clump so that blades cross, the few upright ones excepted, which are the share
+/// <see cref="GrassSettings.UprightShare"/> asks for. The droop, a number from nothing to one,
+/// blends this limp bend with the upright bend of a meadow, so a lawn lies and a meadow stands
+/// with the same blades.
 /// </para>
 /// <para>
-/// A blade is a meadow grass of three to eight millimeters at its root, cut from one of three
-/// blades of the photographed set <see cref="Set"/>, whose box in the atlas is its look, so its
-/// color, its midrib and veins and the light it lets through are the photograph's. A share of the
-/// settings, <see cref="GrassSettings.DryShare"/>, are dry and yellowed, which are the same
-/// pictures tinted to <see cref="GrassSettings.DryColor"/>. The tints are the color wanted over
-/// the mean color of the look's picture, so the settings' colors tint the photograph and do not
-/// replace it.
+/// The height and the coarseness of the grass vary over the place in mounds, by a slow noise from
+/// the patch's middle and the settings' seed, so a patch's middle must be given for neighboring
+/// patches to join without a seam. A blade is a strip of nearly one width, narrowing to a point
+/// over its last fifth, cut from one of three blades of the photographed set <see cref="Set"/>,
+/// whose box in the atlas is its look, so its color, its midrib and veins and the light it lets
+/// through are the photograph's. A share of the blades are dry and yellowed, the same pictures
+/// tinted to the dry color. The tints are the color wanted over the mean color of the look's
+/// picture, so the settings' colors tint the photograph and do not replace it.
 /// </para>
 /// </remarks>
 public static class GrassBlades
@@ -47,14 +53,16 @@ public static class GrassBlades
         new(0.1914f, 0.2761f, 0.0362f),
     ];
 
-    // The fewest and the most blades of a clump, and its foot's radius as a share of its height.
-    private const int Fewest = 5;
-    private const int Spread = 5;
+    // A clump's coarse blades are three to five, and its foot's radius is a share of its height.
+    private const int Fewest = 3;
+    private const int Spread = 3;
     private const float Foot = 0.15f;
 
-    // The share of a clump's blades after its first that are low, a third to a half of its height,
-    // so a patch has a body near the ground and tips above it. The first is always tall.
-    private const float LowShare = 0.4f;
+    // The side of the cells of the noise that bares the ground, in meters.
+    private const float BareCell = 0.12f;
+
+    // Where a blade's width starts to narrow, as a share of its length.
+    private const float Taper = 0.8f;
 
     // How far a blade's edge normals are bent from its middle's across the width, 0.6 radians, as
     // a cosine and a sine written as numbers so they are the same everywhere.
@@ -81,6 +89,18 @@ public static class GrassBlades
     ];
 
     /// <summary>
+    /// How wide a blade is at a place along its length, as a share of the width it holds over most
+    /// of it.
+    /// </summary>
+    /// <param name="along">How far along the blade, 0 at its root up to 1 at its point.</param>
+    /// <returns>
+    /// Whole up to four fifths of the way along and narrowing in a straight line to nothing at the
+    /// point, as a grass blade does.
+    /// </returns>
+    public static float WidthShare(float along) =>
+        along <= Taper ? 1f : MathF.Max(0f, (1f - along) / (1f - Taper));
+
+    /// <summary>
     /// How far from a clump's root any part of any of its blades reaches along the ground, in
     /// meters.
     /// </summary>
@@ -91,62 +111,96 @@ public static class GrassBlades
     /// </returns>
     /// <remarks>
     /// A blade's curve stays within the polygon of its control points, whose far corner is no more
-    /// than three quarters of its height to the side, and the blade is less than a centimeter
-    /// wide, so under half of that either side of the curve.
+    /// than its height to the side, and the blade is less than a centimeter wide, so under half of
+    /// that either side of the curve.
     /// </remarks>
-    public static float Reach(GrassClump clump) => clump.Height * (Foot + 0.75f) + 0.01f;
+    public static float Reach(GrassClump clump) => clump.Height * (Foot + 1f) + 0.01f;
 
     /// <summary>Draws a clump's blades from the clump and the settings.</summary>
     /// <param name="clump">The clump, as <see cref="GrassScatter.Clumps"/> gives it.</param>
     /// <param name="settings">
-    /// The colors the blades are tinted to, how many are dry and how far the colors stray.
+    /// The kind, the season, the health and the thickness, the bend, the layers and the colors.
+    /// </param>
+    /// <param name="middle">
+    /// The middle of the clump's patch, as <see cref="GrassPatch.Middle"/> gives it, which places
+    /// the clump on the noise of the mounds, so a clump has the same look where it stands whichever
+    /// patch it belongs to. It is the origin where left out.
     /// </param>
     /// <returns>
-    /// Five to nine blades, their roots from the patch's middle, the same for the same clump and
-    /// settings.
+    /// The clump's blades, three to five coarse ones and the fine ones after them, the same for the
+    /// same clump and settings, and none of them where the thickness leaves the ground bare.
     /// </returns>
-    /// <exception cref="ArgumentException">
-    /// The settings' color variation or dry share is not usable.
-    /// </exception>
-    public static IReadOnlyList<GrassBlade> Of(GrassClump clump, GrassSettings settings)
+    /// <exception cref="ArgumentException">A setting is not usable.</exception>
+    public static IReadOnlyList<GrassBlade> Of(GrassClump clump, GrassSettings settings, Vector2 middle = default)
     {
         ArgumentNullException.ThrowIfNull(settings);
-        if (!(settings.ColorVariation >= 0f && settings.ColorVariation <= 1f))
-            throw new ArgumentException("Blades stray in color from nothing up to the whole.", nameof(settings));
-        if (!(settings.DryShare >= 0f && settings.DryShare <= 1f))
-            throw new ArgumentException("A share of the blades is dry from none up to all.", nameof(settings));
+        return Grow(clump, settings, GrassLook.Of(settings), middle);
+    }
 
+    private static GrassBlade[] Grow(GrassClump clump, GrassSettings settings, GrassLook look, Vector2 middle)
+    {
+        var place = new Vector2(middle.X + clump.Root.X, middle.Y + clump.Root.Z);
+        var variation = settings.PatchVariation;
+        var thickness = settings.Thickness;
+        // Soil shows between tufts a hand's breadth across as the thickness drops, which none of a
+        // whole thickness does, and the mounds are taller and finer where their noise is high.
+        if (Noise(place, BareCell, settings.Seed, 3) < 0.85f * (1f - thickness))
+            return [];
+        var tallness = 1f - 0.5f * variation * (1f - Noise(place, settings.MoundSize, settings.Seed, 1));
+        var coarseness = Noise(place, settings.MoundSize, settings.Seed, 2);
+        var widthScale = 1f + 0.6f * variation * (coarseness - 0.5f);
+        var fineShare = look.FineShare * (1f - 0.4f * variation * coarseness);
         var seed = ((ulong)(clump.Swing * 16_777_216f) << 24) | (ulong)(clump.Flutter * 16_777_216f);
         var random = new Pcg(seed);
-        var count = Fewest + random.Below(Spread);
+        var coarse = Fewest + random.Below(Spread);
+        if (thickness < 1f) coarse = Math.Max(1, (int)MathF.Round(coarse * (0.4f + 0.6f * thickness)));
+        var count = coarse + (int)MathF.Round(coarse * fineShare / (1f - fineShare) * thickness * thickness);
         var blades = new GrassBlade[count];
+        var height = clump.Height * look.HeightScale * tallness;
         for (var at = 0; at < count; at++)
         {
+            var fine = at >= coarse;
             var (sin, cos) = Exact.SinCos(random.Unit() * MathF.Tau);
-            var radius = Foot * clump.Height * MathF.Sqrt(random.Unit());
+            var share = MathF.Sqrt(random.Unit());
+            var radius = Foot * clump.Height * share * (fine ? 2f : 1f);
             var root = new Vector3(clump.Root.X + radius * cos, 0f, clump.Root.Z + radius * sin);
             var outward = Exact.Atan2(sin, cos);
-            var facing = outward + random.Signed() * (MathF.PI / 3f);
+            var facing = outward + random.Signed() * (MathF.PI / 3f + 0.5f * MathF.PI * look.Droop);
             facing -= MathF.Floor(facing / MathF.Tau) * MathF.Tau;
-            var low = at > 0 && random.Unit() < LowShare;
-            var height = clump.Height * (low ? 0.33f + 0.17f * random.Unit() : 0.6f + 0.4f * random.Unit());
-            var width = 0.003f + 0.005f * random.Unit();
-            var lean = 0.05f + 0.4f * random.Unit();
-            var curl = 0.1f + 0.8f * random.Unit();
+            var upright = random.Unit() < settings.UprightShare;
+            var tall = height * (fine
+                ? 0.33f - 0.15f * settings.Droop + 0.17f * random.Unit()
+                : 0.6f + 0.4f * random.Unit());
+            var width = (fine ? look.FineLow + (look.FineHigh - look.FineLow) * random.Unit()
+                : look.WidthLow + (look.WidthHigh - look.WidthLow) * random.Unit()) * widthScale;
+            var (leanDraw, curlDraw, bendDraw) = (random.Unit(), random.Unit(), random.Unit());
             var segments = 3 + random.Below(3);
-            var look = random.Below(Looks.Count);
-            var dry = random.Unit() < settings.DryShare;
+            var kind = random.Below(Looks.Count);
+            var dry = random.Unit() < look.DryShare;
             var shade = 1f + settings.ColorVariation * random.Signed();
             var stray = new Vector3(
                 shade * (1f + 0.5f * settings.ColorVariation * random.Signed()),
                 shade * (1f + 0.5f * settings.ColorVariation * random.Signed()),
                 shade * (1f + 0.5f * settings.ColorVariation * random.Signed()));
-            var (rootWanted, tipWanted) = dry
-                ? (settings.DryColor * 0.8f, settings.DryColor)
-                : (settings.RootColor, settings.TipColor);
+
+            // The upright bend is a meadow's, a lean of up to half a radian and a curl of up to
+            // nine tenths, and the limp bend rises a little and arches over past level, further the
+            // longer the blade and the further from the clump's middle it stands.
+            var droop = upright ? 0f : look.Droop;
+            var length = tall / (clump.Height * look.HeightScale);
+            var bend = Math.Clamp(fine
+                ? 0.3f + 0.5f * share + 0.2f * (bendDraw - 0.5f)
+                : 0.25f + 0.45f * length + 0.3f * share + 0.2f * (bendDraw - 0.5f), 0f, 1f);
+            var limpTip = (fine ? 1.4f + 0.9f * bend : 1.45f + 1.05f * bend) + 0.35f * look.Flat;
+            var (uprightLean, uprightTip) = (0.05f + 0.4f * leanDraw, 0.05f + 0.4f * leanDraw + 0.1f + 0.8f * curlDraw);
+            var lean = uprightLean + (0.15f + 0.35f * leanDraw - uprightLean) * droop;
+            var tip = uprightTip + (limpTip - uprightTip) * droop;
+            // A blade's tip stays above the ground however far it has drooped.
+            tip = MathF.Max(lean, MathF.Min(tip, MathF.PI - lean - 0.2f));
+            var (rootWanted, tipWanted) = dry ? (look.Dry * 0.8f, look.Dry) : (look.Root, look.Tip);
             blades[at] = new GrassBlade(
-                root, facing, height, width, lean, curl, segments, look, dry,
-                Tint(rootWanted * stray, look), Tint(tipWanted * stray, look));
+                root, facing, tall, width, lean, tip - lean, fine ? 2 : segments, kind, dry, fine,
+                Tint(rootWanted * stray, kind), Tint(tipWanted * stray, kind));
         }
 
         return blades;
@@ -156,9 +210,38 @@ public static class GrassBlades
     private static Vector3 Tint(Vector3 wanted, int look) =>
         Vector3.Max(wanted / LookMeans[look], Vector3.Zero);
 
+    // A slow noise from 0 up to 1 over the ground, one value to a cell of the given size smoothly
+    // blended, from the settings' seed and a number for each of the noises.
+    private static float Noise(Vector2 place, float cell, uint seed, uint salt)
+    {
+        var (x, z) = (place.X / cell, place.Y / cell);
+        var (ix, iz) = (MathF.Floor(x), MathF.Floor(z));
+        var (fx, fz) = (x - ix, z - iz);
+        (fx, fz) = (fx * fx * (3f - 2f * fx), fz * fz * (3f - 2f * fz));
+        var (cx, cz) = ((int)ix, (int)iz);
+        var near = Lattice(cx, cz, seed, salt) + (Lattice(cx + 1, cz, seed, salt) - Lattice(cx, cz, seed, salt)) * fx;
+        var far = Lattice(cx, cz + 1, seed, salt) + (Lattice(cx + 1, cz + 1, seed, salt) - Lattice(cx, cz + 1, seed, salt)) * fx;
+        return near + (far - near) * fz;
+    }
+
+    private static float Lattice(int x, int z, uint seed, uint salt)
+    {
+        unchecked
+        {
+            var h = seed * 0x9E3779B9u ^ (uint)x * 0x85EBCA6Bu ^ (uint)z * 0xC2B2AE35u ^ salt * 0x27D4EB2Fu;
+            h ^= h >> 15;
+            h *= 0x2C1B3C6Du;
+            h ^= h >> 12;
+            h *= 0x297A2D39u;
+            h ^= h >> 15;
+            return (h >> 8) * (1f / 16_777_216f);
+        }
+    }
+
     /// <summary>Writes a patch's blades as the arrays an engine draws.</summary>
     /// <param name="settings">
-    /// The density, the height, the colors, how many blades are dry and how far the colors stray.
+    /// The density, the height, the kind, the season, the health and the thickness, the bend, the
+    /// layers and the colors.
     /// </param>
     /// <param name="size">
     /// The patch's width along X in X and its depth along Z in Y, in meters, as
@@ -169,6 +252,10 @@ public static class GrassBlades
     /// The most segments a blade is cut into, from one up, so a far patch takes fewer, a blade with
     /// fewer than that keeping its own count.
     /// </param>
+    /// <param name="middle">
+    /// The patch's middle, as <see cref="GrassPatch.Middle"/> gives it, so the mounds of the grass
+    /// run on over the borders of its patches. It is the origin where left out.
+    /// </param>
     /// <returns>
     /// The blades of every clump of <see cref="GrassScatter.Clumps"/> over the patch, clump by
     /// clump and blade by blade, the same for the same arguments.
@@ -176,14 +263,15 @@ public static class GrassBlades
     /// <exception cref="ArgumentException">
     /// A size or a setting is not usable, or <paramref name="segments"/> is below one.
     /// </exception>
-    public static GrassMesh Write(GrassSettings settings, Vector2 size, uint seed, int segments)
+    public static GrassMesh Write(GrassSettings settings, Vector2 size, uint seed, int segments, Vector2 middle = default)
     {
         ArgumentNullException.ThrowIfNull(settings);
         ArgumentOutOfRangeException.ThrowIfLessThan(segments, 1);
+        var look = GrassLook.Of(settings);
         var clumps = GrassScatter.Clumps(settings, size, seed);
-        var blades = new List<GrassBlade>(clumps.Count * 7);
+        var blades = new List<GrassBlade>(clumps.Count * 12);
         foreach (var clump in clumps)
-            blades.AddRange(Of(clump, settings));
+            blades.AddRange(Grow(clump, settings, look, middle));
 
         // Every blade is 3 vertices a row for its segments and a tip, and 4 triangles between each
         // pair of rows and 2 at the tip, whatever its segments are.
@@ -232,8 +320,8 @@ public static class GrassBlades
                 2f * u * control.X + 2f * t * (tip.X - control.X),
                 2f * u * control.Y + 2f * t * (tip.Y - control.Y));
             var length = MathF.Sqrt(slope.X * slope.X + slope.Y * slope.Y);
-            // The face looks to the facing's side of the curve, up and out as the blade leans.
-            var face = new Vector2(slope.Y / length, -slope.X / length);
+            // The face looks to the outer side of the curve, up where the blade has arched over.
+            var face = new Vector2(-slope.Y / length, slope.X / length);
             var normal = along * face.X + Vector3.UnitY * face.Y;
             var middle = new Vector3(blade.Root.X + along.X * point.X, point.Y, blade.Root.Z + along.Z * point.X);
             var color = blade.RootColor * u + blade.TipColor * t;
@@ -250,27 +338,28 @@ public static class GrassBlades
                 break;
             }
 
-            // The blade is folded about its midrib, which stands out toward the face, so the edges
-            // lie back from the middle by the angle the edge normals are bent by.
-            var reach = 0.5f * blade.Width * (1f - t * t);
+            // The blade is folded in a channel about its midrib, which lies low, so the edges
+            // rise toward the face by the angle the edge normals are bent by and its normals lean
+            // in toward the middle, as a grass blade's do.
+            var reach = 0.5f * blade.Width * WidthShare(t);
             var bent = side * RoundSin;
-            var back = normal * (reach * RoundSin);
-            positions[vertex] = middle - side * (reach * RoundCos) - back;
-            normals[vertex] = normal * RoundCos - bent;
+            var lift = normal * (reach * RoundSin);
+            positions[vertex] = middle - side * (reach * RoundCos) + lift;
+            normals[vertex] = normal * RoundCos + bent;
             uvs[vertex] = new Vector2(left, v);
             colors[vertex++] = color;
             positions[vertex] = middle;
             normals[vertex] = normal;
             uvs[vertex] = new Vector2(0.5f * (left + right), v);
             colors[vertex++] = color;
-            positions[vertex] = middle + side * (reach * RoundCos) - back;
-            normals[vertex] = normal * RoundCos + bent;
+            positions[vertex] = middle + side * (reach * RoundCos) + lift;
+            normals[vertex] = normal * RoundCos - bent;
             uvs[vertex] = new Vector2(right, v);
             colors[vertex++] = color;
         }
 
-        // A cell between two rows is a pair of triangles for each half of the width, the +side
-        // edge on the eye's left looking at the face, and the last row closes on the tip.
+        // A cell between two rows is a pair of triangles for each half of the width, the -side
+        // edge on the eye's right looking at the face, and the last row closes on the tip.
         for (var row = 0; row < rows; row++)
         {
             var lower = first + (uint)(3 * row);
@@ -281,19 +370,19 @@ public static class GrassBlades
                 var (right, left) = (lower + (uint)cell, lower + (uint)cell + 1);
                 if (last)
                 {
-                    indices[index++] = left;
                     indices[index++] = right;
+                    indices[index++] = left;
                     indices[index++] = upper;
                     continue;
                 }
 
                 var (upperRight, upperLeft) = (upper + (uint)cell, upper + (uint)cell + 1);
+                indices[index++] = right;
                 indices[index++] = left;
-                indices[index++] = right;
-                indices[index++] = upperLeft;
-                indices[index++] = right;
                 indices[index++] = upperRight;
+                indices[index++] = left;
                 indices[index++] = upperLeft;
+                indices[index++] = upperRight;
             }
         }
     }

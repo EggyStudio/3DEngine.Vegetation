@@ -197,21 +197,32 @@ IReadOnlyList<GrassPatch> Patches(Vector2 size, GrassSettings settings);  // Cut
 IReadOnlyList<GrassClump> Clumps(GrassSettings settings, Vector2 size, uint seed);  // Scatters a patch's clumps over it, a cell each of a grid as fine as the density asks
 
 record GrassSettings                                     // What a stretch of grass is planted with and how thick it stands, as GrassScatter scatters it and GrassBlades grows its blades
-GrassSettings();                                         // Settings with every value at its value unless given, a field of green meadow grass
-GrassSettings Meadow { get; }                            // A meadow of green grass 0.3 meters tall, what settings left alone plant
-GrassSettings Wheat { get; }                             // A field of wheat, taller than the meadow and paler, standing a little thinner
+GrassSettings();                                         // Settings with every value at the lawn's, a lawn in autumn, healthy and thick, unless given
+GrassSettings Lawn { get; }                              // The lawn grass, what settings left alone plant
+GrassSettings Meadow { get; }                            // A meadow of upright green grass 0.3 meters tall, in summer, its blades bending a little and standing as a clump's fountain with a lower body under it
+GrassSettings Wheat { get; }                             // A field of wheat, taller than the meadow and paler, standing a little thinner and bending at the tip
 string Set { get; init; }                                // The set of the texture collection the far cards are cut from, one of the kind Grass, wheat-grass unless given
-float Density { get; init; }                             // How many clumps stand on a square meter, each five to nine blades or two cards crossed
-float Height { get; init; }                              // How tall a clump stands on average, in meters, its blades up to that tall and its far card as wide as the set's picture is for that height
+GrassKind Kind { get; init; }                            // The kind of grass, picking its palette and widths, a lawn unless given
+float Season { get; init; }                              // The season, a number round a cycle of four, spring at 0, summer at 1, autumn at 2 and winter at 3 as GrassCondition names them, autumn unless given
+float Health { get; init; }                              // The health, from 0 parched up to 1 lush, which sets how many blades are dry and yellowed and how far the green is drawn toward the dry color, lush unless given
+float Thickness { get; init; }                           // The thickness, from 0 sparse with soil showing between a few tufts up to 1 a closed mat, closed unless given
+float Density { get; init; }                             // How many clumps stand on a square meter, each some twenty blades of a short fine layer and a longer coarse one for the lawn, or two cards crossed
+float Height { get; init; }                              // How tall a clump stands on average, in meters, its longest blade that long along its curve and its far card as wide as the set's picture is for that height
 float Variation { get; init; }                           // How far a clump's height strays from the average either way, as a share of it
 uint Seed { get; init; }                                 // The seed the clumps are scattered, turned, sized and swayed by
-Vector3 RootColor { get; init; }                         // The color a green blade's picture is tinted to at its root, in linear sRGB, a deep green unless given
-Vector3 TipColor { get; init; }                          // The color a green blade's picture is tinted to at its tip, in linear sRGB, a lighter yellow green unless given
-float DryShare { get; init; }                            // The share of the blades that are dry and yellowed, from nothing up to the whole, which take DryColor in place of the two colors above
-Vector3 DryColor { get; init; }                          // The color of a dry blade at its tip, in linear sRGB, a straw yellow unless given, and four fifths of it at its root
+float Droop { get; init; }                               // How far the blades bend over, from 0 standing straight up to 1 the lawn's limp arch whose outer half lies near level, a bend that grows with a blade's length and its distance from its clump's middle, 1 unless given
+float PatchVariation { get; init; }                      // How far the height and the coarseness of the grass vary from patch to patch, from nothing up to the whole, a slow noise over the place that leaves lush mounds beside shorter stretches, 0.5 unless given
+float MoundSize { get; init; }                           // The size of the mounds the patch variation makes, in meters, a half of it to twice it across, 1.2 unless given
+float FineShare { get; init; }                           // The share of a clump's blades that are the fine short layer under the coarse tufts, from nothing up to under the whole, 0.85 unless given
+float UprightShare { get; init; }                        // The share of the blades that stand upright whatever the droop, the few, 0.1 unless given
+Vector3? RootColor { get; init; }                        // The color a green blade's picture is tinted to at its root, in linear sRGB, or the kind's own deep green where it is null
+Vector3? TipColor { get; init; }                         // The color a green blade's picture is tinted to at its tip, in linear sRGB, or the kind's own lighter yellow green where it is null
+float DryShare { get; init; }                            // The share of the blades that are dry and yellowed in summer and lush health, from nothing up to the whole, which take DryColor in place of the two colors above, the season and the health adding theirs, 0.04 unless given
+Vector3? DryColor { get; init; }                         // The color of a dry blade at its tip, in linear sRGB, and four fifths of it at its root, or the kind's own straw where it is null
 float ColorVariation { get; init; }                      // How far a blade's colors stray from the two above, from nothing up to the whole, as a share of their brightness and half of that in each channel
 float PatchSize { get; init; }                           // The side of the square patches the grass is drawn in, in meters, each a mesh of its own that the camera culls as one
 bool CastsShadows { get; init; }                         // Whether the grass casts shadows, which many thin blades or small cut-out cards cost more than they show and whose thin edges flicker in the sun's shadow map as they sway
+GrassSettings Blend(GrassSettings from, GrassSettings to, float share);  // Blends two settings by a share, the numbers by their value
 
 record struct GrassPatch                                 // A square of a stretch of grass that an engine draws as one mesh, from Patches
 GrassPatch(int Column, int Row, Vector2 Middle, Vector2 Size, uint Seed);
@@ -229,26 +240,44 @@ float Height { get; init; }                              // How tall it stands, 
 float Swing { get; init; }                               // Its phase in the wind's swing along the wind, from zero up to one
 float Flutter { get; init; }                             // Its phase in the flutter across the wind, from zero up to one
 
+enum GrassKind                                           // The kind of grass a stretch is planted with, which picks its palette and the widths of its blades, as Kind names it
+Lawn = 0,                                                // A fine meadow grass of a lawn left unmown, bright green and limp
+Meadow = 1,                                              // A meadow grass that stands upright, darker and toward olive
+Wheat = 2,                                               // A tall grass gone pale gold, the wheat of a field
+
+class GrassCondition                                     // The named values of a stretch's season, health and thickness, numbers a host sets as they are or blends between, as Season, Health and Thickness take them
+float Spring = 0f;                                       // Spring, fresh and bright, its blades short and upright
+float Summer = 1f;                                       // Summer, full and deep green, the blades at their height
+float Autumn = 2f;                                       // Autumn, the blades at their longest and limp, a few going yellow
+float Winter = 3f;                                       // Winter, pale and flattened, the blades lying and mostly dry
+float Parched = 0f;                                      // The health of grass parched, many of its blades dry and yellowed
+float Lush = 1f;                                         // The health of grass lush, green to the tips with few dry blades
+float Sparse = 0f;                                       // The thickness of a sparse stand with soil showing between its tufts
+float Closed = 1f;                                       // The thickness of a closed mat, no soil seen from above
+
 class GrassBlades                                        // The blades of a clump of grass and of a patch, drawn from a seed, and the patch's blades as vertex arrays that any engine draws
 string Set = "wheat-grass";                              // The set of the texture collection the blades are cut from, one of the kind Grass that holds whole blades across its width
 IReadOnlyList<(float U, float V, float Width, float Height)> Looks { get; }  // The boxes of the three blades the set's atlas is cut into, each as a left and a top and a width and a height in shares of the atlas from its top left, the blade standing in its box from its root at the bottom to its point at the top, which Look indexes
+float WidthShare(float along);                           // How wide a blade is at a place along its length, as a share of the width it holds over most of it
 float Reach(GrassClump clump);                           // How far from a clump's root any part of any of its blades reaches along the ground, in meters
-IReadOnlyList<GrassBlade> Of(GrassClump clump, GrassSettings settings);  // Draws a clump's blades from the clump and the settings
-GrassMesh Write(GrassSettings settings, Vector2 size, uint seed, int segments);  // Writes a patch's blades as the arrays an engine draws
+IReadOnlyList<GrassBlade> Of(GrassClump clump, GrassSettings settings, Vector2 middle = default);  // Draws a clump's blades from the clump and the settings
+GrassMesh Write(GrassSettings settings, Vector2 size, uint seed, int segments, Vector2 middle = default);  // Writes a patch's blades as the arrays an engine draws
 
-record struct GrassBlade                                 // A blade of grass, a strip that narrows from its root to a point along a curve, from Of
-GrassBlade(Vector3 Root, float Facing, float Height, float Width, float Lean, float Curl, int Segments, int Look, bool Dry, Vector3 RootColor, Vector3 TipColor);
+record struct GrassBlade                                 // A blade of grass, a strip of nearly one width that narrows to a point over the last fifth of its length along a curve, from Of
+GrassBlade(Vector3 Root, float Facing, float Height, float Width, float Lean, float Curl, int Segments, int Look, bool Dry, bool Fine, Vector3 RootColor, Vector3 TipColor);
 Vector3 Root { get; init; }                              // The middle of its foot on the ground, at y 0, from its patch's middle, in meters
 float Facing { get; init; }                              // The way it leans, in radians about the up axis from X toward Z, from zero up to a whole turn
 float Height { get; init; }                              // How long it is along its curve, in meters, which is also as high as it can stand
-float Width { get; init; }                               // How wide it is at its root, in meters, from three to eight millimeters
+float Width { get; init; }                               // How wide it is over most of its length, in meters, from two and a half to nine millimeters by its kind and its layer
 float Lean { get; init; }                                // How far it leans from the up axis at its root, in radians
-float Curl { get; init; }                                // How much further it bends over toward its facing from root to tip, in radians, so its tip leans by Lean and Curl together
-int Segments { get; init; }                              // How many segments it is cut into along its curve at the most, from three to five
+float Curl { get; init; }                                // How much further it bends over toward its facing from root to tip, in radians, so its tip leans by Lean and Curl together, past a right angle where it arches over and its tip points down
+int Segments { get; init; }                              // How many segments it is cut into along its curve at the most, from three to five, or three for a fine blade
 int Look { get; init; }                                  // Which of Looks its picture is cut from, of three kinds of green blade
 bool Dry { get; init; }                                  // Whether it is a dry, yellowed blade, which takes the settings' dry color
+bool Fine { get; init; }                                 // Whether it is of the short fine layer under the longer coarse tufts, which closes the ground
 Vector3 RootColor { get; init; }                         // The tint of its picture at the root, a multiplier of the albedo in linear sRGB, which brings the picture's mean to the settings' root color strayed by the seed
 Vector3 TipColor { get; init; }                          // The tint of its picture at the tip, as above for the settings' tip color
+float TipHeight { get; }                                 // How high its tip stands above the ground, in meters, which is under half of Height where it has drooped
 
 class GrassMesh                                          // A patch's blades as vertex arrays, from Write, which an engine copies into a mesh of its own
 IReadOnlyList<Vector3> Positions { get; }                // Each vertex's place in meters

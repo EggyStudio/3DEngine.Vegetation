@@ -112,13 +112,14 @@ public sealed class BindingTests
             host.Picture("leaves", atlas, TreeLooks.LeafSize, TreeLooks.LeafSize);
         }
 
-        // Grass over a field of 40 by 40 meters about the origin, a patch at a time. A near patch
-        // is drawn as blades, all five segments of each, and a far one as two crossed cards.
-        var grass = new GrassSettings();
-        foreach (var patch in GrassScatter.Patches(new Vector2(40f, 40f), grass))
+        // Grass over a field of 2 by 2 meters about the origin, a patch at a time, the patches
+        // small since the lawn stands thick. A near patch is drawn as blades, all five segments of
+        // each, and a far one as two crossed cards.
+        var grass = new GrassSettings { PatchSize = 1f };
+        foreach (var patch in GrassScatter.Patches(new Vector2(2f, 2f), grass))
         {
             var middle = new Vector3(patch.Middle.X, 0f, patch.Middle.Y);
-            var blades = GrassBlades.Write(grass, patch.Size, patch.Seed, 5);
+            var blades = GrassBlades.Write(grass, patch.Size, patch.Seed, 5, patch.Middle);
             host.Blades(middle, blades.Positions, blades.Normals, blades.Uvs, blades.Colors, blades.Indices);
             foreach (var clump in GrassScatter.Clumps(grass, patch.Size, patch.Seed))
                 host.Clump(middle + clump.Root, clump.Turn, clump.Height);

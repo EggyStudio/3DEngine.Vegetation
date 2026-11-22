@@ -144,6 +144,35 @@ pointer. One commit an engine, after item 3's first part.
     with it; the engines take the blades when they next move their pins, by rows in their own
     reviews.
 
+11. **The grass against photographs of a real lawn.** Six photographs of an unmown lawn in soft
+    evening light set the bar, read in place and copied into no repository, and the blades of item
+    10 differ from them in ways the item mends. A real blade keeps nearly its whole width for most
+    of its length and narrows only over its last fifth, so the blades stop thinning from the root. A
+    real blade is long and limp, it rises a little, arches over and its outer half lies near level
+    or droops to the ground, many of them crossing, so the default takes a bend that grows with a
+    blade's length and its distance from the clump's middle, with upright blades the few and not the
+    rule. The lawn is a closed mat with no soil seen from any height of the eye, built from layers,
+    a short fine layer under longer coarse tufts, so the underfill is dense enough to close the
+    ground by itself and the tufts stand in it. Height and coarseness vary in patches a half meter
+    to two meters across, lush mounds beside shorter stretches, by a slow noise over the patch's
+    place and not blade by blade alone. The color is a bright fresh green, lighter and more yellow
+    where the light comes through a blade and with a soft sheen along a blade that faces the sky,
+    with few dry blades, far from the dark olive of item 10's captures. The settings gain what this
+    needs, a droop, a patch variation and the layers' shares, with the default set to this lawn and
+    the upright meadow kept as a preset. Tests hold the width's profile, the share of blades whose
+    tips lie under half their length in height, and that no ray from above reaches the ground in a
+    default patch more than one time in fifty. The README's two captures are retaken once, from the
+    renderer the review names for it, and the report sets each beside the photograph it answers in
+    the dump. The photographs show one kind of grass at one season, in one state of health and at
+    one thickness, so they are one point of the settings and not the whole of them. The settings
+    name a kind, with this lawn grass the first and the wheat and the meadow beside it, a season
+    from spring's fresh growth through summer and autumn to winter's pale and flattened blades, a
+    health from lush to parched with its share of dry and yellowed blades and its color, and a
+    thickness from sparse with soil showing to a closed mat, each a number or a named value a host
+    can set and blend, and the photographs' lawn is the kind's look in autumn, healthy and thick. A
+    sheet in the dump shows the same patch across the seasons, across health and across thickness.
+    Fallen leaves and twigs on a lawn are a later item of their own.
+
 ## Verdicts
 
 One verdict stands, the first, on the red run of the leaves' fixture.
@@ -831,3 +860,17 @@ crossed cards stay the far level. The pictures are drawn by `scripts/captures.py
 a sky, the light through the blades, their shadow on one another and the dark at their roots, at 16
 samples a pixel, and the README shows the patch and a close one. The strict build is clean and the
 tests pass, 96 where there were 84.
+
+Item 11, the grass against the photographs, except the README's two captures, which wait for the
+renderer the review names and are blocked until then. The default settings plant the lawn, and
+`Meadow` and `Wheat` are presets beside it. `GrassSettings` gains a kind, a season, a health, a
+thickness, a droop, a patch variation with the mounds' size, the fine layer's share and the upright
+share, and `GrassKind` and `GrassCondition` name their ends. A clump grows three to five coarse blades
+and fine ones under them, a blade keeps its width up to four fifths of its length and narrows over
+the last fifth, and the bend grows with the blade's length and its distance from the clump's middle.
+About nine blades in ten end with their tips under half their length in height, and one vertical ray
+in a hundred reaches the ground in a default patch, against the one in fifty the item allows. The
+dump holds 18-lawn-close.webp, 18-lawn-patch.webp and 18-lawn-sheet.webp, drawn as working pictures
+by `scripts/captures.py`, with 2922cfac read in place. The strict build is clean and the tests
+pass, 105 where there were 96. The default patch holds about thirteen thousand blades a square
+meter, so an engine draws the near patches only.

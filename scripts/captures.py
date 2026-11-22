@@ -3,7 +3,7 @@
 
     scripts/captures.py <output folder> [picture file name ...]
 
-With no names it draws all four pictures below, and with names only those.
+With no names it draws all five pictures below, and with names only those.
 
 The module's own program, scripts/ReadmeDump, grows four presets at seed 1 and scatters a patch of
 grass as blades, and this script draws what it wrote, the trees with each set's own albedo, decoded
@@ -12,7 +12,8 @@ each blade cut from the photographed blades' albedo, normal and surface, tinted 
 from the front and through from behind, in the blades' shadow on one another and on the soil. It
 writes readme-trees.webp, 1156 by 350, and readme-grass.webp, 1200 by 420, and
 beside them readme-grass-close.webp, a patch seen from near the ground where single blades show,
-and grass-pair.webp, the crossed cards and the blades at one view. A file moved from there into
+grass-pair.webp, the crossed cards and the blades at one view, and grass-sheet.webp, one patch
+across the seasons, the health and the thickness. A file moved from there into
 .github/assets/readings takes the day's date in its name.
 
 Each picture is drawn four times as wide and as tall and each pixel is the average of the sixteen
@@ -216,10 +217,14 @@ class View:
     # Toward the sun, high, from the left and a little behind the grass, so the blades' faces and
     # their backs are lit differently, and the light is lighter than the shade it leaves.
     SUN = (-0.45, 0.8, 0.4)
-    SUN_COLOR = (1.7, 1.45, 1.1)
-    SKY_COLOR = (0.30, 0.38, 0.52)
+    SUN_COLOR = (1.3, 1.15, 0.9)
+    SKY_COLOR = (0.62, 0.70, 0.82)
     # How much of the light on a blade's far side shows through it.
     THROUGH = 1.4
+    # How much brighter the through light makes each channel, yellower for less blue, and the
+    # sheen's strength on a blade facing the sky.
+    YELLOW = (0.25, 0.35, -0.2)
+    SHEEN = 0.06
     # The height above which a blade's sky is open past the blades about it, in meters.
     ROOTS = 0.12
 
@@ -362,11 +367,17 @@ class View:
         occlusion, through = surface[o] / 255, surface[o + 3] / 255
         facing = sum(a * b for a, b in zip(n, self.sun))
         lit = 0.0 if shadow.covers(position[:3]) else 1.0
-        sun = lit * (max(0.0, facing) + self.THROUGH * through * max(0.0, -facing))
+        # Light through a blade is lighter and yellower than the light on it, and a blade that
+        # faces the sky takes a soft sheen of it.
+        passing = lit * self.THROUGH * through * max(0.0, -facing)
+        sun = lit * max(0.0, facing) + passing
+        albedo = tuple(a * (1.0 + self.YELLOW[k] * passing) for k, a in enumerate(albedo))
+        sheen = self.SHEEN * max(0.0, n[1]) ** 4 * (lit * max(0.0, self.sun[1]) + 0.3)
         # Close to the ground the sky is hidden by the blades round, more so the lower it is.
         roots = 0.12 + 0.88 * min(1.0, y / self.ROOTS) ** 0.8
         sky = (0.5 + 0.5 * n[1]) * occlusion * roots
-        return tuple(a * (sun * c + sky * k) for a, c, k in zip(albedo, self.SUN_COLOR, self.SKY_COLOR))
+        return tuple(a * (sun * c + sky * k) + sheen * c * 0.5
+                     for a, c, k in zip(albedo, self.SUN_COLOR, self.SKY_COLOR))
 
     def soil_band(self, pix, y0, y1, shadow):
         """The soil's top face over the rows y0 up to y1, in the shadow of the blades and under the
@@ -536,7 +547,7 @@ def grass_view(name, size, patch, elevation, near, room=1.0):
 
 
 def grass():
-    """The README's patch of meadow grass as blades."""
+    """The README's patch of lawn grass as blades."""
     return grass_view("grass", GRASS_SIZE, GRASS_PATCH, 28, True)
 
 
@@ -555,6 +566,28 @@ def pair():
     return sheet
 
 
+def sheet():
+    """The one patch across the seasons, the health and the thickness, a row each, a tile to a
+    variant with its label, for the dump."""
+    with open(os.path.join(dump.folder, "sheet.json")) as file:
+        variants = json.load(file)
+    tile = (400, 300)
+    patch = (0.5, 0.35)
+    tallest = max(patch_height(v["name"]) for v in variants)
+    rows = [[v for v in variants if v["label"].startswith(kind)] for kind in ("season", "health", "thickness")]
+    columns = max(len(r) for r in rows)
+    out = Image.new("RGB", (columns * tile[0] + GAP * (columns + 1), len(rows) * (tile[1] + 20) + GAP), "white")
+    draw = ImageDraw.Draw(out)
+    for r, row in enumerate(rows):
+        for c, v in enumerate(row):
+            view = View(tile, patch, 20, tallest)
+            view.blades(v["name"])
+            x, y = GAP + c * (tile[0] + GAP), GAP + r * (tile[1] + 20)
+            out.paste(view.finish(), (x, y + 20))
+            draw.text((x, y + 4), v["label"], fill="black")
+    return out
+
+
 def main():
     global dump
     if len(sys.argv) < 2:
@@ -566,7 +599,8 @@ def main():
         subprocess.run(["dotnet", "run", "--project", DUMP_PROJECT, "-c", "Release", "--", folder], check=True)
         dump = Dump(folder)
         pictures = (("readme-trees.webp", trees), ("readme-grass.webp", grass),
-                    ("readme-grass-close.webp", close), ("grass-pair.webp", pair))
+                    ("readme-grass-close.webp", close), ("grass-pair.webp", pair),
+                    ("grass-sheet.webp", sheet))
         for name, draw in pictures:
             if only and name not in only:
                 continue

@@ -39,11 +39,20 @@ foreach (var (name, species) in presets)
 }
 File.WriteAllText(Path.Combine(folder, "presets.json"), JsonSerializer.Serialize(index));
 
-// The two patches of grass, the meadow's near the camera and a closer, smaller one, each as its
-// clumps for the far cards and its blades' arrays for the near level.
-var grass = GrassSettings.Meadow with { Seed = 3 };
+// The two patches of grass, the lawn's near the camera and a closer, smaller one, each as its
+// clumps for the far cards and its blades' arrays for the near level, and the sheet's one patch
+// grown across the seasons, the health and the thickness.
+var grass = new GrassSettings { Seed = 3 };
 DumpGrass("grass", grass, new Vector2(2.4f, 0.6f), 5);
 DumpGrass("close", grass, new Vector2(0.35f, 0.25f), 9);
+var sheet = new List<object>();
+foreach (var (label, settings) in SheetVariants(grass))
+{
+    var name = $"sheet-{sheet.Count}";
+    DumpGrass(name, settings, new Vector2(0.5f, 0.35f), 9);
+    sheet.Add(new { name, label });
+}
+File.WriteAllText(Path.Combine(folder, "sheet.json"), JsonSerializer.Serialize(sheet));
 var grassSet = TreeTextures.Find(grass.Set)!;
 var bladeSet = TreeTextures.Find(GrassBlades.Set)!;
 Copy(grassSet.Albedo);
@@ -70,6 +79,20 @@ void DumpGrass(string name, GrassSettings settings, Vector2 size, uint seed)
             F(mesh.Uvs[i].X), F(mesh.Uvs[i].Y))));
     File.WriteAllLines(Path.Combine(folder, $"{name}-mesh-indices.tsv"),
         mesh.Indices.Select(i => i.ToString(CultureInfo.InvariantCulture)));
+}
+
+// The sheet's rows: the four seasons, then the health from parched to lush, then the thickness
+// from sparse to a closed mat, each changing only its own number from the lawn in autumn,
+// healthy and thick.
+static IEnumerable<(string, GrassSettings)> SheetVariants(GrassSettings lawn)
+{
+    foreach (var (label, season) in new[] { ("spring", GrassCondition.Spring), ("summer", GrassCondition.Summer),
+                 ("autumn", GrassCondition.Autumn), ("winter", GrassCondition.Winter) })
+        yield return ($"season {label}", lawn with { Season = season });
+    foreach (var health in new[] { 0f, 0.5f, 1f })
+        yield return ($"health {health:0.0}", lawn with { Health = health });
+    foreach (var thickness in new[] { 0f, 0.5f, 1f })
+        yield return ($"thickness {thickness:0.0}", lawn with { Thickness = thickness });
 }
 
 // A set as the drawing reads it, its albedo copied beside, or only its name where the collection

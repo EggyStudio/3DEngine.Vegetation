@@ -15,9 +15,10 @@ namespace Vegetation;
 /// </para>
 /// <para>
 /// A blade has a face and no back, so an engine draws it with both sides and turns the normal
-/// toward the eye on the side it sees. The normals are bent across the width, the edges' away from
-/// the middle's, so a flat strip shades as a rounded blade, and the middle stands out toward the
-/// face a little, so the blade is folded about its midrib.
+/// toward the eye on the side it sees. The face looks to the outer side of the blade's curve, up
+/// where the blade has arched over, so a limp blade shows the sky its face. The normals are bent
+/// across the width, the edges' toward the middle's, and the edges rise toward the face a little,
+/// so the blade is folded in a channel about its midrib and shades as a blade whose edges curl up.
 /// </para>
 /// <para>
 /// A vertex's coordinates are in the atlas of <see cref="GrassBlades.Set"/>, in the box of its
