@@ -861,8 +861,9 @@ a sky, the light through the blades, their shadow on one another and the dark at
 samples a pixel, and the README shows the patch and a close one. The strict build is clean and the
 tests pass, 96 where there were 84.
 
-Item 11, the grass against the photographs, except the README's two captures, which wait for the
-renderer the review names and are blocked until then. The default settings plant the lawn, and
+Item 11, the grass against the photographs, with the README's two captures retaken from the default
+lawn at `850ae85` by `scripts/captures.py`, a later renderer to retake them once more if the review
+names one. The default settings plant the lawn, and
 `Meadow` and `Wheat` are presets beside it. `GrassSettings` gains a kind, a season, a health, a
 thickness, a droop, a patch variation with the mounds' size, the fine layer's share and the upright
 share, and `GrassKind` and `GrassCondition` name their ends. A clump grows three to five coarse blades
